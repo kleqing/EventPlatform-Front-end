@@ -1,6 +1,11 @@
-﻿namespace EventPlatform.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class AuthController
+namespace EventPlatform.Controllers;
+
+public class AuthController : Controller
 {
-    
+    public IActionResult Index()
+    {
+        return View();
+    }
 }
