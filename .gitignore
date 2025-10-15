@@ -53,4 +53,8 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
+# Visual Studio cache files
 .vs/
+
+# Rider
+.idea/
