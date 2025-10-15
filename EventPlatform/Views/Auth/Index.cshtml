@@ -1,18 +1,376 @@
-﻿@model TModel
-
-@{
+﻿@{
+    ViewData["Title"] = "Login";
     Layout = null;
 }
 
 <!DOCTYPE html>
+<html lang="en">
 
-<html>
 <head>
-    <title>title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClothOn - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            min-height: 600px;
+        }
+
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 50px 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand-name {
+            font-size: 16px;
+            letter-spacing: 3px;
+
+            color: #343a40;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .tab {
+            font-size: 28px;
+            font-weight: 600;
+            color: #000;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            text-decoration: none;
+            padding-bottom: 8px;
+            border-bottom: 3px solid transparent;
+        }
+
+
+        .tab.active {
+            color: #D9027D;
+            border-bottom: 3px solid #D9027D;
+        }
+
+        .tab.inactive {
+            color: #adb5bd;
+        }
+
+        .tab.inactive:hover {
+            color: #D9027D;
+        }
+
+        .alert {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+
+            border-color: #D9027D;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(217, 2, 125, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        .forgot-password a {
+
+            color: #D9027D;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: #D9027D;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(217, 2, 125, 0.3);
+        }
+
+        .btn-login:hover {
+
+            background: #b80169;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 2, 125, 0.4);
+        }
+
+        .social-login {
+            margin-top: 20px;
+        }
+
+        .social-title {
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+
+        .social-title::before,
+        .social-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #dee2e6;
+        }
+
+        .social-title::before {
+            left: 0;
+        }
+
+        .social-title::after {
+            right: 0;
+        }
+
+
+        .social-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ced4da;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            color: #495057;
+        }
+
+        .social-btn:hover {
+
+            border-color: #D9027D;
+            color: #D9027D;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Responsive */
+        @@media (max-width: 992px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+
+            .image-section {
+                min-height: 250px;
+                display: none;
+            }
+
+            .form-section {
+                padding: 40px 30px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div>
-      
-</div>
+    <div class="login-container">
+        <div class="image-section">
+            <img src="https://r2-us-west.photoai.com/1725049228-59e5679be5ad1ee0f05c529c09f2f50d-1.png"
+                 alt="Event Management" />
+        </div>
+
+        <div class="form-section">
+            <div class="header">
+                <div class="brand-name">Event Platform</div>
+
+                <div class="tabs">
+                    <div class="tab active">Log In</div>
+                    <a href="@Url.Action("Signup", "Account")" class="tab inactive">Sign Up</a>
+                </div>
+            </div>
+
+            <form id="loginForm">
+                <div id="error-message" class="alert" style="display:none;"></div>
+
+                <div class="form-group">
+                    <input type="text" name="username" id="username" placeholder="Username" required />
+                </div>
+
+                <div class="form-group">
+                    <input type="password" name="password" id="password" placeholder="Password" required />
+                </div>
+
+                <button type="submit" class="btn-login">Log In</button>
+
+                <div class="forgot-password">
+                    <a href="#">Forget Password?</a>
+                </div>
+
+                <div class="social-login">
+                    <div class="social-title">Or login with</div>
+                    <div class="social-buttons">
+                        <button type="button" class="social-btn" title="Login with Google">
+                            <i class="fab fa-google"></i>
+                        </button>
+                        <button type="button" class="social-btn" title="Login with LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button type="button" class="social-btn" title="Login with Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button type="button" class="social-btn" title="Login with Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
 </body>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+    
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const errorDiv = document.getElementById("error-message");
+        errorDiv.style.display = "none";
+    
+        try {
+            const response = await fetch("https://localhost:7063/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    userName: username,
+                    password: password
+                })
+            });
+    
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                const errorMsg =
+                    result.message ||
+                    (result.errors && Object.values(result.errors).flat().join(", ")) ||
+                    "Login failed. Please check your credentials.";
+
+                errorDiv.textContent = errorMsg;
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            window.location.href = "/Home";
+        } catch (error) {
+            errorDiv.textContent = "Unable to connect to server.";
+            errorDiv.style.display = "block";
+        }
+    });
+
+    document.querySelector('.social-btn[title="Login with Google"]').addEventListener('click', function() {
+        const currentUrl = window.location.origin + '/Home';
+        const loginGoogleUrl = `https://localhost:7063/api/auth/login-google?returnUrl=${encodeURIComponent(currentUrl)}`;
+        window.location.href = loginGoogleUrl;
+    });
+</script>
+
 </html>
