@@ -61,3 +61,8 @@ nunit-*.xml
 
 # Environment-specific files
 .env
+
+# Dotsettings files
+*.DotSettings.user
+*.user
+/EventPlatform/EventPlatform.csproj.user
