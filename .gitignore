@@ -64,5 +64,4 @@ nunit-*.xml
 
 # Dotsettings files
 *.DotSettings.user
-*.user
-/EventPlatform/EventPlatform.csproj.user
+*.csproj.user

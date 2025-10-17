@@ -1,0 +1,250 @@
+﻿@{
+    ViewData["Title"] = "My Profile";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="/css/Profile.css" />
+    
+</head>
+<body>
+    <div class="container">
+        <div class="profile-layout">
+            <aside class="profile-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-avatar" style="background-image: url('https://via.placeholder.com/100x100/e91e63/ffffff?text=SA');"></div>
+                    <h2 class="sidebar-name">Santiago Axel</h2>
+                    <p class="sidebar-title">Senior Visual Designer</p>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="#profile-details" class="active"><i class="fas fa-user-edit"></i> Profile Details</a></li>
+                        <li><a href="#applied-events"><i class="fas fa-calendar-check"></i> Applied Events</a></li>
+                        <li><a href="#change-password"><i class="fas fa-key"></i> Change Password</a></li>
+                        <li><a href="#recommended-events"><i class="fas fa-star"></i> Recommended Events</a></li>
+                        <li><a href="#partner-recommendations"><i class="fas fa-users"></i> Partner Recommendations</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main class="profile-main-content">
+                <section id="profile-details" class="content-section active">
+                    <div class="card">
+                        <div class="card-header"><h3>Edit Your Profile</h3></div>
+                        <form>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <input type="text" id="fullName" value="Santiago Axel" placeholder=" ">
+                                    <label for="fullName">Full Name</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="phoneNumber" value="0977257922" placeholder=" ">
+                                    <label for="phoneNumber">Phone Number</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="dateOfBirth" value="09/12/2004" placeholder=" ">
+                                    <label for="dateOfBirth">Date of Birth</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="addressWard" value="Khuê Trung" placeholder=" ">
+                                    <label for="addressWard">Address Ward</label>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" id="addressDistrict" value="Cẩm Lệ" placeholder=" ">
+                                    <label for="addressDistrict">Address District</label>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" id="addressCity" value="Đà Nẵng" placeholder=" ">
+                                    <label for="addressCity">Address City</label>
+                                </div>
+                     
+
+
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" value="santiago.axel@example.com" placeholder=" " disabled>
+                                <label for="email">Email Address</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="bio" placeholder=" ">Hello! I'm Santiago, a passionate Senior Visual Designer with over 10 years of experience in creating compelling and user-centric digital experiences.</textarea>
+                                <label for="bio">About Me</label>
+                            </div>
+                            <button type="submit" class="btn">Save Changes</button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="applied-events" class="content-section">
+                    <div class="card">
+                        <div class="card-header"><h3>My Applied Events</h3></div>
+                        <div class="tabs">
+                            <button class="tab-button active">All</button>
+                            <button class="tab-button">Offline</button>
+                            <button class="tab-button">Online</button>
+                        </div>
+                        <div class="event-list">
+                            <div class="event-card">
+                                <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf" alt="Event" class="event-card-thumb">
+                                <div class="event-card-details">
+                                    <h4>Global Tech Conference 2025</h4>
+                                    <div class="event-card-meta">
+                                        <span><i class="far fa-calendar-alt"></i> Oct 25, 2025</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> New York</span>
+                                        <span><i class="fas fa-globe"></i> Offline</span>
+                                    </div>
+                                </div>
+                                <div class="event-card-actions"><button class="btn">View Ticket</button></div>
+                            </div>
+                            <div class="event-card">
+                                <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar" alt="Event" class="event-card-thumb">
+                                <div class="event-card-details">
+                                    <h4>Advanced CSS Webinar</h4>
+                                    <div class="event-card-meta">
+                                        <span><i class="far fa-calendar-alt"></i> Nov 10, 2025</span>
+                                        <span><i class="fas fa-laptop"></i> Zoom</span>
+                                        <span><i class="fas fa-wifi"></i> Online</span>
+                                    </div>
+                                </div>
+                                <div class="event-card-actions"><button class="btn">Join Event</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="change-password" class="content-section">
+                    <div class="card">
+                        <div class="card-header"><h3>Change Your Password</h3></div>
+                        <form>
+                            <div class="form-group">
+                                <input type="password" id="currentPassword" placeholder=" ">
+                                <label for="currentPassword">Current Password</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="newPassword" placeholder=" ">
+                                <label for="newPassword">New Password</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="confirmPassword" placeholder=" ">
+                                <label for="confirmPassword">Confirm New Password</label>
+                            </div>
+                            <button type="submit" class="btn">Update Password</button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="recommended-events" class="content-section">
+                    <div class="card">
+                        <div class="card-header"><h3>Recommended For You</h3></div>
+                        <div class="form-grid">
+                            <div class="recommended-event-card">
+                                <img src="https://via.placeholder.com/300x180/ccc/333?text=Design+Meetup" class="recommended-event-thumb" alt="Event">
+                                <div class="recommended-event-content">
+                                    <h4>UI/UX Design Meetup 2025</h4>
+                                    <div class="event-card-meta">
+                                        <span><i class="far fa-calendar-alt"></i> Nov 15, 2025</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Da Nang</span>
+                                    </div>
+                                    <p>A great opportunity for designers to network and share ideas.</p>
+                                    <button class="btn" style="width:100%">View Details</button>
+                                </div>
+                            </div>
+                            <div class="recommended-event-card">
+                                <img src="https://via.placeholder.com/300x180/2c3e50/fff?text=AI+Summit" class="recommended-event-thumb" alt="Event">
+                                <div class="recommended-event-content">
+                                    <h4>Vietnam AI Summit</h4>
+                                    <div class="event-card-meta">
+                                        <span><i class="far fa-calendar-alt"></i> Dec 05, 2025</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Ho Chi Minh City</span>
+                                    </div>
+                                    <p>Explore the future of Artificial Intelligence with industry leaders.</p>
+                                    <button class="btn" style="width:100%">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="partner-recommendations" class="content-section">
+                    <div class="card">
+                        <div class="card-header"><h3>Find Partners With Similar Interests</h3></div>
+                        <div class="partner-list">
+                            <div class="partner-card">
+                                <div class="partner-card-inner">
+                                    <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=AN" class="partner-avatar" alt="Avatar">
+                                    <div class="partner-info">
+                                        <div class="name">An Nguyen</div>
+                                        <div class="interests">Interests: UI/UX, Web Development</div>
+                                    </div>
+                                    <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                                </div>
+                            </div>
+                            <div class="partner-card">
+                                <div class="partner-card-inner">
+                                    <img src="https://via.placeholder.com/50x50/2c3e50/ffffff?text=BT" class="partner-avatar" alt="Avatar">
+                                    <div class="partner-info">
+                                        <div class="name">Bao Tran</div>
+                                        <div class="interests">Interests: AI, Machine Learning, Startups</div>
+                                    </div>
+                                    <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function switchTab(targetId) {
+                navLinks.forEach(nav => {
+                    if (nav.getAttribute('href') === targetId) {
+                        nav.classList.add('active');
+                    } else {
+                        nav.classList.remove('active');
+                    }
+                });
+
+                contentSections.forEach(section => {
+                    if ('#' + section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId.startsWith('#')) {
+                        e.preventDefault();
+                        switchTab(targetId);
+                        // Optional: update URL hash without jumping
+                        history.pushState(null, null, targetId);
+                    }
+                });
+            });
+
+            // Handle initial tab based on URL hash
+            const initialTab = window.location.hash || '#profile-details';
+            switchTab(initialTab);
+        });
+    </script>
+</body>
+</html>
