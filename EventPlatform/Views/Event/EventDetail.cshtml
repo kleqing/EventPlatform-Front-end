@@ -1,0 +1,211 @@
+﻿@{
+    ViewData["Title"] = "Event Details";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="/css/EventDetail.css" />
+</head>
+<body>
+    <div class="event-details-banner">
+        <div class="container">
+            <h1>Event Details</h1>
+            <p class="breadcrumb">
+                <a href="#">Home</a> <span>/</span> Event Details
+            </p>
+        </div>
+    </div>
+
+    <div class="container event-details-content">
+        <div class="event-info-left">
+            <img class="event-main-image" src="https://via.placeholder.com/800x400/ccc/333?text=Main+Event+Image" alt="Main Event Image" />
+
+            <div class="event-meta">
+                <div class="item">
+                    <i class="far fa-calendar-alt"></i> January 23, 2021
+                </div>
+                <div class="item">
+                    <span class="seat-badge"><i class="fas fa-chair"></i> 500 Seat</span>
+                </div>
+                <div class="item">
+                    <i class="fas fa-map-marker-alt"></i> Broadway, New York
+                </div>
+            </div>
+
+            <div class="event-details-grid">
+                <div class="detail-item">
+                    <i class="fas fa-tag"></i>
+                    <p>Event Type</p>
+                    <span>Web Development</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-microphone-alt"></i>
+                    <p>Speaker</p>
+                    <span>50 Best Speaker</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-star"></i>
+                    <p>Rating</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i> (500)
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-nav">
+                <div class="event-nav-item active"><i class="fas fa-info-circle"></i> Details</div>
+                <div class="event-nav-item"><i class="far fa-calendar-check"></i> Schedule</div>
+                <div class="event-nav-item"><i class="far fa-images"></i> Gallery</div>
+            </div>
+
+            <div class="event-description">
+                <h2>Media Companies Need To Better One Then Educate Advertisers.</h2>
+                <p>
+                    Cras semper, massa vel aliquam luctus, eros odio tempor turpis, ac placerat metus tortor eget magna.
+                    Donec mattis posuere pharetra. Donec vestibulum ornare velit ut sollicitudin. Pellentesque in faucibus
+                    purus. Nulla nisl tellus, hendrerit nec dignissim pellentesque, posuere in est. Suspendisse bibendum
+                    vestibulum elit eu placerat. In ut ipsum in odio euismod tincidunt non lacinia nunc. Donec ligula augue,
+                    mattis eu varius ac.
+                </p>
+
+                <h2>Over View</h2>
+                <ul>
+                    <li><i class="fas fa-check"></i> You Got Full Free Certificate</li>
+                    <li><i class="fas fa-check"></i> Unlimited Coffee & Tea When U Boring</li>
+                    <li><i class="fas fa-check"></i> Etiam Dictum. Dui Sit Amet Venenatis.</li>
+                    <li><i class="fas fa-check"></i> Class Aptent Taciti Sociosqu Ad Litora.</li>
+                    <li><i class="fas fa-check"></i> Lunch Suspendisse In Commodo Feli.</li>
+                </ul>
+
+                <div class="image-row">
+                    <img src="https://via.placeholder.com/400x200/ddd/555?text=Event+Image+1" alt="Event Image 1" />
+                    <img src="https://via.placeholder.com/400x200/ccc/666?text=Event+Image+2" alt="Event Image 2" />
+                </div>
+            </div>
+
+            <div class="main-speaker">
+                <h2>Main Speaker</h2>
+                <div class="speaker-grid">
+                    <div class="speaker-card-full">
+                        <img src="https://via.placeholder.com/80x80/f9f9f9/e91e63?text=JL" alt="John Loganin" />
+                        <div>
+                            <div class="name">John Loganin</div>
+                            <div class="role">Marketing</div>
+                            <div class="social-icons">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="event-sidebar-right">
+            <div class="book-event-form">
+                <h3><i class="fas fa-ticket-alt"></i> Book This Event</h3>
+                <form>
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Phone">
+                    </div>
+                    <div class="form-group">
+                        <select>
+                            <option>Select Ticket Type & Quantity</option>
+                            <option>Standard - 1</option>
+                            <option>VIP - 1</option>
+                        </select>
+                    </div>
+                    <button type="submit">Book Now</button>
+                </form>
+            </div>
+
+            <div class="recent-events-sidebar">
+                <h3><i class="far fa-calendar-alt"></i> Recent Event</h3>
+                <div class="sidebar-event-card">
+                    <img class="sidebar-event-image" src="https://via.placeholder.com/80x80/ccc/333?text=Event" alt="Event Image" />
+                    <div class="sidebar-event-content">
+                        <h4>Donec Risus Dui, Suscipit land Temper Lacinia Vehicula.</h4>
+                        <p><i class="far fa-calendar-alt"></i> December 25, 2020</p>
+                        <div class="price">$199 <span>$299</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-organizer-sidebar">
+                <h3><i class="fas fa-user-tie"></i> Event Organized By</h3>
+                <img class="organizer-avatar" src="https://via.placeholder.com/100x100/f9f9f9/e91e63?text=ML" alt="Matthew Luke" />
+                <div class="organizer-name">Matthew Luke</div>
+                <div class="organizer-role">Event Organizer</div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container comments-section">
+        <div class="comments-header">
+            <h3>Feedbacks (@* Count from Feedbacks table *@)</h3>
+        </div>
+        <div class="comments-list">
+            <div class="comment-item">
+                <img class="comment-avatar" src="https://via.placeholder.com/60x60/ddd/555?text=PN" alt="User Avatar" />
+                <div class="comment-content">
+                    <div class="author">Paisley Natalie</div>
+                    <div class="date">December 19, 2021 | 02.34 PM</div>
+                    <p>Cras semper, massa vel aliquam luctus, eros odio tempor turpis, ac bibendum placerat metus tortor eget magna.</p>
+                    <a href="#" class="reply-btn">Reply</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container leave-comment-section">
+        <h3>Leave Your Feedback</h3>
+        <form>
+            <div class="form-group">
+                <label>Rating</label>
+                <select>
+                    <option>5 Stars</option>
+                    <option>4 Stars</option>
+                    <option>3 Stars</option>
+                    <option>2 Stars</option>
+                    <option>1 Star</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea placeholder="Your Comment..."></textarea>
+            </div>
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </div>
+
+    <div class="container related-events-section">
+        <div class="related-events-header">
+            <h3>Related Event</h3>
+            <div class="related-events-nav">
+                <button><i class="fas fa-chevron-left"></i></button>
+                <button><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="related-events-grid">
+        </div>
+    </div>
+</body>
+</html>

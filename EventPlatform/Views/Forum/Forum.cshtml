@@ -1,0 +1,226 @@
+﻿
+@{
+    ViewData["Title"] = "Forum";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="/css/Forum.css">
+</head>
+<body>
+    <div class="forum-container">
+        <div class="forum-layout">
+            <aside class="forum-sidebar">
+                <div class="card">
+                    <div class="card-header"><h3>Categories</h3></div>
+                    <nav class="category-list">
+                        <a href="#" class="active">All Posts</a>
+                        <a href="#">General Discussion</a>
+                        <a href="#">Tech Talk</a>
+                        <a href="#">Event Feedback</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="forum-main">
+                <div class="create-post-widget">
+                    <img src="https://via.placeholder.com/40x40/696cff/ffffff?text=U" alt="Your Avatar" class="avatar">
+                    <input type="text" placeholder="Tấn Thành ơi, bạn đang nghĩ gì thế?" id="createPostInput">
+                </div>
+
+                <div class="post-card">
+                    <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=SA" alt="avatar" class="post-avatar">
+                    <div class="post-content">
+                        <h2 class="post-title">How to prepare for the upcoming AI Summit?</h2>
+                        <div class="post-meta">Posted by Santiago Axel • 2 hours ago</div>
+                        <p class="post-excerpt">I'm attending the Vietnam AI Summit next month and would love to hear some tips from veterans. What are the must-see talks?</p>
+                        <div class="post-stats">
+                            <span><i class="far fa-comments"></i> 15 Comments</span>
+                            <span><i class="far fa-thumbs-up"></i> 42 Likes</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="forum-stats-sidebar">
+                <div class="card stats-card">
+                    <div class="card-header"><h3>New Visitors</h3><span class="dropdown">This week <i class="fas fa-chevron-down"></i></span></div>
+                    <div class="visitor-stats"><span class="percentage">63%</span><span class="change"><i class="fas fa-arrow-up"></i> +2% up</span></div>
+                    <div class="chart-container"><div class="chart-bar" style="height: 20%;"></div><div class="chart-bar" style="height: 40%;"></div><div class="chart-bar" style="height: 60%;"></div><div class="chart-bar highlight" style="height: 90%;"></div><div class="chart-bar" style="height: 25%;"></div><div class="chart-bar" style="height: 35%;"></div><div class="chart-bar" style="height: 15%;"></div></div>
+                    <div class="chart-labels"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
+                </div>
+                <div class="card stats-card">
+                    <div class="card-header"><h3>Status</h3><span class="dropdown">All time <i class="fas fa-chevron-down"></i></span></div>
+                    <ul class="status-list">
+                        <li class="status-item"><div class="item-header"><i class="fas fa-comment-alt"></i><span class="label">Threads</span><span class="value">4,236</span></div><div class="progress-bar-container"><div class="progress"><div class="progress-fill blue" style="width: 65%;"></div></div><span class="progress-change">+12</span></div></li>
+                        <li class="status-item"><div class="item-header"><i class="fas fa-paper-plane"></i><span class="label">Replies</span><span class="value">19,267</span></div><div class="progress-bar-container"><div class="progress"><div class="progress-fill purple" style="width: 85%;"></div></div><span class="progress-change">+268</span></div></li>
+                        <li class="status-item"><div class="item-header"><i class="fas fa-users"></i><span class="label">Members</span><span class="value">7,635</span></div><div class="progress-bar-container"><div class="progress"><div class="progress-fill yellow" style="width: 55%;"></div></div><span class="progress-change">+23</span></div></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <a href="#" class="fab-scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <div class="modal-overlay" id="postModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Post Details</h3>
+                <span class="modal-close-btn" id="postModalCloseBtn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="post-body-content">
+                    <div class="post-header-modal">
+                        <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=SA" alt="avatar" class="post-avatar">
+                        <div class="post-header-info">
+                            <div class="author">Santiago Axel</div>
+                            <div class="date">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="post-full-content">
+                        <h2 class="post-title">How to prepare for the upcoming AI Summit?</h2>
+                        <p>I'm attending the Vietnam AI Summit next month and would love to hear some tips from veterans. What are the must-see talks? Are there any networking events that are particularly valuable?</p>
+                        <p>Also, for anyone who has been before, what's the general dress code? Is it more formal or business casual? Any advice would be greatly appreciated!</p>
+                    </div>
+                    <div class="post-footer-actions">
+                        <span><i class="far fa-thumbs-up"></i> Like</span>
+                        <span><i class="far fa-comments"></i> Comment</span>
+                        <span><i class="far fa-share-square"></i> Share</span>
+                    </div>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <img src="https://via.placeholder.com/36x36/2c3e50/ffffff?text=BT" alt="avatar" class="comment-avatar">
+                        <div>
+                            <div class="comment-body">
+                                <span class="comment-author">Bao Tran</span>
+                                <p class="comment-text">Great question! Definitely don't miss the keynote from Dr. Le Viet Quoc. His talks are always mind-blowing.</p>
+                            </div>
+                            <div class="comment-actions"><a href="#">Like</a> <a href="#">Reply</a> • <span class="comment-date">1 hour ago</span></div>
+                        </div>
+                    </div>
+                    <div class="comment-replies">
+                        <div class="comment-item">
+                            <img src="https://via.placeholder.com/36x36/e91e63/ffffff?text=SA" alt="avatar" class="comment-avatar">
+                            <div>
+                                <div class="comment-body">
+                                    <span class="comment-author">Santiago Axel</span>
+                                    <p class="comment-text">Thanks for the tip, Bao! I'll add it to my schedule.</p>
+                                </div>
+                                <div class="comment-actions"><a href="#">Like</a> <a href="#">Reply</a> • <span class="comment-date">30 minutes ago</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="comment-form">
+                    <img src="https://via.placeholder.com/36x36/696cff/ffffff?text=U" alt="avatar" class="comment-avatar">
+                    <textarea placeholder="Write a comment..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="createPostModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo bài viết</h3>
+                <span class="modal-close-btn" id="createPostModalCloseBtn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40x40/696cff/ffffff?text=U" alt="Your Avatar">
+                    <span>Tấn Thành</span>
+                </div>
+                <input type="text" class="post-title-input" placeholder="Tiêu đề">
+                <textarea class="post-content-textarea" placeholder="Nội dung bài viết của bạn..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="post-button" disabled>Đăng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const body = document.body;
+
+            // --- Logic for Post Detail Modal ---
+            const postCards = document.querySelectorAll('.post-card');
+            const postModal = document.getElementById('postModal');
+            const postModalCloseBtn = document.getElementById('postModalCloseBtn');
+
+            const openPostModal = () => {
+                postModal.classList.add('active');
+                body.classList.add('modal-open');
+            };
+            const closePostModal = () => {
+                postModal.classList.remove('active');
+                if (!document.querySelector('#createPostModal.active')) {
+                     body.classList.remove('modal-open');
+                }
+            };
+            postCards.forEach(card => card.addEventListener('click', openPostModal));
+            postModalCloseBtn.addEventListener('click', closePostModal);
+            postModal.addEventListener('click', function (event) {
+                if (event.target === postModal) closePostModal();
+            });
+
+            // --- Logic for Create Post Modal ---
+            const createPostInput = document.getElementById('createPostInput');
+            const createPostModal = document.getElementById('createPostModal');
+            const createPostModalCloseBtn = document.getElementById('createPostModalCloseBtn');
+            const postTitleInput = createPostModal.querySelector('.post-title-input');
+            const postContentTextArea = createPostModal.querySelector('.post-content-textarea');
+            const postButton = createPostModal.querySelector('.post-button');
+
+            const openCreateModal = () => {
+                createPostModal.classList.add('active');
+                body.classList.add('modal-open');
+                postTitleInput.focus();
+            };
+            const closeCreateModal = () => {
+                createPostModal.classList.remove('active');
+                 if (!document.querySelector('#postModal.active')) {
+                    body.classList.remove('modal-open');
+                }
+            };
+
+            createPostInput.addEventListener('click', openCreateModal);
+            createPostModalCloseBtn.addEventListener('click', closeCreateModal);
+            createPostModal.addEventListener('click', function (event) {
+                if (event.target === createPostModal) closeCreateModal();
+            });
+
+            function validatePostButton() {
+                const isTitleValid = postTitleInput.value.trim() !== '';
+                const isContentValid = postContentTextArea.value.trim() !== '';
+                postButton.disabled = !(isTitleValid && isContentValid);
+            }
+            postTitleInput.addEventListener('keyup', validatePostButton);
+            postContentTextArea.addEventListener('keyup', validatePostButton);
+
+            // --- Logic for Floating Action Button ---
+            const fab = document.querySelector('.fab-scroll-top');
+            const createWidget = document.querySelector('.create-post-widget');
+
+            fab.addEventListener('click', function(event) {
+                event.preventDefault();
+                createWidget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    </script>
+</body>
+</html>
