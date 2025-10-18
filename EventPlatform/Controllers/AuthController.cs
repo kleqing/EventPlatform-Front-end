@@ -8,4 +8,30 @@ public class AuthController : Controller
     {
         return View();
     }
+    
+    public IActionResult Register()
+    {
+        return View();
+    }
+    
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+    
+    [HttpGet]
+    public IActionResult ResetPassword(string token)
+    {
+        ViewData["Token"] = token;
+        return View();
+    }
+    
+    [HttpGet]
+    public IActionResult ConfirmEmail(string verifiedEmail)
+    {
+        ViewBag.Success = !string.IsNullOrEmpty(verifiedEmail);
+        ViewBag.VerifiedEmail = verifiedEmail;
+        return View();
+    }
+
 }
