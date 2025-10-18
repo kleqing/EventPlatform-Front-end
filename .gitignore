@@ -61,3 +61,7 @@ nunit-*.xml
 
 # Environment-specific files
 .env
+
+# Dotsettings files
+*.DotSettings.user
+*.csproj.user
