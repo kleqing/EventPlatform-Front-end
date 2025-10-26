@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Quản lý Sự kiện của tôi";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<link rel="stylesheet" href="/css/MyEvent.css" />
+<section class="page-banner">
+    <div class="container">
+        <h1>Event Dashboard</h1> <p><a asp-page="/Index">Home</a> > Manage Events</p>
+    </div>
+</section>
+
+<main class="container" style="padding-top: 40px; padding-bottom: 60px;">
+
+    <div class="dashboard-header">
+        <h2>My Events</h2> <a asp-page="/CreateEvent" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create New Event
+        </a>
+    </div>
+
+    <div class="management-grid">
+        <div class="management-card">
+            <img src="https://via.placeholder.com/350x180/e91e63/ffffff?text=Event+1" alt="Event Image" class="card-image">
+            <div class="card-content">
+                <span class="card-status status-published">Published</span>
+                <h3 class="card-title">Media Companies Need To Better One</h3>
+                <div class="card-stats">
+                    <span><i class="fas fa-users"></i> 120 / 500 Registered</span> <span><i class="fas fa-eye"></i> 1.2K Views</span>
+                </div>
+                <div class="card-actions">
+                    <a asp-page="/EventDetail" asp-route-id="1" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> View</a> <a asp-page="/CreateEvent" asp-route-id="1" class="btn btn-secondary btn-sm"><i class="fas fa-pencil-alt"></i> Edit</a> <button type="button" class="btn btn-danger btn-sm delete-event-btn" data-event-id="1" data-event-name="Media Companies Need To Better One"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-card">
+            <img src="https://via.placeholder.com/350x180/333/ffffff?text=Event+2" alt="Event Image" class="card-image">
+            <div class="card-content">
+                <span class="card-status status-draft">Draft</span>
+                <h3 class="card-title">Companies Share Strategies For Mobile</h3>
+                <div class="card-stats">
+                    <span><i class="fas fa-users"></i> 0 / 200 Registered</span> <span><i class="fas fa-eye"></i> 50 Views</span>
+                </div>
+                <div class="card-actions">
+                    <a asp-page="/CreateEvent" asp-route-id="2" class="btn btn-secondary btn-sm"><i class="fas fa-pencil-alt"></i> Edit</a> <button type="button" class="btn btn-danger btn-sm delete-event-btn" data-event-id="2" data-event-name="Companies Share Strategies For Mobile"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-card">
+            <img src="https://via.placeholder.com/350x180/1e3c72/ffffff?text=Event+3" alt="Event Image" class="card-image">
+            <div class="card-content">
+                <span class="card-status status-completed">Completed</span>
+                <h3 class="card-title">Proactive Transformation Conference</h3>
+                <div class="card-stats">
+                    <span><i class="fas fa-users"></i> 350 / 400 Registered</span> <span><i class="fas fa-eye"></i> 5.8K Views</span>
+                </div>
+                <div class="card-actions">
+                    <a asp-page="/EventDetail" asp-route-id="3" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> View</a> <a asp-page="/CreateEvent" asp-route-id="3" class="btn btn-secondary btn-sm"><i class="fas fa-pencil-alt"></i> Edit</a> <button type="button" class="btn btn-danger btn-sm delete-event-btn" data-event-id="3" data-event-name="Proactive Transformation Conference"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div id="deleteConfirmModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <h4>Confirm Event Deletion?</h4> <p>Are you sure you want to permanently delete the event <strong id="eventNameToDelete"></strong>? This action cannot be undone.</p> <div class="modal-buttons">
+            <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button> <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Permanently</button>
+        </div>
+        <input type="hidden" id="eventIdToDelete" value="" />
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteModal = document.getElementById('deleteConfirmModal');
+            const cancelBtn = document.getElementById('cancelDeleteBtn');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const eventNameSpan = document.getElementById('eventNameToDelete');
+            const eventIdInput = document.getElementById('eventIdToDelete');
+            const deleteButtons = document.querySelectorAll('.delete-event-btn');
+
+    
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const eventId = this.dataset.eventId;
+                    const eventName = this.dataset.eventName;
+
+                    eventNameSpan.textContent = `"${eventName}"`; 
+                    eventIdInput.value = eventId; 
+
+                    deleteModal.style.display = 'flex'; 
+                });
+            });
+
+       
+            cancelBtn.addEventListener('click', () => {
+                deleteModal.style.display = 'none';
+            });
+            deleteModal.addEventListener('click', (event) => {
+                if (event.target === deleteModal) { 
+                    deleteModal.style.display = 'none';
+                }
+            });
+
+ 
+            confirmBtn.addEventListener('click', () => {
+                const eventIdToDelete = eventIdInput.value;
+                console.log(`Đang yêu cầu xóa sự kiện có ID: ${eventIdToDelete}`);
+
+                alert(`Đã gửi yêu cầu xóa sự kiện ID ${eventIdToDelete} (logic thực tế cần thêm)`);
+                deleteModal.style.display = 'none'; 
+
+            });
+        });
+    </script>
+}

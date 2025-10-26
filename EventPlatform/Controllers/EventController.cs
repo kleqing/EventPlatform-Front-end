@@ -12,5 +12,13 @@ namespace EventPlatform.Controllers
         {
             return View();
         }
+        public IActionResult CreateEvent()
+        {
+            return View();
+        }
+        public IActionResult MyEvent()
+        {
+            return View();
+        }
     }
 }
