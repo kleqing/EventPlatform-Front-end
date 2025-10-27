@@ -1,0 +1,302 @@
+﻿@{
+    ViewData["Title"] = "Tạo Sự Kiện Mới";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<link rel="stylesheet" href="~/css/CreateEvent.css" />
+
+
+<section class="page-banner">
+    <div class="container">
+        <h1>Create New Event</h1> <p><a asp-page="/Index">Home</a> > Create Event</p>
+    </div>
+</section>
+
+<main class="container" style="padding-bottom: 60px;">
+
+    <ul class="wizard-stepper" id="wizardStepper">
+        <div class="progress-bar"></div>
+        <li class="stepper-item active" data-step="1">
+            <span class="step-counter"><i class="fas fa-pencil-alt"></i></span>
+            <span class="step-name">Details</span>
+        </li>
+        <li class="stepper-item" data-step="2">
+            <span class="step-counter"><i class="fas fa-map-marker-alt"></i></span>
+            <span class="step-name">Location</span>
+        </li>
+        <li class="stepper-item" data-step="3">
+            <span class="step-counter"><i class="fas fa-users"></i></span>
+            <span class="step-name">Organizer</span>
+        </li>
+        <li class="stepper-item" data-step="4">
+            <span class="step-counter"><i class="fas fa-image"></i></span>
+            <span class="step-name">Imagery</span>
+        </li>
+        <li class="stepper-item" data-step="5">
+            <span class="step-counter"><i class="fas fa-check-circle"></i></span>
+            <span class="step-name">Finish</span>
+        </li>
+    </ul>
+
+    <form class="create-event-form" method="post" id="createEventWizard">
+        <div class="wizard-steps-wrapper">
+            <div class="wizard-step-panel" data-step="1">
+                <h4 class="form-section-title">Step 1: Basic Information</h4> <div class="form-group">
+                    <label for="eventTitle">Event Title *</label> <input type="text" id="eventTitle" placeholder="Enter your event name..." required> <span class="error-message">Please enter the event title.</span>
+                </div>
+                <div class="form-group">
+                    <label for="eventCategory">Category *</label> <select id="eventCategory" required>
+                        <option value="" disabled selected>Select a category...</option>
+                        <option value="1">Technology</option>
+                        <option value="2">Business</option>
+                        <option value="3">Marketing</option>
+                    </select>
+                    <span class="error-message">Please select a category.</span>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Event Description</label> <textarea id="eventDescription" rows="5" placeholder="Tell us about your event..."></textarea>
+                </div>
+            </div>
+
+            <div class="wizard-step-panel" data-step="2">
+                <h4 class="form-section-title">Step 2: Time & Location</h4> <div class="form-grid">
+                    <div class="form-group">
+                        <label for="startTime">Start Time *</label> <input type="datetime-local" id="startTime" required>
+                        <span class="error-message">Please select a start time.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">End Time *</label> <input type="datetime-local" id="endTime" required>
+                        <span class="error-message">Please select an end time.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Event Type *</label> <select id="eventType" required>
+                        <option value="Offline">Offline (In-Person)</option>
+                        <option value="Online">Online</option>
+                    </select>
+                </div>
+                <div id="offline-fields">
+                    <div class="form-group">
+                        <label for="venueName">Venue Name</label> <input type="text" id="venueName" placeholder="e.g., White Palace Convention Center">
+                    </div>
+                </div>
+                <div id="online-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="onlineURL">Online Event URL</label> <input type="url" id="onlineURL" placeholder="https://zoom.us/j/...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-step-panel" data-step="3">
+                <h4 class="form-section-title">Step 3: Organizer Information</h4> <div class="form-group">
+                    <label for="organizerName">Organizer Name *</label> <input type="text" id="organizerName" placeholder="Your company or name" required> <span class="error-message">Please enter the organizer's name.</span>
+                </div>
+                <div class="form-group">
+                    <label for="organizerInfo">About the Organizer</label> <textarea id="organizerInfo" rows="4" placeholder="Brief info about the organizer..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="organizerLogo">Logo URL</label> <input type="url" id="organizerLogo" placeholder="https://...">
+                    <div class="image-preview-box" style="height: 150px; width: 150px; margin-top: 10px;">
+                        <span class="preview-text">Logo Preview</span> <img src="" alt="Preview" style="display: none;" id="organizerLogoPreview">
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-step-panel" data-step="4">
+                <h4 class="form-section-title">Step 4: Event Imagery (Paste URLs)</h4> <div class="form-group">
+                    <label for="cardImage">Card Image *</label> <input type="url" id="cardImage" placeholder="https://..." required>
+                    <span class="error-message">Please enter the card image URL.</span> <div class="image-preview-box" style="margin-top: 10px;">
+                        <span class="preview-text">Card Image Preview</span> <img src="" alt="Preview" style="display: none;" id="cardImagePreview">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="coverImage">Cover Image</label> <input type="url" id="coverImage" placeholder="https://...">
+                    <div class="image-preview-box" style="margin-top: 10px;">
+                        <span class="preview-text">Cover Image Preview</span> <img src="" alt="Preview" style="display: none;" id="coverImagePreview">
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-step-panel" data-step="5">
+                <h4 class="form-section-title">Step 5: Review & Publish</h4> <p>Awesome! You've filled in all the details. Please select the status to finish.</p> <div class="form-group">
+                    <label for="eventStatus">Publish Status *</label> <select id="eventStatus" required>
+                        <option value="Draft">Save as Draft (Publish later)</option>
+                        <option value="Published">Publish Immediately</option>
+                    </select>
+                </div>
+            </div>
+
+        </div> <div class="wizard-navigation">
+            <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-primary" id="nextBtn">
+                Continue <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const wizardForm = document.getElementById('createEventWizard');
+            const stepsWrapper = document.querySelector('.wizard-steps-wrapper');
+            const stepPanels = document.querySelectorAll('.wizard-step-panel');
+            const stepperItems = document.querySelectorAll('.stepper-item');
+            const progressBar = document.querySelector('.wizard-stepper .progress-bar');
+            
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            
+            let currentStep = 1;
+            const totalSteps = stepPanels.length;
+            
+            const initialPanel = document.querySelector('.wizard-step-panel[data-step="1"]');
+            if (initialPanel) {
+                setTimeout(() => {
+                    stepsWrapper.style.height = `${initialPanel.scrollHeight}px`;
+                }, 100); 
+            }
+
+            function validateStep(stepNumber) {
+                let isValid = true;
+                const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${stepNumber}"]`);
+                
+                currentPanel.querySelectorAll('.form-group.invalid').forEach(group => {
+                    group.classList.remove('invalid');
+                });
+
+                const requiredFields = currentPanel.querySelectorAll('[required]');
+                
+                requiredFields.forEach(field => {
+                    if (!field.value) {
+                        isValid = false;
+                        const formGroup = field.closest('.form-group');
+                        if (formGroup) {
+                            formGroup.classList.add('invalid');
+                        }
+                    }
+                });
+                
+                return isValid;
+            }
+
+            function showStep(stepNumber) {
+                const newTransform = `translateX(-${(stepNumber - 1) * (100 / totalSteps)}%)`;
+                stepsWrapper.style.transform = newTransform;
+                
+                const targetPanel = document.querySelector(`.wizard-step-panel[data-step="${stepNumber}"]`);
+                if (targetPanel) {
+                    // Thêm delay nhỏ trước khi set height để transition mượt hơn
+                     setTimeout(() => {
+                       stepsWrapper.style.height = `${targetPanel.scrollHeight}px`;
+                    }, 50); // Delay 50ms
+                }
+
+                stepperItems.forEach((item, index) => {
+                    item.classList.remove('active', 'completed');
+                    const iconElement = item.querySelector('.step-counter i'); // Lấy icon
+                    
+                    if (index + 1 < stepNumber) {
+                        item.classList.add('completed');
+                        // Đổi icon thành check khi completed (nếu chưa phải là check)
+                        if (!iconElement.classList.contains('fa-check-circle')) {
+                           iconElement.className = 'fas fa-check-circle step-check-icon';
+                        }
+                    } else if (index + 1 === stepNumber) {
+                        item.classList.add('active');
+                         // Đặt lại icon gốc khi active
+                         const originalIcons = ["fa-pencil-alt", "fa-map-marker-alt", "fa-users", "fa-image", "fa-check-circle"];
+                         iconElement.className = `fas ${originalIcons[index]} step-number`; // Sử dụng class step-number để dễ reset
+                    } else {
+                         // Đặt lại icon gốc cho các bước upcoming
+                         const originalIcons = ["fa-pencil-alt", "fa-map-marker-alt", "fa-users", "fa-image", "fa-check-circle"];
+                         iconElement.className = `fas ${originalIcons[index]} step-number`;
+                    }
+                });
+                
+                const progressPercentage = ((stepNumber - 1) / (totalSteps - 1)) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+
+                prevBtn.style.display = (stepNumber === 1) ? 'none' : 'inline-flex'; // Đổi thành inline-flex
+                
+                if (stepNumber === totalSteps) {
+                    nextBtn.innerHTML = 'Hoàn tất & Đăng <i class="fas fa-check"></i>'; // Thêm icon check
+                } else {
+                    nextBtn.innerHTML = 'Tiếp tục <i class="fas fa-arrow-right"></i>'; // Thêm icon mũi tên
+                }
+                
+                currentStep = stepNumber;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (!validateStep(currentStep)) {
+                    const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
+                    stepsWrapper.style.height = `${currentPanel.scrollHeight}px`;
+                    return; 
+                }
+                
+                if (currentStep < totalSteps) {
+                    showStep(currentStep + 1);
+                } else {
+                    alert('Đang gửi form... (Đây là nơi bạn sẽ submit form)');
+                    // wizardForm.submit();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
+                }
+            });
+            
+            stepperItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Chỉ cho phép click vào bước đã hoàn thành VÀ không phải bước hiện tại
+                    if (item.classList.contains('completed') && !item.classList.contains('active')) {
+                        const step = parseInt(item.dataset.step);
+                        showStep(step);
+                    }
+                });
+            });
+
+            const eventTypeSelect = document.getElementById('eventType');
+            const offlineFields = document.getElementById('offline-fields');
+            const onlineFields = document.getElementById('online-fields');
+            eventTypeSelect.addEventListener('change', () => {
+                onlineFields.style.display = (eventTypeSelect.value === 'Online') ? 'block' : 'none';
+                offlineFields.style.display = (eventTypeSelect.value === 'Offline') ? 'block' : 'none';
+                
+                const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
+                setTimeout(() => {
+                    stepsWrapper.style.height = `${currentPanel.scrollHeight}px`;
+                }, 100);
+            });
+
+            function setupImagePreview(inputId, previewImgId) {
+                const input = document.getElementById(inputId);
+                const imgPreview = document.getElementById(previewImgId);
+                const textPreview = imgPreview.previousElementSibling;
+
+                input.addEventListener('input', () => {
+                    const url = input.value;
+                    if (url) {
+                        imgPreview.src = url;
+                        imgPreview.style.display = 'block';
+                        textPreview.style.display = 'none';
+                    } else {
+                        imgPreview.src = '';
+                        imgPreview.style.display = 'none';
+                        textPreview.style.display = 'inline';
+                    }
+                });
+            }
+            setupImagePreview('organizerLogo', 'organizerLogoPreview');
+            setupImagePreview('cardImage', 'cardImagePreview');
+            setupImagePreview('coverImage', 'coverImagePreview');
+
+            showStep(1); 
+        });
+    </script>
+}
