@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Profile.css" />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
     
 </head>
 <body>
@@ -58,26 +59,21 @@
                                     <input type="text" id="addressWard" value="Khuê Trung" placeholder=" ">
                                     <label for="addressWard">Address Ward</label>
                                 </div>
-
                                 <div class="form-group">
                                     <input type="text" id="addressDistrict" value="Cẩm Lệ" placeholder=" ">
                                     <label for="addressDistrict">Address District</label>
                                 </div>
-
                                 <div class="form-group">
                                     <input type="text" id="addressCity" value="Đà Nẵng" placeholder=" ">
                                     <label for="addressCity">Address City</label>
                                 </div>
-                     
-
-
                             </div>
                             <div class="form-group">
                                 <input type="email" id="email" value="santiago.axel@example.com" placeholder=" " disabled>
                                 <label for="email">Email Address</label>
                             </div>
                             <div class="form-group">
-                                <textarea id="bio" placeholder=" ">Hello! I'm Santiago, a passionate Senior Visual Designer with over 10 years of experience in creating compelling and user-centric digital experiences.</textarea>
+                                <textarea id="bio" placeholder=" ">Hello! I'm Santiago...</textarea>
                                 <label for="bio">About Me</label>
                             </div>
                             <button type="submit" class="btn">Save Changes</button>
@@ -88,35 +84,68 @@
                 <section id="applied-events" class="content-section">
                     <div class="card">
                         <div class="card-header"><h3>My Applied Events</h3></div>
+
                         <div class="tabs">
-                            <button class="tab-button active">All</button>
-                            <button class="tab-button">Offline</button>
-                            <button class="tab-button">Online</button>
+                            <button class="tab-button active" data-tab="tab-all">All</button>
+                            <button class="tab-button" data-tab="tab-offline">Offline</button>
+                            <button class="tab-button" data-tab="tab-online">Online</button>
                         </div>
-                        <div class="event-list">
-                            <div class="event-card">
-                                <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf" alt="Event" class="event-card-thumb">
-                                <div class="event-card-details">
-                                    <h4>Global Tech Conference 2025</h4>
-                                    <div class="event-card-meta">
-                                        <span><i class="far fa-calendar-alt"></i> Oct 25, 2025</span>
-                                        <span><i class="fas fa-map-marker-alt"></i> New York</span>
-                                        <span><i class="fas fa-globe"></i> Offline</span>
-                                    </div>
+
+                        <div class="tab-content-container">
+                            <div id="tab-all" class="tab-content-panel active">
+                                <div id="calendar-container">
+                                    <div id="calendar"></div>
                                 </div>
-                                <div class="event-card-actions"><button class="btn">View Ticket</button></div>
                             </div>
-                            <div class="event-card">
-                                <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar" alt="Event" class="event-card-thumb">
-                                <div class="event-card-details">
-                                    <h4>Advanced CSS Webinar</h4>
-                                    <div class="event-card-meta">
-                                        <span><i class="far fa-calendar-alt"></i> Nov 10, 2025</span>
-                                        <span><i class="fas fa-laptop"></i> Zoom</span>
-                                        <span><i class="fas fa-wifi"></i> Online</span>
+
+                            <div id="tab-offline" class="tab-content-panel">
+                                <div class="event-list">
+                                    <div class="event-card"
+                                         data-title="Global Tech Conference 2025"
+                                         data-start="2025-10-25T09:00:00"
+                                         data-end="2025-10-25T17:00:00"
+                                         data-location="New York"
+                                         data-type="Offline"
+                                         data-icon="fas fa-globe">
+                                        <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf" alt="Event" class="event-card-thumb">
+                                        <div class="event-card-details">
+                                            <h4>Global Tech Conference 2025</h4>
+                                            <div class="event-card-meta">
+                                                <span><i class="far fa-calendar-alt"></i> Oct 25, 2025</span>
+                                                <span><i class="fas fa-map-marker-alt"></i> New York</span>
+                                                <span><i class="fas fa-globe"></i> Offline</span>
+                                            </div>
+                                        </div>
+                                        <div class="event-card-actions">
+                                            <button class="btn btn-view-details">View Ticket</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="event-card-actions"><button class="btn">Join Event</button></div>
+                            </div>
+
+                            <div id="tab-online" class="tab-content-panel">
+                                <div class="event-list">
+                                    <div class="event-card"
+                                         data-title="Advanced CSS Webinar"
+                                         data-start="2025-11-10T14:00:00"
+                                         data-end="2025-11-10T16:00:00"
+                                         data-location="Zoom"
+                                         data-type="Online"
+                                         data-icon="fas fa-wifi">
+                                        <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar" alt="Event" class="event-card-thumb">
+                                        <div class="event-card-details">
+                                            <h4>Advanced CSS Webinar</h4>
+                                            <div class="event-card-meta">
+                                                <span><i class="far fa-calendar-alt"></i> Nov 10, 2025</span>
+                                                <span><i class="fas fa-laptop"></i> Zoom</span>
+                                                <span><i class="fas fa-wifi"></i> Online</span>
+                                            </div>
+                                        </div>
+                                        <div class="event-card-actions">
+                                            <button class="btn btn-view-details">Join Event</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -206,8 +235,30 @@
         </div>
     </div>
 
+    <div id="eventDetailModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+            <h3 id="modalEventTitle">Event Title</h3>
+            <div class="modal-body">
+                <div class="modal-detail-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="modalEventTime">Date and Time</span>
+                </div>
+                <div class="modal-detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="modalEventLocation">Location</span>
+                </div>
+                <div class="modal-detail-item">
+                    <i class="fas fa-globe"></i>
+                    <span id="modalEventType">Type (Online/Offline)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // === Code điều khiển Tab Sidebar ===
             const navLinks = document.querySelectorAll('.sidebar-nav a');
             const contentSections = document.querySelectorAll('.content-section');
 
@@ -235,15 +286,185 @@
                     if (targetId && targetId.startsWith('#')) {
                         e.preventDefault();
                         switchTab(targetId);
-                        // Optional: update URL hash without jumping
-                        history.pushState(null, null, targetId);
+                        if (history.pushState) {
+                            history.pushState(null, null, targetId);
+                        } else {
+                            window.location.hash = targetId;
+                        }
                     }
                 });
             });
 
-            // Handle initial tab based on URL hash
             const initialTab = window.location.hash || '#profile-details';
             switchTab(initialTab);
+
+            // === DỮ LIỆU SỰ KIỆN MẪU (BẠN SẼ TẢI TỪ DATABASE) ===
+            const myEvents = [
+                {
+                    title: 'Global Tech Conference',
+                    start: '2025-10-25T09:00:00',
+                    end: '2025-10-25T17:00:00',
+                    extendedProps: {
+                        location: 'New York',
+                        type: 'Offline',
+                        icon: 'fas fa-globe'
+                    }
+                },
+                {
+                    title: 'Advanced CSS Webinar',
+                    start: '2025-11-10T14:00:00',
+                    end: '2025-11-10T16:00:00',
+                    extendedProps: {
+                        location: 'Zoom',
+                        type: 'Online',
+                        icon: 'fas fa-wifi'
+                    }
+                },
+                {
+                    title: 'My Applied Event (Demo)',
+                    start: '2025-10-31T14:00:00', // 2:00 PM
+                    end: '2025-10-31T15:00:00',   // 3:00 PM
+                    extendedProps: {
+                        location: 'Da Nang, Vietnam',
+                        type: 'Offline',
+                        icon: 'fas fa-map-marker-alt'
+                    }
+                }
+            ];
+
+            // === Code Lịch (Calendar) ===
+            var calendarEl = document.getElementById('calendar');
+            var calendar; // Khai báo calendar ở đây
+
+            // === Code Modal ===
+            const modal = document.getElementById('eventDetailModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            // --- Hàm mở Modal chung ---
+            function openEventModal(title, start, end, location, type, icon) {
+                var startTime = new Date(start).toLocaleString('en-US', {
+                    hour: 'numeric', minute: 'numeric', hour12: true
+                });
+                var endTime = new Date(end).toLocaleString('en-US', {
+                    hour: 'numeric', minute: 'numeric', hour12: true
+                });
+                var startDate = new Date(start).toLocaleString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+
+                document.getElementById('modalEventTitle').textContent = title;
+                document.getElementById('modalEventTime').textContent = `${startDate} (${startTime} - ${endTime})`;
+                document.getElementById('modalEventLocation').textContent = location;
+                document.getElementById('modalEventType').textContent = type;
+
+                var locationIcon = document.getElementById('modalEventLocation').previousElementSibling;
+                locationIcon.className = `fas ${icon || 'fa-map-marker-alt'}`;
+                // Cập nhật icon cho Type
+                var typeIconEl = document.getElementById('modalEventType').previousElementSibling;
+                typeIconEl.className = `fas ${icon || 'fa-globe'}`;
+
+
+                modal.style.display = 'flex';
+            }
+
+            // --- Logic đóng modal ---
+            if (modal && closeModalBtn) {
+                closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) { modal.style.display = 'none'; }
+                });
+            }
+
+            // === Code điều khiển Tab Lịch/List (All/Offline/Online) ===
+            const tabButtons = document.querySelectorAll('#applied-events .tab-button');
+            const tabPanels = document.querySelectorAll('#applied-events .tab-content-panel');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Bỏ active
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanels.forEach(panel => panel.classList.remove('active'));
+
+                    // Active cái mới
+                    this.classList.add('active');
+                    const targetPanelId = this.dataset.tab;
+                    const targetPanel = document.getElementById(targetPanelId);
+                    targetPanel.classList.add('active');
+
+                    // **QUAN TRỌNG: Render lại lịch nếu là tab 'All'**
+                    if (targetPanelId === 'tab-all') {
+                        // Khởi tạo calendar nếu chưa có
+                        if (!calendar) {
+                            calendar = new FullCalendar.Calendar(calendarEl, {
+                                initialView: 'dayGridMonth',
+                                headerToolbar: {
+                                    left: 'prev,next today',
+                                    center: 'title',
+                                    right: 'dayGridMonth,timeGridWeek'
+                                },
+                                events: myEvents, // Sử dụng dữ liệu mẫu
+                                eventClick: function (info) {
+                                    info.jsEvent.preventDefault();
+                                    openEventModal(
+                                        info.event.title,
+                                        info.event.start,
+                                        info.event.end,
+                                        info.event.extendedProps.location,
+                                        info.event.extendedProps.type,
+                                        info.event.extendedProps.icon
+                                    );
+                                }
+                            });
+                            calendar.render();
+                        } else {
+                            calendar.render(); // Chỉ render lại nếu đã tồn tại
+                        }
+                    }
+                });
+            });
+
+            // === Code click cho Event List (Offline/Online) ===
+            document.querySelectorAll('.event-card .btn-view-details').forEach(button => {
+                button.addEventListener('click', function () {
+                    const card = this.closest('.event-card');
+
+                    // Lấy dữ liệu từ data attributes
+                    openEventModal(
+                        card.dataset.title,
+                        new Date(card.dataset.start), // Chuyển string thành Date
+                        new Date(card.dataset.end),   // Chuyển string thành Date
+                        card.dataset.location,
+                        card.dataset.type,
+                        card.dataset.icon
+                    );
+                });
+            });
+
+            // --- Tự động kích hoạt tab "All" và render lịch lần đầu ---
+            // (Nếu tab "All" là active mặc định)
+            if (document.querySelector('#tab-all').classList.contains('active')) {
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek'
+                    },
+                    events: myEvents, // Sử dụng dữ liệu mẫu
+                    eventClick: function (info) {
+                        info.jsEvent.preventDefault();
+                        openEventModal(
+                            info.event.title,
+                            info.event.start,
+                            info.event.end,
+                            info.event.extendedProps.location,
+                            info.event.extendedProps.type,
+                            info.event.extendedProps.icon
+                        );
+                    }
+                });
+                calendar.render();
+            }
         });
     </script>
 </body>
