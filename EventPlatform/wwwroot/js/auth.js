@@ -26,7 +26,7 @@
 document.getElementById("loginForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
+    const fullname = document.getElementById("fullname").value.trim();
     const password = document.getElementById("password").value.trim();
     const errorDiv = document.getElementById("error-message");
     errorDiv.style.display = "none";
@@ -39,7 +39,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             },
             credentials: "include",
             body: JSON.stringify({
-                userName: username,
+                fullName: fullname,
                 password: password
             })
         });
@@ -72,7 +72,7 @@ document.querySelector('.social-btn[title="Login with Google"]').addEventListene
 
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const username = document.getElementById("username").value.trim();
+    const fullname = document.getElementById("fullname").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirmPassword").value.trim();
@@ -88,7 +88,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         const res = await fetch("https://localhost:7063/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userName: username, email, password })
+            body: JSON.stringify({ fullname, email, password })
         });
 
         const result = await res.json();
