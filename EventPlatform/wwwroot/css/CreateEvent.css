@@ -1,42 +1,47 @@
-﻿
-* {
+﻿* {
     box-sizing: border-box;
 }
 
 body {
-    background-color: #f8f9fa; 
+    background-color: #f8f9fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+    color: #343a40; /* Slightly darker text */
     margin: 0;
+    line-height: 1.6; /* Improved readability */
 }
 
 .container {
-    max-width: 850px; 
+    max-width: 850px;
     margin: 0 auto;
     padding: 0 15px;
 }
 
-
+/* === Page Banner === */
 .page-banner {
+    background: #343a40;
     color: white;
-    padding: 40px 0; 
+    padding: 40px 0;
     text-align: center;
-    margin-bottom: 50px; 
+    margin-bottom: 50px;
+}
+/* Ensure banner container itself doesn't limit width */
+.page-banner {
+    width: 100%; /* Make banner section full width */
 }
 
-    .page-banner .container { 
+    .page-banner .container { /* Inner container for content alignment */
         padding-left: 15px;
         padding-right: 15px;
-        max-width: 1200px; 
+        max-width: 1200px; /* Max width for banner content */
         margin: 0 auto;
     }
 
     .page-banner h1 {
-        color: black;
-        font-size: 32px; 
-        font-weight: 600; 
+        font-size: 32px;
+        font-weight: 600;
         margin-bottom: 8px;
         letter-spacing: 0.5px;
+        color: #fff; /* Ensure H1 is white */
     }
 
     .page-banner p {
@@ -55,6 +60,7 @@ body {
                 color: #e91e63;
             }
 
+/* === Keyframes (Keep As Is) === */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -111,22 +117,46 @@ body {
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+/* Added for modal */
+@keyframes slideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+/* Added for modal */
+
+/* === WIZARD STEPPER (Ensure styles apply) === */
 .wizard-stepper {
     display: flex;
     justify-content: space-between;
     list-style: none;
     padding: 0;
-    margin-bottom: 50px; 
+    margin-bottom: 50px;
     position: relative;
 }
 
-    .wizard-stepper::before { 
+    .wizard-stepper::before {
         content: '';
         position: absolute;
-        top: 20px; 
+        top: 20px;
         left: 5%;
         right: 5%;
-        height: 3px; 
+        height: 3px;
         background-color: #dee2e6;
         z-index: 1;
     }
@@ -151,20 +181,21 @@ body {
     z-index: 3;
     width: 120px;
     transition: transform 0.2s ease;
+    cursor: default; /* Default cursor */
 }
 
-    .stepper-item:hover .step-counter { 
+    .stepper-item:hover .step-counter:not(.active):not(.completed) {
         transform: scale(1.1);
     }
-
+    /* Hover only non-active/non-completed */
     .stepper-item .step-counter {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: #fff; 
-        border: 3px solid #dee2e6; 
-        color: #adb5bd; 
-        font-size: 16px; 
+        background-color: #fff;
+        border: 3px solid #dee2e6;
+        color: #adb5bd;
+        font-size: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -174,154 +205,163 @@ body {
 
     .stepper-item .step-name {
         font-size: 14px;
-        color: #adb5bd; 
+        color: #adb5bd;
         margin-top: 12px;
         font-weight: 500;
         transition: color 0.3s, font-weight 0.3s;
     }
 
-
     .stepper-item.active .step-counter {
         border-color: #e91e63;
         background-color: #e91e63;
-        color: #fff; 
+        color: #fff;
         animation: pulse 1.5s infinite;
     }
 
     .stepper-item.active .step-name {
         color: #e91e63;
-        font-weight: 600; 
+        font-weight: 600;
     }
-
 
     .stepper-item.completed .step-counter {
         border-color: #e91e63;
-        color: #e91e63; 
-        background-color: #fce4ec; 
+        color: #e91e63;
+        background-color: #fce4ec;
         cursor: pointer;
-        font-size: 18px; 
+        font-size: 18px;
     }
 
-        .stepper-item.completed .step-counter i.fa-check-circle { 
+        .stepper-item.completed .step-counter i.fa-check-circle {
             animation: checkFadeIn 0.3s ease;
         }
 
-
     .stepper-item.completed:hover .step-counter {
-        background-color: #f8bbd0; 
+        background-color: #f8bbd0;
+        transform: scale(1.1);
     }
 
     .stepper-item.completed .step-name {
-        color: #495057; 
+        color: #495057;
         cursor: pointer;
     }
 
 
-
+/* === WIZARD FORM === */
 .create-event-form {
     background: #fff;
-    border: none; 
-    border-radius: 12px; 
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08); 
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     overflow: hidden;
     animation: fadeInUp 0.5s 0.1s ease-out both;
-    position: relative; 
+    position: relative;
     z-index: 1;
 }
 
 .wizard-steps-wrapper {
     display: flex;
-    width: 500%;
+    width: 600%; /* 100% * 6 steps */
     align-items: flex-start;
-    transition: transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), 
-    height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .wizard-step-panel {
-    width: 20%;
-    padding: 40px 50px; 
+    width: 16.6667%; /* 100% / 6 steps */
+    padding: 40px 50px;
     flex-shrink: 0;
     box-sizing: border-box;
 }
 
 .form-section-title {
-    font-size: 22px; 
+    font-size: 22px;
     font-weight: 600;
     color: #343a40;
-    margin-bottom: 30px; 
+    margin-bottom: 30px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
 }
 
 .form-group {
-    margin-bottom: 25px; 
+    margin-bottom: 25px;
 }
 
     .form-group label {
         display: block;
-        margin-bottom: 10px; 
+        margin-bottom: 10px;
         font-weight: 600;
-        color: #495057; 
+        color: #495057;
         font-size: 14px;
     }
 
-    .form-group input[type="text"],
-    .form-group input[type="datetime-local"],
-    .form-group input[type="url"],
-    .form-group select,
-    .form-group textarea {
+        .form-group label .required-star {
+            color: #e53e3e;
+            margin-left: 2px;
+        }
+
+    .form-group input[type="text"], .form-group input[type="datetime-local"], .form-group input[type="url"], .form-group input[type="number"], .form-group select, .form-group textarea {
         width: 100%;
-        padding: 14px 16px; 
-        border: 1px solid #ced4da; 
-        border-radius: 8px; 
-        font-size: 15px; 
+        padding: 14px 16px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 15px;
         font-family: inherit;
         transition: border-color 0.2s, box-shadow 0.2s;
+        background-color: #fff;
+        color: #495057;
     }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #adb5bd; 
+        /* Ensure light background/text */
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: #adb5bd;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: #e91e63;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15); 
+            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
         }
-  
+
     .form-group select {
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23adb5bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 1rem center;
         background-size: 1em;
-        padding-right: 2.5rem; 
+        padding-right: 2.5rem;
     }
 
     .form-group textarea {
-        min-height: 140px; 
+        min-height: 140px;
         resize: vertical;
     }
 
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 25px; 
+    gap: 25px;
 }
 
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+/* Grid for 3 columns */
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
 
-.form-group.invalid input,
-.form-group.invalid select,
-.form-group.invalid textarea {
-    border-color: #e53e3e; 
+/* === Validation UI === */
+.form-group.invalid input, .form-group.invalid select, .form-group.invalid textarea {
+    border-color: #e53e3e;
     animation: shake 0.4s;
 }
 
 .form-group .error-message {
     color: #e53e3e;
     font-size: 13px;
-    margin-top: 8px; 
+    margin-top: 8px;
     display: none;
 }
 
@@ -329,7 +369,7 @@ body {
     display: block;
 }
 
-
+/* Image Preview */
 .image-preview-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -355,40 +395,41 @@ body {
         object-fit: cover;
     }
 
+/* === Wizard Navigation === */
 .wizard-navigation {
     display: flex;
     justify-content: space-between;
-    padding: 25px 50px; 
-    background-color: #f8f9fa; 
-    border-top: 1px solid #dee2e6; 
+    padding: 25px 50px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
 }
 
 .btn {
-    padding: 14px 35px; 
+    padding: 14px 35px;
     border: none;
-    border-radius: 8px; 
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: 600; 
+    font-weight: 600;
     transition: all 0.2s ease;
-    font-size: 15px; 
+    font-size: 15px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-    .btn i { 
+    .btn i {
         font-size: 14px;
     }
 
 .btn-primary {
     background: #e91e63;
     color: white;
-    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); 
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
 }
 
     .btn-primary:hover {
         background: #c2154a;
-        transform: translateY(-3px); 
+        transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
     }
 
@@ -398,8 +439,8 @@ body {
     }
 
 .btn-secondary {
-    background-color: #e9ecef; 
-    color: #495057; 
+    background-color: #e9ecef;
+    color: #495057;
     border: 1px solid #dee2e6;
 }
 
@@ -412,12 +453,208 @@ body {
         transform: translateY(0);
     }
 
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
 
-@media (max-width: 768px) {
-    .form-grid, .image-preview-group {
-        grid-template-columns: 1fr;
+    .btn-success:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
     }
 
+.btn-link {
+    background: none;
+    border: none;
+    color: #e91e63;
+    padding: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    .btn-link:hover {
+        text-decoration: underline;
+    }
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+    .btn-icon:hover {
+        color: #dc3545; /* Red on hover for delete */
+    }
+
+    .btn-icon.edit-ticket-btn:hover {
+        color: #007bff; /* Blue on hover for edit */
+    }
+
+
+/* === Ticket Section Styles (Light Theme Adjust) === */
+.ticket-section {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+    .ticket-section h5 {
+        color: #495057;
+    }
+
+.ticket-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.ticket-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+    .ticket-item:last-child {
+        border-bottom: none;
+    }
+
+.ticket-name {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.ticket-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.add-ticket-btn-container {
+    text-align: center;
+}
+
+/* === Ticket Modal Styles (Light Theme) === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: #fff; /* Light background */
+    color: #343a40; /* Dark text */
+    padding: 30px 40px;
+    border-radius: 12px; /* More rounded */
+    width: 90%;
+    max-width: 700px;
+    position: relative;
+    animation: slideDown 0.4s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Softer shadow */
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #adb5bd;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+    .modal-close-btn:hover {
+        color: #343a40;
+    }
+
+.modal-content h4 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #343a40;
+}
+/* Modal form group inherits light theme styles */
+.modal-content .form-group label {
+    color: #495057;
+}
+/* Inputs already styled for light theme */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+    .form-check label {
+        margin-bottom: 0;
+        color: #495057;
+        font-weight: normal; /* Normal weight for checkbox label */
+    }
+
+    .form-check input[type="checkbox"] {
+        width: auto;
+        margin-top: -2px;
+    }
+/* Align checkbox better */
+.modal-image-upload {
+    border: 2px dashed #ced4da; /* Lighter border */
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f8f9fa; /* Light background */
+    color: #6c757d; /* Darker text */
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+    .modal-image-upload:hover {
+        border-color: #adb5bd;
+        background-color: #e9ecef;
+    }
+
+    .modal-image-upload i {
+        font-size: 36px;
+        margin-bottom: 10px;
+        color: #adb5bd;
+    }
+
+    .modal-image-upload span {
+        display: block;
+        font-size: 13px;
+    }
+
+.modal-footer {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-grid, .form-grid-3, .form-grid-4, .image-preview-group {
+        grid-template-columns: 1fr;
+    }
+    /* Ensure all grids stack */
     .wizard-step-panel {
         padding: 25px;
     }
@@ -433,5 +670,13 @@ body {
     .btn {
         padding: 12px 25px;
     }
-}
 
+    .modal-content {
+        padding: 20px;
+    }
+
+    .form-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+    /* Keep 2 columns for modal grid on small screens */
+}

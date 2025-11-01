@@ -8,7 +8,8 @@
 
 <section class="page-banner">
     <div class="container">
-        <h1>Create New Event</h1> <p><a asp-page="/Index">Home</a> > Create Event</p>
+        <h1>Create New Event</h1>
+        <p><a asp-page="/Index">Home</a> > Create Event</p>
     </div>
 </section>
 
@@ -21,31 +22,29 @@
             <span class="step-name">Details</span>
         </li>
         <li class="stepper-item" data-step="2">
-            <span class="step-counter"><i class="fas fa-map-marker-alt"></i></span>
-            <span class="step-name">Location</span>
-        </li>
+            <span class="step-counter"><i class="fas fa-calendar-alt"></i></span> <span class="step-name">Time & Tickets</span> </li>
         <li class="stepper-item" data-step="3">
-            <span class="step-counter"><i class="fas fa-users"></i></span>
-            <span class="step-name">Organizer</span>
-        </li>
+            <span class="step-counter"><i class="fas fa-map-marker-alt"></i></span> <span class="step-name">Location</span> </li>
         <li class="stepper-item" data-step="4">
-            <span class="step-counter"><i class="fas fa-image"></i></span>
-            <span class="step-name">Imagery</span>
-        </li>
+            <span class="step-counter"><i class="fas fa-users"></i></span> <span class="step-name">Organizer</span> </li>
         <li class="stepper-item" data-step="5">
-            <span class="step-counter"><i class="fas fa-check-circle"></i></span>
+            <span class="step-counter"><i class="fas fa-image"></i></span> <span class="step-name">Imagery</span> </li>
+         <li class="stepper-item" data-step="6"> <span class="step-counter"><i class="fas fa-check-circle"></i></span>
             <span class="step-name">Finish</span>
         </li>
     </ul>
 
     <form class="create-event-form" method="post" id="createEventWizard">
-        <div class="wizard-steps-wrapper">
-            <div class="wizard-step-panel" data-step="1">
-                <h4 class="form-section-title">Step 1: Basic Information</h4> <div class="form-group">
-                    <label for="eventTitle">Event Title *</label> <input type="text" id="eventTitle" placeholder="Enter your event name..." required> <span class="error-message">Please enter the event title.</span>
+        <div class="wizard-steps-wrapper" style="width: 600%;"> <div class="wizard-step-panel active" data-step="1">
+                 <h4 class="form-section-title">Step 1: Basic Information</h4>
+                <div class="form-group">
+                    <label for="eventTitle">Event Title <span class="required-star">*</span></label>
+                    <input type="text" id="eventTitle" placeholder="Enter your event name..." required>
+                    <span class="error-message">Please enter the event title.</span>
                 </div>
                 <div class="form-group">
-                    <label for="eventCategory">Category *</label> <select id="eventCategory" required>
+                    <label for="eventCategory">Category <span class="required-star">*</span></label>
+                    <select id="eventCategory" required>
                         <option value="" disabled selected>Select a category...</option>
                         <option value="1">Technology</option>
                         <option value="2">Business</option>
@@ -54,76 +53,138 @@
                     <span class="error-message">Please select a category.</span>
                 </div>
                 <div class="form-group">
-                    <label for="eventDescription">Event Description</label> <textarea id="eventDescription" rows="5" placeholder="Tell us about your event..."></textarea>
+                    <label for="eventDescription">Event Description</label>
+                    <textarea id="eventDescription" rows="5" placeholder="Tell us about your event..."></textarea>
                 </div>
             </div>
 
-            <div class="wizard-step-panel" data-step="2">
-                <h4 class="form-section-title">Step 2: Time & Location</h4> <div class="form-grid">
+             <div class="wizard-step-panel" data-step="2">
+                <h4 class="form-section-title">Step 2: Time & Tickets</h4>
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="startTime">Start Time *</label> <input type="datetime-local" id="startTime" required>
+                        <label for="startTime">Start Time <span class="required-star">*</span></label>
+                        <input type="datetime-local" id="startTime" required>
                         <span class="error-message">Please select a start time.</span>
                     </div>
                     <div class="form-group">
-                        <label for="endTime">End Time *</label> <input type="datetime-local" id="endTime" required>
+                        <label for="endTime">End Time <span class="required-star">*</span></label>
+                        <input type="datetime-local" id="endTime" required>
                         <span class="error-message">Please select an end time.</span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="eventType">Event Type *</label> <select id="eventType" required>
+
+                <div class="ticket-section">
+                     <h5 style="margin-bottom: 15px; font-weight: 600;">Ticket Types <span class="required-star">*</span></h5>
+                     <ul class="ticket-list" id="ticketList">
+                         <li class="ticket-item" data-ticket-id="example1">
+                             <span class="ticket-name">VIP Ticket</span>
+                             <div class="ticket-actions">
+                                 <button type="button" class="btn-icon edit-ticket-btn"><i class="fas fa-pencil-alt"></i></button>
+                                 <button type="button" class="btn-icon delete-ticket-btn"><i class="fas fa-trash-alt"></i></button>
+                             </div>
+                         </li>
+                     </ul>
+                     <div class="add-ticket-btn-container">
+                         <button type="button" class="btn btn-link" id="addTicketBtn">
+                             <i class="fas fa-plus-circle"></i> Add Ticket Type
+                         </button>
+                     </div>
+                     <span class="error-message" id="ticketListError" style="text-align: center; margin-top:10px;">Please add at least one ticket type.</span>
+                </div>
+                </div>
+
+             <div class="wizard-step-panel" data-step="3">
+                 <h4 class="form-section-title">Step 3: Location</h4>
+                 <div class="form-group">
+                    <label for="eventType">Event Type <span class="required-star">*</span></label>
+                    <select id="eventType" required>
                         <option value="Offline">Offline (In-Person)</option>
                         <option value="Online">Online</option>
                     </select>
                 </div>
                 <div id="offline-fields">
                     <div class="form-group">
-                        <label for="venueName">Venue Name</label> <input type="text" id="venueName" placeholder="e.g., White Palace Convention Center">
+                        <label for="venueName">Venue Name</label>
+                        <input type="text" id="venueName" placeholder="e.g., White Palace Convention Center">
                     </div>
-                </div>
-                <div id="online-fields" style="display: none;">
                     <div class="form-group">
-                        <label for="onlineURL">Online Event URL</label> <input type="url" id="onlineURL" placeholder="https://zoom.us/j/...">
+                         <label for="addressStreet">Street Address</label>
+                         <input type="text" id="addressStreet" placeholder="e.g., 123 Nguyen Hue St">
                     </div>
-                </div>
-            </div>
-
-            <div class="wizard-step-panel" data-step="3">
-                <h4 class="form-section-title">Step 3: Organizer Information</h4> <div class="form-group">
-                    <label for="organizerName">Organizer Name *</label> <input type="text" id="organizerName" placeholder="Your company or name" required> <span class="error-message">Please enter the organizer's name.</span>
-                </div>
-                <div class="form-group">
-                    <label for="organizerInfo">About the Organizer</label> <textarea id="organizerInfo" rows="4" placeholder="Brief info about the organizer..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="organizerLogo">Logo URL</label> <input type="url" id="organizerLogo" placeholder="https://...">
-                    <div class="image-preview-box" style="height: 150px; width: 150px; margin-top: 10px;">
-                        <span class="preview-text">Logo Preview</span> <img src="" alt="Preview" style="display: none;" id="organizerLogoPreview">
+                    <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);"> <div class="form-group">
+                             <label for="addressWard">Ward</label>
+                             <input type="text" id="addressWard" placeholder="e.g., Ben Nghe Ward">
+                         </div>
+                         <div class="form-group">
+                             <label for="addressDistrict">District</label>
+                             <input type="text" id="addressDistrict" placeholder="e.g., District 1">
+                         </div>
+                         <div class="form-group">
+                             <label for="addressCity">City</label>
+                             <input type="text" id="addressCity" placeholder="e.g., Ho Chi Minh City">
+                         </div>
+                    </div>
+                    </div>
+                 <div id="online-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="onlineURL">Online Event URL <span class="required-star">*</span></label>
+                        <input type="url" id="onlineURL" placeholder="https://zoom.us/j/..." required>
+                         <span class="error-message">Please enter the online event URL.</span>
                     </div>
                 </div>
             </div>
 
             <div class="wizard-step-panel" data-step="4">
-                <h4 class="form-section-title">Step 4: Event Imagery (Paste URLs)</h4> <div class="form-group">
-                    <label for="cardImage">Card Image *</label> <input type="url" id="cardImage" placeholder="https://..." required>
-                    <span class="error-message">Please enter the card image URL.</span> <div class="image-preview-box" style="margin-top: 10px;">
-                        <span class="preview-text">Card Image Preview</span> <img src="" alt="Preview" style="display: none;" id="cardImagePreview">
-                    </div>
+                 <h4 class="form-section-title">Step 4: Organizer Information</h4>
+                <div class="form-group">
+                    <label for="organizerName">Organizer Name <span class="required-star">*</span></label>
+                    <input type="text" id="organizerName" placeholder="Your company or name" required>
+                    <span class="error-message">Please enter the organizer's name.</span>
                 </div>
                 <div class="form-group">
-                    <label for="coverImage">Cover Image</label> <input type="url" id="coverImage" placeholder="https://...">
-                    <div class="image-preview-box" style="margin-top: 10px;">
-                        <span class="preview-text">Cover Image Preview</span> <img src="" alt="Preview" style="display: none;" id="coverImagePreview">
+                    <label for="organizerInfo">About the Organizer</label>
+                    <textarea id="organizerInfo" rows="4" placeholder="Brief info about the organizer..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="organizerLogo">Logo URL</label>
+                    <input type="url" id="organizerLogo" placeholder="https://...">
+                    <div class="image-preview-box" style="height: 150px; width: 150px; margin-top: 10px;">
+                        <span class="preview-text">Logo Preview</span>
+                        <img src="" alt="Preview" style="display: none;" id="organizerLogoPreview">
                     </div>
                 </div>
             </div>
 
             <div class="wizard-step-panel" data-step="5">
-                <h4 class="form-section-title">Step 5: Review & Publish</h4> <p>Awesome! You've filled in all the details. Please select the status to finish.</p> <div class="form-group">
-                    <label for="eventStatus">Publish Status *</label> <select id="eventStatus" required>
-                        <option value="Draft">Save as Draft (Publish later)</option>
-                        <option value="Published">Publish Immediately</option>
-                    </select>
+                <h4 class="form-section-title">Step 5: Event Imagery (Paste URLs)</h4>
+                <div class="form-group">
+                    <label for="cardImage">Card Image <span class="required-star">*</span></label>
+                    <input type="url" id="cardImage" placeholder="https://..." required>
+                    <span class="error-message">Please enter the card image URL.</span>
+                    <div class="image-preview-box" style="margin-top: 10px;">
+                        <span class="preview-text">Card Image Preview</span>
+                        <img src="" alt="Preview" style="display: none;" id="cardImagePreview">
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label for="coverImage">Cover Image</label>
+                    <input type="url" id="coverImage" placeholder="https://...">
+                    <div class="image-preview-box" style="margin-top: 10px;">
+                        <span class="preview-text">Cover Image Preview</span>
+                        <img src="" alt="Preview" style="display: none;" id="coverImagePreview">
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-step-panel" data-step="6"> <h4 class="form-section-title">Step 6: Review & Publish</h4>
+                 <p>Awesome! You've filled in all the details. Please select the status to finish.</p>
+                 <div class="form-group">
+                     <label for="eventStatus">Publish Status <span class="required-star">*</span></label>
+                     <select id="eventStatus" required>
+                         <option value="Draft">Save as Draft (Publish later)</option>
+                         <option value="Published">Publish Immediately</option>
+                     </select>
+                 </div>
             </div>
 
         </div> <div class="wizard-navigation">
@@ -137,142 +198,213 @@
     </form>
 </main>
 
+<div id="ticketModal" class="modal-overlay">
+    <div class="modal-content">
+        <button type="button" class="modal-close-btn" id="closeTicketModal">&times;</button>
+        <h4>Create New Ticket Type</h4>
+
+        <form id="ticketForm">
+            <div class="form-group">
+                <label for="ticketName">Ticket Name <span class="required-star">*</span></label>
+                <input type="text" id="ticketName" placeholder="e.g., VIP, General Admission" required>
+                 <span class="error-message">Please enter ticket name.</span>
+            </div>
+
+            <div class="form-grid-4">
+                 <div class="form-group">
+                     <label for="ticketPrice">Price <span class="required-star">*</span></label>
+                     <input type="number" id="ticketPrice" placeholder="0" min="0" step="any" required>
+                     <div class="form-check">
+                         <input type="checkbox" id="isFree">
+                         <label for="isFree">Free</label>
+                     </div>
+                      <span class="error-message">Please enter a price or check 'Free'.</span>
+                 </div>
+                 <div class="form-group">
+                     <label for="ticketQuantity">Total Quantity <span class="required-star">*</span></label>
+                     <input type="number" id="ticketQuantity" placeholder="100" min="1" required>
+                      <span class="error-message">Please enter total quantity.</span>
+                 </div>
+                 <div class="form-group">
+                      <label for="minOrder">Min per Order</label>
+                      <input type="number" id="minOrder" placeholder="1" min="1">
+                 </div>
+                 <div class="form-group">
+                      <label for="maxOrder">Max per Order</label>
+                      <input type="number" id="maxOrder" placeholder="10" min="1">
+                 </div>
+            </div>
+
+             <div class="form-grid">
+                 <div class="form-group">
+                     <label for="saleStart">Sale Start Date</label>
+                     <input type="datetime-local" id="saleStart">
+                 </div>
+                 <div class="form-group">
+                     <label for="saleEnd">Sale End Date</label>
+                     <input type="datetime-local" id="saleEnd">
+                 </div>
+            </div>
+
+             <div class="form-group">
+                 <label for="ticketDescription">Description</label>
+                 <textarea id="ticketDescription" rows="3" placeholder="Ticket details, benefits... (max 1000 chars)"></textarea>
+             </div>
+
+            <div class="form-group">
+                 <label>Ticket Image (Optional)</label>
+                 <div class="modal-image-upload">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                      <div>Add Image (Max 1MB)</div>
+                      <span>Click or drag file here</span>
+                 </div>
+             </div>
+
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-success" id="saveTicketBtn">Save Ticket</button>
+             </div>
+             <input type="hidden" id="editingTicketId"> </form>
+    </div>
+</div>
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Keep previous Wizard JS logic here ---
             const wizardForm = document.getElementById('createEventWizard');
             const stepsWrapper = document.querySelector('.wizard-steps-wrapper');
             const stepPanels = document.querySelectorAll('.wizard-step-panel');
             const stepperItems = document.querySelectorAll('.stepper-item');
             const progressBar = document.querySelector('.wizard-stepper .progress-bar');
-            
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
-            
             let currentStep = 1;
-            const totalSteps = stepPanels.length;
-            
+            const totalSteps = stepPanels.length; // Now 6 steps
+            const originalIcons = ["fa-pencil-alt", "fa-calendar-alt", "fa-map-marker-alt", "fa-users", "fa-image", "fa-check-circle"]; // Updated icons
+
             const initialPanel = document.querySelector('.wizard-step-panel[data-step="1"]');
-            if (initialPanel) {
-                setTimeout(() => {
-                    stepsWrapper.style.height = `${initialPanel.scrollHeight}px`;
-                }, 100); 
-            }
+             if (initialPanel) {
+                 setTimeout(() => { stepsWrapper.style.height = `${initialPanel.scrollHeight}px`; }, 100);
+             }
 
-            function validateStep(stepNumber) {
-                let isValid = true;
-                const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${stepNumber}"]`);
-                
-                currentPanel.querySelectorAll('.form-group.invalid').forEach(group => {
-                    group.classList.remove('invalid');
-                });
+             function validateStep(stepNumber) {
+                 let isValid = true;
+                 const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${stepNumber}"]`);
+                 currentPanel.querySelectorAll('.form-group.invalid').forEach(group => group.classList.remove('invalid'));
+                 const requiredFields = currentPanel.querySelectorAll('[required]:not(:disabled)'); // Ignore disabled fields (like price when free)
 
-                const requiredFields = currentPanel.querySelectorAll('[required]');
-                
-                requiredFields.forEach(field => {
-                    if (!field.value) {
-                        isValid = false;
-                        const formGroup = field.closest('.form-group');
-                        if (formGroup) {
-                            formGroup.classList.add('invalid');
-                        }
-                    }
-                });
-                
-                return isValid;
-            }
+                 requiredFields.forEach(field => {
+                     // Special check for checkbox group (Price vs Free)
+                     if (field.id === 'ticketPrice' && document.getElementById('isFree')?.checked) {
+                         return; // Skip price validation if free is checked
+                     }
+                     if (!field.value && field.type !== 'checkbox') { // Checkbox value is 'on'/'off'
+                         isValid = false;
+                         const formGroup = field.closest('.form-group');
+                         if (formGroup) formGroup.classList.add('invalid');
+                     }
+                 });
 
-            function showStep(stepNumber) {
-                const newTransform = `translateX(-${(stepNumber - 1) * (100 / totalSteps)}%)`;
-                stepsWrapper.style.transform = newTransform;
-                
-                const targetPanel = document.querySelector(`.wizard-step-panel[data-step="${stepNumber}"]`);
-                if (targetPanel) {
-                    // Thêm delay nhỏ trước khi set height để transition mượt hơn
-                     setTimeout(() => {
-                       stepsWrapper.style.height = `${targetPanel.scrollHeight}px`;
-                    }, 50); // Delay 50ms
-                }
+                 // Specific validation for Step 2 (Tickets)
+                 if (stepNumber === 2) {
+                     const ticketList = document.getElementById('ticketList');
+                     const ticketListError = document.getElementById('ticketListError');
+                     if (ticketList.children.length === 0) {
+                         isValid = false;
+                         ticketListError.style.display = 'block';
+                         ticketList.closest('.ticket-section').style.borderColor = '#e53e3e'; // Highlight section
+                     } else {
+                         ticketListError.style.display = 'none';
+                         ticketList.closest('.ticket-section').style.borderColor = '#eee';
+                     }
+                 }
+                // Specific validation for Step 3 (Location)
+                 if (stepNumber === 3) {
+                     const eventType = document.getElementById('eventType').value;
+                     const onlineURL = document.getElementById('onlineURL');
+                     if (eventType === 'Online' && !onlineURL.value) {
+                         isValid = false;
+                         onlineURL.closest('.form-group').classList.add('invalid');
+                     } else {
+                          onlineURL.closest('.form-group').classList.remove('invalid');
+                     }
+                 }
 
-                stepperItems.forEach((item, index) => {
-                    item.classList.remove('active', 'completed');
-                    const iconElement = item.querySelector('.step-counter i'); // Lấy icon
-                    
-                    if (index + 1 < stepNumber) {
-                        item.classList.add('completed');
-                        // Đổi icon thành check khi completed (nếu chưa phải là check)
-                        if (!iconElement.classList.contains('fa-check-circle')) {
-                           iconElement.className = 'fas fa-check-circle step-check-icon';
-                        }
-                    } else if (index + 1 === stepNumber) {
-                        item.classList.add('active');
-                         // Đặt lại icon gốc khi active
-                         const originalIcons = ["fa-pencil-alt", "fa-map-marker-alt", "fa-users", "fa-image", "fa-check-circle"];
-                         iconElement.className = `fas ${originalIcons[index]} step-number`; // Sử dụng class step-number để dễ reset
-                    } else {
-                         // Đặt lại icon gốc cho các bước upcoming
-                         const originalIcons = ["fa-pencil-alt", "fa-map-marker-alt", "fa-users", "fa-image", "fa-check-circle"];
-                         iconElement.className = `fas ${originalIcons[index]} step-number`;
-                    }
-                });
-                
-                const progressPercentage = ((stepNumber - 1) / (totalSteps - 1)) * 100;
-                progressBar.style.width = `${progressPercentage}%`;
 
-                prevBtn.style.display = (stepNumber === 1) ? 'none' : 'inline-flex'; // Đổi thành inline-flex
-                
-                if (stepNumber === totalSteps) {
-                    nextBtn.innerHTML = 'Hoàn tất & Đăng <i class="fas fa-check"></i>'; // Thêm icon check
-                } else {
-                    nextBtn.innerHTML = 'Tiếp tục <i class="fas fa-arrow-right"></i>'; // Thêm icon mũi tên
-                }
-                
-                currentStep = stepNumber;
-            }
+                 return isValid;
+             }
 
-            nextBtn.addEventListener('click', () => {
-                if (!validateStep(currentStep)) {
-                    const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
-                    stepsWrapper.style.height = `${currentPanel.scrollHeight}px`;
-                    return; 
-                }
-                
-                if (currentStep < totalSteps) {
-                    showStep(currentStep + 1);
-                } else {
-                    alert('Đang gửi form... (Đây là nơi bạn sẽ submit form)');
-                    // wizardForm.submit();
-                }
-            });
+             function showStep(stepNumber) {
+                 const newTransform = `translateX(-${(stepNumber - 1) * (100 / totalSteps)}%)`;
+                 stepsWrapper.style.transform = newTransform;
+                 const targetPanel = document.querySelector(`.wizard-step-panel[data-step="${stepNumber}"]`);
+                 if (targetPanel) {
+                     setTimeout(() => { stepsWrapper.style.height = `${targetPanel.scrollHeight}px`; }, 50);
+                 }
 
-            prevBtn.addEventListener('click', () => {
-                if (currentStep > 1) {
-                    showStep(currentStep - 1);
-                }
-            });
-            
-            stepperItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // Chỉ cho phép click vào bước đã hoàn thành VÀ không phải bước hiện tại
-                    if (item.classList.contains('completed') && !item.classList.contains('active')) {
-                        const step = parseInt(item.dataset.step);
-                        showStep(step);
-                    }
-                });
-            });
+                 stepperItems.forEach((item, index) => {
+                     item.classList.remove('active', 'completed');
+                     const iconElement = item.querySelector('.step-counter i');
+                     if (index + 1 < stepNumber) {
+                         item.classList.add('completed');
+                         if (!iconElement.classList.contains('fa-check-circle')) { iconElement.className = 'fas fa-check-circle'; }
+                     } else if (index + 1 === stepNumber) {
+                         item.classList.add('active');
+                         iconElement.className = `fas ${originalIcons[index]}`;
+                     } else {
+                         iconElement.className = `fas ${originalIcons[index]}`;
+                     }
+                 });
 
-            const eventTypeSelect = document.getElementById('eventType');
-            const offlineFields = document.getElementById('offline-fields');
-            const onlineFields = document.getElementById('online-fields');
-            eventTypeSelect.addEventListener('change', () => {
-                onlineFields.style.display = (eventTypeSelect.value === 'Online') ? 'block' : 'none';
-                offlineFields.style.display = (eventTypeSelect.value === 'Offline') ? 'block' : 'none';
-                
-                const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
-                setTimeout(() => {
-                    stepsWrapper.style.height = `${currentPanel.scrollHeight}px`;
-                }, 100);
-            });
+                 const progressPercentage = ((stepNumber - 1) / (totalSteps - 1)) * 100;
+                 progressBar.style.width = `${progressPercentage}%`;
+                 prevBtn.style.display = (stepNumber === 1) ? 'none' : 'inline-flex';
+                 nextBtn.innerHTML = (stepNumber === totalSteps) ? 'Finish & Publish <i class="fas fa-check"></i>' : 'Continue <i class="fas fa-arrow-right"></i>';
+                 currentStep = stepNumber;
+             }
+
+             nextBtn.addEventListener('click', () => {
+                 if (!validateStep(currentStep)) {
+                     const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
+                     stepsWrapper.style.height = `${currentPanel.scrollHeight}px`; // Recalculate height if errors shown
+                     return;
+                 }
+                 if (currentStep < totalSteps) {
+                     showStep(currentStep + 1);
+                 } else {
+                     alert('Submitting form...');
+                     // wizardForm.submit();
+                 }
+             });
+
+             prevBtn.addEventListener('click', () => { if (currentStep > 1) { showStep(currentStep - 1); } });
+
+             stepperItems.forEach(item => {
+                 item.addEventListener('click', () => {
+                     if (item.classList.contains('completed') && !item.classList.contains('active')) {
+                         const step = parseInt(item.dataset.step);
+                         showStep(step);
+                     }
+                 });
+             });
+
+             const eventTypeSelect = document.getElementById('eventType');
+             const offlineFields = document.getElementById('offline-fields');
+             const onlineFields = document.getElementById('online-fields');
+             const onlineURLInput = document.getElementById('onlineURL'); // Get online URL input
+
+             eventTypeSelect.addEventListener('change', () => {
+                 const isOnline = eventTypeSelect.value === 'Online';
+                 onlineFields.style.display = isOnline ? 'block' : 'none';
+                 offlineFields.style.display = isOnline ? 'none' : 'block';
+                 onlineURLInput.required = isOnline; // Make online URL required only if Online is selected
+
+                 // Recalculate height
+                 const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
+                  setTimeout(() => { stepsWrapper.style.height = `${currentPanel.scrollHeight}px`; }, 100);
+             });
+             // Initial check for event type requirement
+             onlineURLInput.required = (eventTypeSelect.value === 'Online');
+
 
             function setupImagePreview(inputId, previewImgId) {
                 const input = document.getElementById(inputId);
@@ -296,7 +428,164 @@
             setupImagePreview('cardImage', 'cardImagePreview');
             setupImagePreview('coverImage', 'coverImagePreview');
 
-            showStep(1); 
+
+            // --- NEW: Ticket Modal Logic ---
+            const ticketModal = document.getElementById('ticketModal');
+            const addTicketBtn = document.getElementById('addTicketBtn');
+            const closeTicketModalBtn = document.getElementById('closeTicketModal');
+            const saveTicketBtn = document.getElementById('saveTicketBtn');
+            const ticketListUl = document.getElementById('ticketList');
+            const ticketForm = document.getElementById('ticketForm');
+            const isFreeCheckbox = document.getElementById('isFree');
+            const ticketPriceInput = document.getElementById('ticketPrice');
+            const editingTicketIdInput = document.getElementById('editingTicketId');
+            const ticketListErrorMsg = document.getElementById('ticketListError');
+
+             // Function to update step height
+            const updateStepHeight = () => {
+                 const currentPanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
+                 if(currentPanel && currentStep === 2) { // Only update if on step 2
+                      setTimeout(() => { stepsWrapper.style.height = `${currentPanel.scrollHeight}px`; }, 50);
+                 }
+            };
+
+
+            // Open Modal
+            addTicketBtn.addEventListener('click', () => {
+                ticketForm.reset(); // Clear form
+                editingTicketIdInput.value = ''; // Ensure it's for adding new
+                ticketPriceInput.disabled = false; // Enable price input initially
+                document.querySelector('#ticketModal h4').textContent = 'Create New Ticket Type'; // Set title for adding
+                ticketModal.style.display = 'flex';
+            });
+
+            // Close Modal
+            closeTicketModalBtn.addEventListener('click', () => {
+                ticketModal.style.display = 'none';
+            });
+            ticketModal.addEventListener('click', (e) => {
+                if (e.target === ticketModal) {
+                    ticketModal.style.display = 'none';
+                }
+            });
+
+            // Handle "Free" checkbox
+            isFreeCheckbox.addEventListener('change', () => {
+                ticketPriceInput.disabled = isFreeCheckbox.checked;
+                if (isFreeCheckbox.checked) {
+                    ticketPriceInput.value = '0';
+                    ticketPriceInput.required = false; // Not required if free
+                     ticketPriceInput.closest('.form-group').classList.remove('invalid'); // Remove error if any
+                } else {
+                     ticketPriceInput.required = true; // Required if not free
+                }
+            });
+
+             // Simple form validation for ticket modal
+            function validateTicketForm() {
+                let isValid = true;
+                ticketModal.querySelectorAll('.form-group.invalid').forEach(el => el.classList.remove('invalid'));
+
+                const name = document.getElementById('ticketName');
+                const quantity = document.getElementById('ticketQuantity');
+                const price = document.getElementById('ticketPrice');
+                const isFree = document.getElementById('isFree').checked;
+
+                if (!name.value) {
+                    name.closest('.form-group').classList.add('invalid'); isValid = false;
+                }
+                 if (!quantity.value || parseInt(quantity.value) < 1) {
+                    quantity.closest('.form-group').classList.add('invalid'); isValid = false;
+                }
+                 if (!isFree && (!price.value || parseFloat(price.value) < 0) ) {
+                    price.closest('.form-group').classList.add('invalid'); isValid = false;
+                }
+                 // Add more validation for min/max, dates if needed
+                return isValid;
+            }
+
+
+            // Save Ticket (Add/Edit)
+            saveTicketBtn.addEventListener('click', () => {
+                if (!validateTicketForm()) return;
+
+                 const ticketName = document.getElementById('ticketName').value;
+                 const editingId = editingTicketIdInput.value;
+
+                 if(editingId) {
+                     // --- EDIT LOGIC ---
+                     const existingLi = ticketListUl.querySelector(`li[data-ticket-id="${editingId}"]`);
+                     if(existingLi) {
+                         existingLi.querySelector('.ticket-name').textContent = ticketName;
+                         // Update other data attributes if needed
+                     }
+                      console.log("Editing ticket:", editingId, ticketName);
+                 } else {
+                     // --- ADD NEW LOGIC ---
+                     const newTicketId = `ticket_${Date.now()}`; // Simple unique ID for demo
+                     const li = document.createElement('li');
+                     li.classList.add('ticket-item');
+                     li.dataset.ticketId = newTicketId; // Store ID
+                     li.innerHTML = `
+                         <span class="ticket-name">${ticketName}</span>
+                         <div class="ticket-actions">
+                             <button type="button" class="btn-icon edit-ticket-btn"><i class="fas fa-pencil-alt"></i></button>
+                             <button type="button" class="btn-icon delete-ticket-btn"><i class="fas fa-trash-alt"></i></button>
+                         </div>
+                     `;
+                     ticketListUl.appendChild(li);
+                     console.log("Adding new ticket:", newTicketId, ticketName);
+
+                     // Add event listeners to the new buttons
+                     li.querySelector('.edit-ticket-btn').addEventListener('click', handleEditTicket);
+                     li.querySelector('.delete-ticket-btn').addEventListener('click', handleDeleteTicket);
+                 }
+
+
+                 ticketModal.style.display = 'none'; // Close modal
+                 ticketListErrorMsg.style.display = 'none'; // Hide error message if tickets exist
+                 ticketListUl.closest('.ticket-section').style.borderColor = '#eee'; // Reset border
+                 updateStepHeight(); // Recalculate step height
+            });
+
+             // --- Handle Edit Ticket ---
+            function handleEditTicket(event) {
+                 const li = event.target.closest('li');
+                 const ticketId = li.dataset.ticketId;
+                 const ticketName = li.querySelector('.ticket-name').textContent;
+
+                 // --- Populate Modal Form (You'd fetch full data here in real app) ---
+                 ticketForm.reset(); // Clear first
+                 document.getElementById('ticketName').value = ticketName;
+                 // Simulate fetching other data - replace with actual data loading
+                 document.getElementById('ticketPrice').value = '10'; // Example
+                 document.getElementById('ticketQuantity').value = '50'; // Example
+                 document.getElementById('isFree').checked = false; // Example
+                 ticketPriceInput.disabled = false;
+                 // ... populate other fields ...
+
+                 editingTicketIdInput.value = ticketId; // Set the ID for editing
+                 document.querySelector('#ticketModal h4').textContent = 'Edit Ticket Type'; // Set title for editing
+                 ticketModal.style.display = 'flex';
+                 console.log("Opening edit for:", ticketId);
+            }
+
+             // --- Handle Delete Ticket ---
+             function handleDeleteTicket(event) {
+                 const li = event.target.closest('li');
+                 if (confirm(`Are you sure you want to delete the ticket "${li.querySelector('.ticket-name').textContent}"?`)) {
+                     li.remove();
+                     console.log("Deleting ticket:", li.dataset.ticketId);
+                     updateStepHeight(); // Recalculate step height
+                 }
+             }
+
+             // Add initial event listeners for existing ticket buttons (if any rendered server-side)
+             ticketListUl.querySelectorAll('.edit-ticket-btn').forEach(btn => btn.addEventListener('click', handleEditTicket));
+             ticketListUl.querySelectorAll('.delete-ticket-btn').forEach(btn => btn.addEventListener('click', handleDeleteTicket));
+
+
+            showStep(1); // Initialize first step
         });
     </script>
 }
