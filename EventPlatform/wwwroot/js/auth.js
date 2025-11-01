@@ -36,7 +36,10 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ fullName: fullname, password: password })
+            body: JSON.stringify({
+                fullName: fullname,
+                password: password
+            })
         });
 
         const result = await response.json();
