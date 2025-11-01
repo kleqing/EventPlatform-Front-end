@@ -23,7 +23,7 @@
     }
 });
 
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const fullname = document.getElementById("fullname").value.trim();
@@ -34,9 +34,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     try {
         const response = await fetch("https://localhost:7063/api/auth/login", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify({
                 fullName: fullname,
@@ -51,13 +49,17 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
                 result.message ||
                 (result.errors && Object.values(result.errors).flat().join(", ")) ||
                 "Login failed. Please check your credentials.";
-
             errorDiv.textContent = errorMsg;
             errorDiv.style.display = "block";
             return;
         }
 
-        window.location.href = "/Home";
+        await new Promise((resolve) => {
+            localStorage.setItem("user", JSON.stringify(result.data));
+            requestAnimationFrame(resolve);
+        });
+
+        window.location.replace("/Home");
     } catch (error) {
         errorDiv.textContent = "Unable to connect to server.";
         errorDiv.style.display = "block";
