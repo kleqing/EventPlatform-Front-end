@@ -680,3 +680,28 @@ body {
     }
     /* Keep 2 columns for modal grid on small screens */
 }
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: none; /* Ẩn mặc định */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.loading-spinner {
+    text-align: center;
+    font-size: 24px;
+    color: #007bff;
+}
+
+    .loading-spinner i {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
