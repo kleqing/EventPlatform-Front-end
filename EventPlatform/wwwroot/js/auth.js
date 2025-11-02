@@ -23,10 +23,10 @@
     }
 });
 
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
+    const fullname = document.getElementById("fullname").value.trim();
     const password = document.getElementById("password").value.trim();
     const errorDiv = document.getElementById("error-message");
     errorDiv.style.display = "none";
