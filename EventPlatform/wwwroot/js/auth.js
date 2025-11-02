@@ -23,10 +23,10 @@
     }
 });
 
-document.getElementById("loginForm").addEventListener("submit", async function (e) {
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const fullname = document.getElementById("fullname").value.trim();
+    const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
     const errorDiv = document.getElementById("error-message");
     errorDiv.style.display = "none";
@@ -34,9 +34,14 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     try {
         const response = await fetch("https://localhost:7063/api/auth/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             credentials: "include",
-            body: JSON.stringify({ fullName: fullname, password: password })
+            body: JSON.stringify({
+                fullName: fullname,
+                password: password
+            })
         });
 
         const result = await response.json();
@@ -46,6 +51,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
                 result.message ||
                 (result.errors && Object.values(result.errors).flat().join(", ")) ||
                 "Login failed. Please check your credentials.";
+
             errorDiv.textContent = errorMsg;
             errorDiv.style.display = "block";
             return;
