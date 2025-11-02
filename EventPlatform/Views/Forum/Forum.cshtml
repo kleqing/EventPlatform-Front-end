@@ -1,226 +1,531 @@
-﻿
-@{
-    ViewData["Title"] = "Forum";
+﻿@{
+ViewData["Title"] = "Forum";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="/css/Forum.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/Forum.css" />
 </head>
 <body>
-    <div class="forum-container">
-        <div class="forum-layout">
-            <aside class="forum-sidebar">
-                <div class="card">
-                    <div class="card-header"><h3>Categories</h3></div>
-                    <nav class="category-list">
-                        <a href="#" class="active">All Posts</a>
-                        <a href="#">General Discussion</a>
-                        <a href="#">Tech Talk</a>
-                        <a href="#">Event Feedback</a>
-                    </nav>
-                </div>
-            </aside>
+<div class="forum-container">
+    <div class="forum-layout">
+        <!-- Sidebar -->
+        <aside class="forum-sidebar">
+            <div class="card">
+                <div class="card-header"><h3>Categories</h3></div>
+                <nav class="category-list"></nav>
+            </div>
+        </aside>
 
-            <main class="forum-main">
-                <div class="create-post-widget">
-                    <img src="https://via.placeholder.com/40x40/696cff/ffffff?text=U" alt="Your Avatar" class="avatar">
-                    <input type="text" placeholder="Tấn Thành ơi, bạn đang nghĩ gì thế?" id="createPostInput">
-                </div>
+        <!-- Main -->
+        <main class="forum-main">
+            <div class="create-post-widget">
+                <img src="https://placehold.co/40x40/696cff/ffffff?text=U" alt="Avatar" class="avatar" />
+                <input type="text" id="createPostInput" placeholder="What do you think?" />
+            </div>
+            <div class="posts-container"></div>
+        </main>
 
-                <div class="post-card">
-                    <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=SA" alt="avatar" class="post-avatar">
-                    <div class="post-content">
-                        <h2 class="post-title">How to prepare for the upcoming AI Summit?</h2>
-                        <div class="post-meta">Posted by Santiago Axel • 2 hours ago</div>
-                        <p class="post-excerpt">I'm attending the Vietnam AI Summit next month and would love to hear some tips from veterans. What are the must-see talks?</p>
-                        <div class="post-stats">
-                            <span><i class="far fa-comments"></i> 15 Comments</span>
-                            <span><i class="far fa-thumbs-up"></i> 42 Likes</span>
-                        </div>
-                    </div>
-                </div>
-            </main>
+        <!-- Stats -->
+        <aside class="forum-stats-sidebar">
+          <div class="card stats-card">
+            <div class="card-header">
+              <h3>New Visitors</h3>
+              <span class="dropdown">This week <i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="visitor-stats">
+              <span class="percentage">63%</span>
+              <span class="change"><i class="fas fa-arrow-up"></i> +2% up</span>
+            </div>
+            <div class="chart-container">
+              <div class="chart-bar" style="height: 20%;"></div>
+              <div class="chart-bar" style="height: 40%;"></div>
+              <div class="chart-bar" style="height: 60%;"></div>
+              <div class="chart-bar highlight" style="height: 90%;"></div>
+              <div class="chart-bar" style="height: 25%;"></div>
+              <div class="chart-bar" style="height: 35%;"></div>
+              <div class="chart-bar" style="height: 15%;"></div>
+            </div>
+            <div class="chart-labels">
+              <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+            </div>
+          </div>
 
-            <aside class="forum-stats-sidebar">
-                <div class="card stats-card">
-                    <div class="card-header"><h3>New Visitors</h3><span class="dropdown">This week <i class="fas fa-chevron-down"></i></span></div>
-                    <div class="visitor-stats"><span class="percentage">63%</span><span class="change"><i class="fas fa-arrow-up"></i> +2% up</span></div>
-                    <div class="chart-container"><div class="chart-bar" style="height: 20%;"></div><div class="chart-bar" style="height: 40%;"></div><div class="chart-bar" style="height: 60%;"></div><div class="chart-bar highlight" style="height: 90%;"></div><div class="chart-bar" style="height: 25%;"></div><div class="chart-bar" style="height: 35%;"></div><div class="chart-bar" style="height: 15%;"></div></div>
-                    <div class="chart-labels"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
+          <div class="card stats-card">
+            <div class="card-header">
+              <h3>Status</h3>
+              <span class="dropdown">All time <i class="fas fa-chevron-down"></i></span>
+            </div>
+            <ul class="status-list">
+              <li class="status-item">
+                <div class="item-header">
+                  <i class="fas fa-comment-alt"></i>
+                  <span class="label">Threads</span>
+                  <span class="value" id="threadsCount">0</span>
                 </div>
-                <div class="card stats-card">
-                    <div class="card-header"><h3>Status</h3><span class="dropdown">All time <i class="fas fa-chevron-down"></i></span></div>
-                    <ul class="status-list">
-                        <li class="status-item"><div class="item-header"><i class="fas fa-comment-alt"></i><span class="label">Threads</span><span class="value">4,236</span></div><div class="progress-bar-container"><div class="progress"><div class="progress-fill blue" style="width: 65%;"></div></div><span class="progress-change">+12</span></div></li>
-                        <li class="status-item"><div class="item-header"><i class="fas fa-paper-plane"></i><span class="label">Replies</span><span class="value">19,267</span></div><div class="progress-bar-container"><div class="progress"><div class="progress-fill purple" style="width: 85%;"></div></div><span class="progress-change">+268</span></div></li>
-                        <li class="status-item"><div class="item-header"><i class="fas fa-users"></i><span class="label">Members</span><span class="value">7,635</span></div><div class="progress-bar-container"><div class="progress"><div class="progress-fill yellow" style="width: 55%;"></div></div><span class="progress-change">+23</span></div></li>
-                    </ul>
+                <div class="progress-bar-container">
+                  <div class="progress">
+                    <div id="threadsBar" class="progress-fill blue" style="width: 0%;"></div>
+                  </div>
+                  <span id="threadsChange" class="progress-change">+0</span>
                 </div>
-            </aside>
+              </li>
+
+              <li class="status-item">
+                <div class="item-header">
+                  <i class="fas fa-paper-plane"></i>
+                  <span class="label">Active Threads</span>
+                  <span class="value" id="activeThreadsCount">0</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress">
+                    <div id="activeThreadsBar" class="progress-fill purple" style="width: 0%;"></div>
+                  </div>
+                  <span id="activeThreadsChange" class="progress-change">+0</span>
+                </div>
+              </li>
+
+              <li class="status-item">
+                <div class="item-header">
+                  <i class="fas fa-users"></i>
+                  <span class="label">Members</span>
+                  <span class="value" id="membersCount">0</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress">
+                    <div id="membersBar" class="progress-fill yellow" style="width: 0%;"></div>
+                  </div>
+                  <span id="membersChange" class="progress-change">+0</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </aside>
+    </div>
+</div>
+
+<a href="#" class="fab-scroll-top"><i class="fas fa-arrow-up"></i></a>
+
+<!-- Modals -->
+<div class="modal-overlay" id="postModal"><div class="modal-content"></div></div>
+<div class="modal-overlay" id="createPostModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Create a post</h3>
+            <span class="modal-close-btn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="user-info">
+                <img src="https://placehold.co/40x40/696cff/ffffff?text=U" alt="Avatar" />
+                <span class="user-name">You</span>
+            </div>
+            <select class="category-select"></select>
+            <input type="text" class="post-title-input" placeholder="Title" />
+            <textarea class="post-content-textarea" placeholder="Content..."></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="post-button" disabled>Post</button>
         </div>
     </div>
+</div>
 
-    <a href="#" class="fab-scroll-top">
-        <i class="fas fa-arrow-up"></i>
-    </a>
+<script>
+    /* ========== GLOBAL CONFIG ========== */
+    const API_BASE = "https://localhost:7063/api/forum";
 
-    <div class="modal-overlay" id="postModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Post Details</h3>
-                <span class="modal-close-btn" id="postModalCloseBtn">&times;</span>
+    /* ========== HELPERS ========== */
+    const fetchJson = async (url, options = {}) => {
+        try {
+            const res = await fetch(url, { headers: { "Accept": "application/json" }, credentials: "include", ...options });
+            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+            return await res.json();
+        } catch (e) {
+            console.error("Fetch failed:", e);
+            return null;
+        }
+    };
+
+    const getUser = () => JSON.parse(localStorage.getItem("user"));
+    const openModal = m => { m.classList.add("active"); document.body.classList.add("modal-open"); };
+    const closeModal = async m => {
+        m.classList.remove("active");
+        if (!document.querySelector(".modal-overlay.active"))
+            document.body.classList.remove("modal-open");
+
+        if (m.id === "postModal") await loadPosts(); 
+    };
+    const escapeHtml = str => String(str || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+
+    /* ========== LIKE HELPERS ========== */
+    async function getPostLikeState(postId, userId) {
+        const [likeCountRes, isLikedRes] = await Promise.all([
+            fetchJson(`${API_BASE}/likes-count/${postId}`),
+            fetchJson(`${API_BASE}/is-liked/post/${postId}/${userId}`)
+        ]);
+        return {
+            count: likeCountRes?.data ?? 0,
+            isLiked: isLikedRes?.data ?? false
+        };
+    }
+
+    function renderLikeButton(btn, isLiked, count) {
+        const iconClass = isLiked ? "fas" : "far";
+        btn.innerHTML = `<i class="${iconClass} fa-thumbs-up"></i> ${count}`;
+        btn.classList.toggle("liked", isLiked);
+    }
+
+    async function toggleLike(postId, userId, btn) {
+        const res = await fetchJson(`${API_BASE}/toggle-like-post/${postId}/${userId}`, { method: "POST" });
+        if (res?.success) {
+            const { isLiked, likeCount } = res.data;
+            renderLikeButton(btn, isLiked, likeCount);
+
+            const card = document.querySelector(`.post-card[data-id="${postId}"] .post-like-stat`);
+            if (card) {
+                card.innerHTML = `<i class="${isLiked ? "fas" : "far"} fa-thumbs-up"></i> ${likeCount}`;
+                card.classList.toggle("liked", isLiked);
+            }
+        }
+    }
+
+    /* ========== COMMENTS ========== */
+    function buildCommentTree(list) {
+        const map = {}, roots = [];
+        list.forEach(c => map[c.commentId] = { ...c, children: [] });
+        list.forEach(c => c.parentCommentId ? map[c.parentCommentId]?.children.push(map[c.commentId]) : roots.push(map[c.commentId]));
+        return roots;
+    }
+
+    function renderComments(list, container, depth = 0) {
+        list.forEach(c => {
+            const div = document.createElement("div");
+            div.className = "comment-item";
+            div.style.marginLeft = `${depth * 20}px`;
+            div.dataset.commentId = c.commentId;
+
+            const likedClass = c.isLiked ? "liked" : "";
+            const iconClass = c.isLiked ? "fas" : "far";
+            const likeCount = c.likesCount ?? 0;
+
+            div.innerHTML = `
+        <div class="comment-author">${c.user?.fullName || "Anonymous"}</div>
+        <div class="comment-content">${escapeHtml(c.content)}</div>
+        <div class="comment-actions">
+            <span class="like-btn ${likedClass}">
+                <i class="${iconClass} fa-thumbs-up"></i> ${likeCount}
+            </span>
+            <span class="reply-btn"><i class="far fa-comment"></i> Reply</span>
+        </div>
+        <div class="reply-box" style="display:none;">
+            <textarea class="reply-input" placeholder="Reply..."></textarea>
+            <button class="submit-reply">Send</button>
+            <button class="cancel-reply">Cancel</button>
+        </div>`;
+            container.appendChild(div);
+            if (c.children?.length) renderComments(c.children, container, depth + 1);
+        });
+    }
+
+    async function postComment(postId, content, parentCommentId = null) {
+        const user = getUser();
+        if (!user) return alert("Please log in.");
+        const body = { postId, userId: user.userId, content, parentCommentId };
+        const res = await fetch(`${API_BASE}/write-comment`, {
+            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        return res.ok && data?.success ? data : null;
+    }
+
+    function createCommentElement(comment, user) {
+        const el = document.createElement("div");
+        el.className = "comment-item";
+        el.dataset.commentId = comment.commentId;
+        const author = comment.user?.fullName || user?.fullName || user?.email || "Anonymous";
+        el.innerHTML = `
+        <div class="comment-author">${escapeHtml(author)}</div>
+        <div class="comment-content">${escapeHtml(comment.content)}</div>
+        <div class="comment-actions">
+            <span class="like-btn"><i class="far fa-thumbs-up"></i> Like</span>
+            <span class="reply-btn"><i class="far fa-comment"></i> Reply</span>
+        </div>
+        <div class="reply-box" style="display:none;">
+            <textarea class="reply-input" placeholder="Reply..."></textarea>
+            <button class="submit-reply">Send</button>
+            <button class="cancel-reply">Cancel</button>
+        </div>`;
+        return el;
+    }
+
+    function initCommentEvents(modal) {
+        const postId = modal.dataset.postId;
+        modal.addEventListener("click", async e => {
+            const btn = e.target.closest(".like-btn, .reply-btn, .submit-reply, .cancel-reply, .submit-comment, .like-post-btn");
+            if (!btn) return;
+            const user = getUser();
+            const commentItem = btn.closest(".comment-item");
+
+            if (btn.classList.contains("submit-comment")) {
+                const text = modal.querySelector(".new-comment-input").value.trim();
+                if (!text) return;
+                const res = await postComment(postId, text);
+                if (res) {
+                    const list = modal.querySelector(".comment-list");
+                    list.prepend(createCommentElement(res.data, user));
+                    modal.querySelector(".new-comment-input").value = "";
+                }
+                return;
+            }
+
+            if (btn.classList.contains("like-post-btn")) {
+                if (!user) return alert("Please log in.");
+                toggleLike(postId, user.userId, btn);
+                return;
+            }
+
+            // Comment actions (giữ nguyên)
+            if (!commentItem) return;
+            const box = commentItem.querySelector(".reply-box");
+            if (btn.classList.contains("reply-btn")) box.style.display = box.style.display === "none" ? "block" : "none";
+            if (btn.classList.contains("cancel-reply")) box.style.display = "none";
+            if (btn.classList.contains("submit-reply")) {
+                const text = box.querySelector(".reply-input").value.trim();
+                if (!text) return;
+                const result = await postComment(postId, text, commentItem.dataset.commentId);
+                if (result) {
+                    const newEl = createCommentElement(result.data, user);
+                    newEl.style.marginLeft = `${parseInt(getComputedStyle(commentItem).marginLeft) + 20}px`;
+                    commentItem.insertAdjacentElement("afterend", newEl);
+                    box.style.display = "none";
+                }
+            }
+            if (btn.classList.contains("like-btn")) {
+                if (!user) return alert("Please log in.");
+                const id = commentItem.dataset.commentId;
+                const res = await fetch(`${API_BASE}/toggle-like-comment/${id}/${user.userId}`, { method: "POST", credentials: "include" });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    btn.classList.toggle("liked", data.data.isLiked);
+                    btn.querySelector("i").classList.toggle("fas");
+                    btn.querySelector("i").classList.toggle("far");
+                    btn.innerHTML = `<i class="${data.data.isLiked ? "fas" : "far"} fa-thumbs-up"></i> ${data.data.likeCount}`;
+                }
+            }
+        });
+    }
+
+    /* ========== MAIN LOGIC ========== */
+    document.addEventListener("DOMContentLoaded", async () => {
+        const categoryList = document.querySelector(".category-list");
+        const postsContainer = document.querySelector(".posts-container");
+        const createPostModal = document.getElementById("createPostModal");
+        const postModal = document.getElementById("postModal");
+        const categorySelect = document.querySelector(".category-select");
+        const postButton = createPostModal.querySelector(".post-button");
+        const createPostInput = document.getElementById("createPostInput");
+
+        document.addEventListener("click", async e => {
+            if (e.target.classList.contains("modal-close-btn")) await closeModal(e.target.closest(".modal-overlay"));
+            if (e.target.classList.contains("modal-overlay") && !e.target.closest(".modal-content")) await closeModal(e.target);
+        });
+
+        async function loadCategories() {
+            const res = await fetchJson(`${API_BASE}/categories`);
+            if (!res?.data) return;
+            categoryList.innerHTML = `<a href="#" class="active" data-id="">All Posts</a>`;
+            categorySelect.innerHTML = `<option value="">-- Choose category --</option>`;
+            res.data.forEach(c => {
+                categoryList.insertAdjacentHTML("beforeend", `<a href="#" data-id="${c.categoryId}">${c.name}</a>`);
+                categorySelect.insertAdjacentHTML("beforeend", `<option value="${c.categoryId}">${c.name}</option>`);
+            });
+        }
+
+        async function loadPosts(categoryId = "") {
+            postsContainer.innerHTML = "<p>Loading posts...</p>";
+            const res = await fetchJson(categoryId ? `${API_BASE}/posts?categoryId=${categoryId}` : `${API_BASE}/posts`);
+            const posts = res?.data ?? [];
+
+            if (!posts.length) {
+                postsContainer.innerHTML = "<p>No posts found.</p>";
+                return;
+            }
+
+            const user = getUser();
+
+            // Dùng Promise.all để lấy like count và trạng thái like song song
+            const postsWithLikes = await Promise.all(posts.map(async p => {
+                const [likeRes, isLikedRes] = await Promise.all([
+                    fetchJson(`${API_BASE}/likes-count/${p.postId}`),
+                    user ? fetchJson(`${API_BASE}/is-liked/post/${p.postId}/${user.userId}`) : Promise.resolve({ data: false })
+                ]);
+                return {
+                    ...p,
+                    likesCount: likeRes?.data ?? 0,
+                    isLiked: isLikedRes?.data ?? false
+                };
+            }));
+
+            postsContainer.innerHTML = postsWithLikes.map(p => `
+            <div class="post-card" data-id="${p.postId}">
+                <img src="${p.user?.avatar ?? 'https://placehold.co/50x50/e91e63/ffffff?text=U'}" class="post-avatar" />
+                <div class="post-content">
+                    <h2>${p.title}</h2>
+                    <p>${p.content.length > 100 ? p.content.slice(0, 100) + "..." : p.content}</p>
+                    <div class="post-meta">
+                        <span>By ${p.user?.fullName ?? "Unknown"}</span> • 
+                        <span>${new Date(p.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div class="post-stats">
+                        <span><i class="far fa-comments"></i> ${p.commentCount ?? 0}</span>
+                        <span class="post-like-stat ${p.isLiked ? "liked" : ""}">
+                            <i class="${p.isLiked ? "fas" : "far"} fa-thumbs-up"></i> ${p.likesCount}
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="post-body-content">
-                    <div class="post-header-modal">
-                        <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=SA" alt="avatar" class="post-avatar">
-                        <div class="post-header-info">
-                            <div class="author">Santiago Axel</div>
-                            <div class="date">2 hours ago</div>
-                        </div>
-                    </div>
-                    <div class="post-full-content">
-                        <h2 class="post-title">How to prepare for the upcoming AI Summit?</h2>
-                        <p>I'm attending the Vietnam AI Summit next month and would love to hear some tips from veterans. What are the must-see talks? Are there any networking events that are particularly valuable?</p>
-                        <p>Also, for anyone who has been before, what's the general dress code? Is it more formal or business casual? Any advice would be greatly appreciated!</p>
-                    </div>
+        `).join("");
+        }
+
+        categoryList.addEventListener("click", e => {
+            const link = e.target.closest("a[data-id]");
+            if (!link) return;
+            categoryList.querySelectorAll("a").forEach(a => a.classList.remove("active"));
+            link.classList.add("active");
+            loadPosts(link.dataset.id);
+        });
+
+        createPostInput.addEventListener("click", () => openModal(createPostModal));
+
+        postButton.addEventListener("click", async () => {
+            const user = getUser();
+            if (!user) return alert("Please log in.");
+            const payload = {
+                userId: user.userId,
+                categoryId: parseInt(categorySelect.value),
+                title: createPostModal.querySelector(".post-title-input").value.trim(),
+                content: createPostModal.querySelector(".post-content-textarea").value.trim(),
+            };
+            const res = await fetchJson(`${API_BASE}/create-post`, {
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+            });
+            if (res?.success) {
+                closeModal(createPostModal);
+                await loadPosts();
+            }
+        });
+
+        postsContainer.addEventListener("click", async e => {
+            const card = e.target.closest(".post-card");
+            if (!card) return;
+            const postId = card.dataset.id;
+            const res = await fetchJson(`${API_BASE}/post-detail/${postId}`);
+            const post = Array.isArray(res.data) ? res.data[0] : res.data;
+            if (!post) return;
+
+            const user = getUser();
+
+            if (user && post.forumComments?.length) {
+                const updatedComments = await Promise.all(
+                    post.forumComments.map(async c => {
+                        const [likeCountRes, isLikedRes] = await Promise.all([
+                            fetchJson(`${API_BASE}/likes-count/comment/${c.commentId}`),
+                            fetchJson(`${API_BASE}/is-liked/comment/${c.commentId}/${user.userId}`)
+                        ]);
+                        return {
+                            ...c,
+                            likesCount: likeCountRes?.data ?? 0,
+                            isLiked: isLikedRes?.data ?? false
+                        };
+                    })
+                );
+                post.forumComments = updatedComments;
+            }
+
+            const commentsTree = buildCommentTree(post.forumComments || []);
+            const commentContainer = document.createElement("div");
+            renderComments(commentsTree, commentContainer);
+            
+            const likeState = user ? await getPostLikeState(postId, user.userId) : { isLiked: false, count: post.likes ?? 0 }; // 🩵 FIX
+
+            postModal.querySelector(".modal-content").innerHTML = `
+                <div class="post-body">
+                    <h2>${post.title}</h2>
+                    <p>${post.content}</p>
                     <div class="post-footer-actions">
-                        <span><i class="far fa-thumbs-up"></i> Like</span>
+                        <span class="like-post-btn ${likeState.isLiked ? 'liked' : ''}">
+                            <i class="${likeState.isLiked ? 'fas' : 'far'} fa-thumbs-up"></i> ${likeState.count}
+                        </span>
                         <span><i class="far fa-comments"></i> Comment</span>
                         <span><i class="far fa-share-square"></i> Share</span>
                     </div>
                 </div>
-                <div class="comment-list">
-                    <div class="comment-item">
-                        <img src="https://via.placeholder.com/36x36/2c3e50/ffffff?text=BT" alt="avatar" class="comment-avatar">
-                        <div>
-                            <div class="comment-body">
-                                <span class="comment-author">Bao Tran</span>
-                                <p class="comment-text">Great question! Definitely don't miss the keynote from Dr. Le Viet Quoc. His talks are always mind-blowing.</p>
-                            </div>
-                            <div class="comment-actions"><a href="#">Like</a> <a href="#">Reply</a> • <span class="comment-date">1 hour ago</span></div>
-                        </div>
-                    </div>
-                    <div class="comment-replies">
-                        <div class="comment-item">
-                            <img src="https://via.placeholder.com/36x36/e91e63/ffffff?text=SA" alt="avatar" class="comment-avatar">
-                            <div>
-                                <div class="comment-body">
-                                    <span class="comment-author">Santiago Axel</span>
-                                    <p class="comment-text">Thanks for the tip, Bao! I'll add it to my schedule.</p>
-                                </div>
-                                <div class="comment-actions"><a href="#">Like</a> <a href="#">Reply</a> • <span class="comment-date">30 minutes ago</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="comment-form">
-                    <img src="https://via.placeholder.com/36x36/696cff/ffffff?text=U" alt="avatar" class="comment-avatar">
-                    <textarea placeholder="Write a comment..."></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="createPostModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Tạo bài viết</h3>
-                <span class="modal-close-btn" id="createPostModalCloseBtn">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="user-info">
-                    <img src="https://via.placeholder.com/40x40/696cff/ffffff?text=U" alt="Your Avatar">
-                    <span>Tấn Thành</span>
-                </div>
-                <input type="text" class="post-title-input" placeholder="Tiêu đề">
-                <textarea class="post-content-textarea" placeholder="Nội dung bài viết của bạn..."></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="post-button" disabled>Đăng</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const body = document.body;
-
-            // --- Logic for Post Detail Modal ---
-            const postCards = document.querySelectorAll('.post-card');
-            const postModal = document.getElementById('postModal');
-            const postModalCloseBtn = document.getElementById('postModalCloseBtn');
-
-            const openPostModal = () => {
-                postModal.classList.add('active');
-                body.classList.add('modal-open');
-            };
-            const closePostModal = () => {
-                postModal.classList.remove('active');
-                if (!document.querySelector('#createPostModal.active')) {
-                     body.classList.remove('modal-open');
-                }
-            };
-            postCards.forEach(card => card.addEventListener('click', openPostModal));
-            postModalCloseBtn.addEventListener('click', closePostModal);
-            postModal.addEventListener('click', function (event) {
-                if (event.target === postModal) closePostModal();
-            });
-
-            // --- Logic for Create Post Modal ---
-            const createPostInput = document.getElementById('createPostInput');
-            const createPostModal = document.getElementById('createPostModal');
-            const createPostModalCloseBtn = document.getElementById('createPostModalCloseBtn');
-            const postTitleInput = createPostModal.querySelector('.post-title-input');
-            const postContentTextArea = createPostModal.querySelector('.post-content-textarea');
-            const postButton = createPostModal.querySelector('.post-button');
-
-            const openCreateModal = () => {
-                createPostModal.classList.add('active');
-                body.classList.add('modal-open');
-                postTitleInput.focus();
-            };
-            const closeCreateModal = () => {
-                createPostModal.classList.remove('active');
-                 if (!document.querySelector('#postModal.active')) {
-                    body.classList.remove('modal-open');
-                }
-            };
-
-            createPostInput.addEventListener('click', openCreateModal);
-            createPostModalCloseBtn.addEventListener('click', closeCreateModal);
-            createPostModal.addEventListener('click', function (event) {
-                if (event.target === createPostModal) closeCreateModal();
-            });
-
-            function validatePostButton() {
-                const isTitleValid = postTitleInput.value.trim() !== '';
-                const isContentValid = postContentTextArea.value.trim() !== '';
-                postButton.disabled = !(isTitleValid && isContentValid);
+                <div class="comment-list">${commentContainer.innerHTML}</div>
+                <div class="new-comment-box">
+                    <textarea class="new-comment-input" placeholder="Write a comment..."></textarea>
+                    <button class="submit-comment">Send</button>
+                </div>`;
+            
+            postModal.dataset.postId = postId;
+            openModal(postModal);
+            if (!postModal.dataset.bound) {
+                initCommentEvents(postModal);
+                postModal.dataset.bound = "true";
             }
-            postTitleInput.addEventListener('keyup', validatePostButton);
-            postContentTextArea.addEventListener('keyup', validatePostButton);
-
-            // --- Logic for Floating Action Button ---
-            const fab = document.querySelector('.fab-scroll-top');
-            const createWidget = document.querySelector('.create-post-widget');
-
-            fab.addEventListener('click', function(event) {
-                event.preventDefault();
-                createWidget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
         });
-    </script>
+
+        async function loadForumStats() {
+            try {
+                const [threadsRes, membersRes, activeRes] = await Promise.all([
+                    fetch(`${API_BASE}/stats/threads-count`),
+                    fetch(`${API_BASE}/stats/members-count`),
+                    fetch(`${API_BASE}/stats/active-threads-count`),
+                ]);
+
+                if (!threadsRes.ok || !membersRes.ok || !activeRes.ok) {
+                    throw new Error("One or more API calls failed");
+                }
+
+                const [threadsData, membersData, activeData] = await Promise.all([
+                    threadsRes.json(),
+                    membersRes.json(),
+                    activeRes.json(),
+                ]);
+
+                const [threads, members, active] = [threadsData, membersData, activeData].map(x => x?.data ?? 0);
+
+                document.getElementById("threadsCount").textContent = threads.toLocaleString();
+                document.getElementById("membersCount").textContent = members.toLocaleString();
+                document.getElementById("activeThreadsCount").textContent = active.toLocaleString();
+
+                const activePercent = threads > 0 ? Math.min((active / threads) * 100, 100) : 0;
+
+                const progressBar = document.getElementById("forumActivityProgress");
+                if (progressBar) {
+                    progressBar.style.width = `${activePercent}%`;
+                    progressBar.textContent = `${Math.round(activePercent)}% active`;
+                }
+
+            } catch (err) {
+                console.error("Cannot fetch forum stats:", err);
+            }
+        }
+
+        await loadCategories();
+        await loadPosts();
+        await loadForumStats();
+    });
+</script>
+
 </body>
 </html>
