@@ -46,9 +46,6 @@
                     <label for="eventCategory">Category <span class="required-star">*</span></label>
                     <select id="eventCategory" required>
                         <option value="" disabled selected>Select a category...</option>
-                        <option value="1">Technology</option>
-                        <option value="2">Business</option>
-                        <option value="3">Marketing</option>
                     </select>
                     <span class="error-message">Please select a category.</span>
                 </div>
@@ -76,13 +73,7 @@
                 <div class="ticket-section">
                      <h5 style="margin-bottom: 15px; font-weight: 600;">Ticket Types <span class="required-star">*</span></h5>
                      <ul class="ticket-list" id="ticketList">
-                         <li class="ticket-item" data-ticket-id="example1">
-                             <span class="ticket-name">VIP Ticket</span>
-                             <div class="ticket-actions">
-                                 <button type="button" class="btn-icon edit-ticket-btn"><i class="fas fa-pencil-alt"></i></button>
-                                 <button type="button" class="btn-icon delete-ticket-btn"><i class="fas fa-trash-alt"></i></button>
-                             </div>
-                         </li>
+  
                      </ul>
                      <div class="add-ticket-btn-container">
                          <button type="button" class="btn btn-link" id="addTicketBtn">
@@ -182,7 +173,6 @@
                      <label for="eventStatus">Publish Status <span class="required-star">*</span></label>
                      <select id="eventStatus" required>
                          <option value="Draft">Save as Draft (Publish later)</option>
-                         <option value="Published">Publish Immediately</option>
                      </select>
                  </div>
             </div>
@@ -266,6 +256,26 @@
              <input type="hidden" id="editingTicketId"> </form>
     </div>
 </div>
+
+<div id="resultModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <button type="button" class="modal-close-btn" id="closeResultModal">&times;</button>
+        <div id="resultIcon" style="font-size: 50px; margin-bottom: 15px;"></div>
+        <h4 id="resultTitle"></h4>
+        <p id="resultMessage" style="margin-top: 10px;"></p>
+        <div style="margin-top: 20px;">
+            <button type="button" class="btn btn-primary" id="okResultBtn">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Đang xử lý...</span>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -371,10 +381,37 @@
                  if (currentStep < totalSteps) {
                      showStep(currentStep + 1);
                  } else {
-                     alert('Submitting form...');
+                     createEvent()
                      // wizardForm.submit();
                  }
              });
+
+            function showResultModal(success, message) {
+                const modal = document.getElementById("resultModal");
+                const icon = document.getElementById("resultIcon");
+                const title = document.getElementById("resultTitle");
+                const msg = document.getElementById("resultMessage");
+
+                if (success) {
+                    icon.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745;"></i>`;
+                    title.textContent = "Tạo sự kiện thành công!";
+                    msg.textContent = message || "Sự kiện của bạn đã được lưu và xuất bản.";
+                } else {
+                    icon.innerHTML = `<i class="fas fa-times-circle" style="color: #dc3545;"></i>`;
+                    title.textContent = "Tạo sự kiện thất bại!";
+                    msg.textContent = message || "Đã xảy ra lỗi khi tạo sự kiện. Vui lòng thử lại.";
+                }
+
+                modal.classList.add("active");
+                document.getElementById("resultModal").style.display = 'flex';
+            }
+
+            function hideResultModal() {
+                document.getElementById("resultModal").style.display = 'none';
+            }
+
+            document.getElementById("closeResultModal").addEventListener("click", hideResultModal);
+            document.getElementById("okResultBtn").addEventListener("click", hideResultModal);
 
              prevBtn.addEventListener('click', () => { if (currentStep > 1) { showStep(currentStep - 1); } });
 
@@ -504,6 +541,8 @@
                 return isValid;
             }
 
+            //initiate ticketMap
+            const ticketMap = new Map();
 
             // Save Ticket (Add/Edit)
             saveTicketBtn.addEventListener('click', () => {
@@ -515,11 +554,14 @@
                  if(editingId) {
                      // --- EDIT LOGIC ---
                      const existingLi = ticketListUl.querySelector(`li[data-ticket-id="${editingId}"]`);
-                     if(existingLi) {
-                         existingLi.querySelector('.ticket-name').textContent = ticketName;
-                         // Update other data attributes if needed
-                     }
-                      console.log("Editing ticket:", editingId, ticketName);
+                     const existingTicket = ticketMap.get(editingId);
+                     if (!existingTicket) return;
+                     existingTicket.name = document.getElementById('ticketName').value;
+                     existingTicket.price = document.getElementById('ticketPrice').value;
+                     existingTicket.quantity = document.getElementById('ticketQuantity').value;
+                     existingTicket.saleStartDate = document.getElementById('saleStart').value;
+                     existingTicket.saleEndDate = document.getElementById('saleEnd').value;
+                     existingLi.querySelector(".ticket-name").textContent = existingTicket.name;
                  } else {
                      // --- ADD NEW LOGIC ---
                      const newTicketId = `ticket_${Date.now()}`; // Simple unique ID for demo
@@ -533,9 +575,15 @@
                              <button type="button" class="btn-icon delete-ticket-btn"><i class="fas fa-trash-alt"></i></button>
                          </div>
                      `;
+                     const newTicket = {
+                        name : document.getElementById('ticketName').value,
+                        price : document.getElementById('ticketPrice').value,
+                        quantity : document.getElementById('ticketQuantity').value,
+                        saleStartDate: document.getElementById('saleStart').value,
+                        saleEndDate: document.getElementById('saleEnd').value
+                     }
+                     ticketMap.set(newTicketId, newTicket);
                      ticketListUl.appendChild(li);
-                     console.log("Adding new ticket:", newTicketId, ticketName);
-
                      // Add event listeners to the new buttons
                      li.querySelector('.edit-ticket-btn').addEventListener('click', handleEditTicket);
                      li.querySelector('.delete-ticket-btn').addEventListener('click', handleDeleteTicket);
@@ -553,14 +601,17 @@
                  const li = event.target.closest('li');
                  const ticketId = li.dataset.ticketId;
                  const ticketName = li.querySelector('.ticket-name').textContent;
+                 const existingTicket = ticketMap.get(ticketId);
+                 if(!existingTicket) return;
+
 
                  // --- Populate Modal Form (You'd fetch full data here in real app) ---
                  ticketForm.reset(); // Clear first
-                 document.getElementById('ticketName').value = ticketName;
-                 // Simulate fetching other data - replace with actual data loading
-                 document.getElementById('ticketPrice').value = '10'; // Example
-                 document.getElementById('ticketQuantity').value = '50'; // Example
-                 document.getElementById('isFree').checked = false; // Example
+                 document.getElementById('ticketName').value = existingTicket.name;
+                 document.getElementById('ticketPrice').value = existingTicket.price;
+                 document.getElementById('ticketQuantity').value = existingTicket.quantity;
+                 document.getElementById('saleStart').value = existingTicket.saleStartDate;
+                 document.getElementById('saleEnd').value = existingTicket.saleEndDate;
                  ticketPriceInput.disabled = false;
                  // ... populate other fields ...
 
@@ -575,7 +626,7 @@
                  const li = event.target.closest('li');
                  if (confirm(`Are you sure you want to delete the ticket "${li.querySelector('.ticket-name').textContent}"?`)) {
                      li.remove();
-                     console.log("Deleting ticket:", li.dataset.ticketId);
+                     ticketMap.delete(li.dataset.ticketId);
                      updateStepHeight(); // Recalculate step height
                  }
              }
@@ -586,6 +637,96 @@
 
 
             showStep(1); // Initialize first step
+
+            // store ticket type
+            
+           
+            async function loadCategories() {
+                try {
+                    const res = await fetch('https://localhost:7063/api/event/getalleventcategories', {
+                        method: 'GET',
+                    });
+
+                    if (!res.ok) {
+                        throw new Error("Không thể tải danh sách category");
+                    }
+
+                    const categories = await res.json();
+
+                    const select = document.getElementById("eventCategory");
+
+                    // Xóa hết option cũ trừ dòng đầu
+                    select.innerHTML = '<option value="" disabled selected>Select a category...</option>';
+
+                    // Thêm từng category vào select
+                    categories.forEach(cat => {
+                        const option = document.createElement("option");
+                        option.value = cat.categoryId;
+                        option.textContent = cat.name;
+                        select.appendChild(option);
+                    });
+
+                } catch (err) {
+                    console.error("Lỗi khi tải categories:", err);
+                }
+            }
+
+            loadCategories();
+
+            async function createEvent() {
+                // Tạo đối tượng CreateEventDto từ dữ liệu người dùng nhập
+                const createEventDto = {
+                    title: document.getElementById("eventTitle").value,
+                    description: document.getElementById("eventDescription").value,
+                    startTime: document.getElementById("startTime").value,
+                    endTime: document.getElementById("endTime").value,
+                    eventType: document.getElementById("eventType").value,
+                    eventStatus: document.getElementById("eventStatus").value,
+                    location: "",
+                    coverImageUrl: document.getElementById("coverImage").value,
+                    cardImageUrl: document.getElementById("cardImage").value,
+                    organizerName: document.getElementById("organizerName").value,
+                    organizerInfo: document.getElementById("organizerInfo").value,
+                    organizerLogoUrl: document.getElementById("organizerLogo").value,
+                    venueName: document.getElementById("venueName").value,
+                    addressStreet: document.getElementById("addressStreet").value,
+                    addressWard: document.getElementById("addressWard").value,
+                    addressDistrict: document.getElementById("addressDistrict").value,
+                    addressCity: document.getElementById("addressCity").value,
+                    categoryId: document.getElementById("eventCategory").value,
+                };
+
+
+                // Gộp thành request cuối
+                const requestData = {
+                    createEventDto,
+                    createTicketTypeList: [...ticketMap.values()]
+                };
+                document.getElementById("loadingOverlay").style.display = "flex";
+                try {
+                    const response = await fetch('https://localhost:7063/api/event/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (response.ok) {
+                        showResultModal(true, "Sự kiện đã được tạo thành công!");
+                        setTimeout(() => {
+                            window.location.href = "/";
+                        }, 2000);
+                        // 
+                    } else {
+                        const errorText = await response.text();
+                        showResultModal(false, response.text());
+                    }
+                } catch (err) {
+                    showResultModal(false, "Vui lòng kiểm tra lại thông tin và thử lại.");
+                    console.error("Lỗi:", err);
+                }
+                document.getElementById("loadingOverlay").style.display = "none";
+            }
         });
     </script>
 }
