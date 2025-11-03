@@ -29,6 +29,7 @@
                     <ul>
                         <li><a href="#profile-details" class="active"><i class="fas fa-user-edit"></i> Profile Details</a></li>
                         <li><a href="#applied-events"><i class="fas fa-calendar-check"></i> Applied Events</a></li>
+                        <li><a href="#speaker-profile"><i class="fas fa-microphone-alt"></i> Speaker Profile</a></li>
                         <li><a href="#change-password"><i class="fas fa-key"></i> Change Password</a></li>
                         <li><a href="#recommended-events"><i class="fas fa-star"></i> Recommended Events</a></li>
                         <li><a href="#partner-recommendations"><i class="fas fa-users"></i> Partner Recommendations</a></li>
@@ -150,7 +151,53 @@
                         </div>
                     </div>
                 </section>
+                <section id="speaker-profile" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Speaker Profile</h3>
+                        </div>
+                        <form>
+                            <div class="form-group">
+                                <input type="text" id="speakerStatus" value="Approved" placeholder=" " disabled>
+                                <label for="speakerStatus">Approval Status</label>
+                            </div>
 
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <input type="text" id="speakerCompany" value="EventPlatform Inc." placeholder=" ">
+                                    <label for="speakerCompany">Company</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="speakerJobTitle" value="Lead Developer" placeholder=" ">
+                                    <label for="speakerJobTitle">Job Title</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea id="speakerBio" placeholder=" ">Passionate about .NET, C#, and building communities. Eager to share insights on modern web development.</textarea>
+                                <label for="speakerBio">Speaker Bio</label>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea id="speakerTopics" rows="3" placeholder=" ">e.g., ASP.NET Core, Blazor, Microservices, Public Speaking...</textarea>
+                                <label for="speakerTopics">Topics of Interest</label>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <input type="url" id="speakerWebsite" value="https://myblog.com" placeholder=" ">
+                                    <label for="speakerWebsite">Website/Blog URL</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="url" id="speakerLinkedIn" value="https://linkedin.com/in/..." placeholder=" ">
+                                    <label for="speakerLinkedIn">LinkedIn URL</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn">Update Speaker Profile</button>
+                        </form>
+                    </div>
+                </section>
                 <section id="change-password" class="content-section">
                     <div class="card">
                         <div class="card-header"><h3>Change Your Password</h3></div>
