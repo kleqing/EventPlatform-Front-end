@@ -643,7 +643,7 @@
            
             async function loadCategories() {
                 try {
-                    const res = await fetch('https://localhost:7063/api/event/getalleventcategories', {
+                    const res = await fetch('https://localhost:7063/api/events/getalleventcategories', {
                         method: 'GET',
                     });
 
@@ -704,7 +704,7 @@
                 };
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
-                    const response = await fetch('https://localhost:7063/api/event/create', {
+                    const response = await fetch('https://localhost:7063/api/events/create', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
