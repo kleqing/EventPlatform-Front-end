@@ -280,29 +280,52 @@
     <script>
         async function checkAuth() {
             const authContainer = document.getElementById('auth-container');
+            const cachedUser = localStorage.getItem("user");
 
-            try {
-                const res = await fetch('https://localhost:7063/api/user/me', {
-                    method: 'GET',
-                    credentials: 'include'
-                });
+            if (cachedUser) {
+                const user = JSON.parse(cachedUser);
+                authContainer.innerHTML = `
+                <div class="user-info">
+                    <span class="username d-none d-md-inline">Welcome, ${user.fullName || 'User'}</span>
+                    <a href="/Profile" class="btn-sm-custom btn-outline-primary">Profile</a>
+                    <button id="logoutBtn" class="btn-sm-custom btn-outline-danger">Logout</button>
+                </div>
+        `;
+                syncUser();
+                return;
+            }
+            await syncUser();
+            
+            async function syncUser() {
+                try {
+                    const res = await fetch('https://localhost:7063/api/user/me', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
 
-                if (res.ok) {
-                    const user = await res.json();
-                    // Hiển thị giao diện đã đăng nhập
-                    authContainer.innerHTML = `
-                                <div class="user-info">
-                                     <span class="username d-none d-md-inline">Welcome, ${user.fullName || 'User'}</span>
-                                     <a href="/Profile" class="btn-sm-custom btn-outline-primary">Profile</a>
-                                     <button id="logoutBtn" class="btn-sm-custom btn-outline-danger">Logout</button>
-                                </div>
-                            `;
-                } else {
-                    // Hiển thị giao diện chưa đăng nhập
-                    authContainer.innerHTML = '<a href="/Auth" class="btn-sm-custom btn-outline-primary">Login</a>';
+                    if (res.ok) {
+                        const user = await res.json();
+                        const current = JSON.parse(localStorage.getItem("user") || "{}");
+                        const merged = { ...current, ...user };
+                        localStorage.setItem("user", JSON.stringify(merged));
+                        authContainer.innerHTML = `
+                        <div class="user-info">
+                            <span class="username d-none d-md-inline">Welcome, ${user.fullName || 'User'}</span>
+                            <a href="/Profile" class="btn-sm-custom btn-outline-primary">Profile</a>
+                            <button id="logoutBtn" class="btn-sm-custom btn-outline-danger">Logout</button>
+                        </div>
+                `;
+                    } else {
+                        showLoginBtn();
+                    }
+                } catch (err) {
+                    console.error('Auth check failed:', err);
+                    showLoginBtn();
                 }
-            } catch (err) {
-                console.error('Auth check failed:', err);
+            }
+
+            function showLoginBtn() {
+                localStorage.removeItem("user");
                 authContainer.innerHTML = '<a href="/Auth" class="btn-sm-custom btn-outline-primary">Login</a>';
             }
         }
@@ -318,6 +341,7 @@
                             method: 'POST',
                             credentials: 'include'
                         });
+                        localStorage.removeItem("user");
                         if (res.ok) {
                             alert('Logout success!');
                             window.location.reload();
