@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section id="dashboard" class="content-section">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-1"><i class="fas fa-eye"></i></div>
+            <div class="stat-info">
+                <h4>12,560</h4>
+                <p>Total Visits (30 Days)</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-2"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <h4>1,200</h4>
+                <p>Total Users</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-3"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info">
+                <h4>450</h4>
+                <p>Total Events</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-4"><i class="fas fa-hourglass-half"></i></div>
+            <div class="stat-info">
+                <h4>12</h4>
+                <p>Pending Approvals</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card" style="margin-top: 30px;">
+        <div class="card-header"><h3>Site Visits (Last 7 Days)</h3></div>
+        <div class="chart-container">
+            <canvas id="visitsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Quick Access: Pending Events</h3></div>
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Event Title</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>New AI in Business Conference</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td class="table-actions">
+                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Local Music Fest 2025</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td class="table-actions">
+                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function() {
+            const ctx = document.getElementById('visitsChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                        datasets: [{
+                            label: 'Visits',
+                            data: [120, 190, 300, 500, 320, 400, 450],
+                            borderColor: 'var(--primary-color)',
+                            backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        })();
+    </script>
+}

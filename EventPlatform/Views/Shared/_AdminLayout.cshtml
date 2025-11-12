@@ -1,0 +1,61 @@
+﻿@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Admin Panel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="~/css/admin.css" />
+</head>
+<body>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <i class="fas fa-fan"></i> EventPlatform
+                <br><span>Admin Panel</span>
+            </div>
+
+            <ul class="admin-nav">
+                <li><a asp-controller="Admin" asp-action="Index" class="@(currentAction == "Index" ? "active" : "")"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a asp-controller="Admin" asp-action="Events" class="@(currentAction == "Events" ? "active" : "")"><i class="fas fa-calendar-alt"></i> Event Management</a></li>
+                <li><a asp-controller="Admin" asp-action="Users" class="@(currentAction == "Users" ? "active" : "")"><i class="fas fa-users-cog"></i> User Management</a></li>
+                <li><a asp-controller="Admin" asp-action="Transactions" class="@(currentAction == "Transactions" ? "active" : "")"><i class="fas fa-receipt"></i> Transactions</a></li>
+                <li><a asp-controller="Admin" asp-action="Speakers" class="@(currentAction == "Speakers" ? "active" : "")"><i class="fas fa-microphone-alt"></i> Speaker Applications</a></li>
+                <li><a asp-controller="Admin" asp-action="Categories" class="@(currentAction == "Categories" ? "active" : "")"><i class="fas fa-tags"></i> Categories</a></li>
+
+                <li class="nav-footer"><a asp-controller="Home" asp-action="Index"><i class="fas fa-sign-out-alt"></i> Back to Main Site</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 id="pageTitle">@ViewData["Title"]</h1>
+                <div class="admin-profile">
+                    <img src="https://via.placeholder.com/40x40/2c3e50/fff?text=A" alt="Admin Avatar">
+                    <div>
+                        <strong>Admin</strong>
+                        <br><span style="color: #777; font-size: 13px;">admin@eventplatform.com</span>
+                    </div>
+                </div>
+            </header>
+
+            @RenderBody()
+
+        </main>
+    </div>
+
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

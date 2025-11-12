@@ -46,7 +46,10 @@
                 <button class="interest-tag" data-interest="Startups">Startups</button>
                 <button class="interest-tag" data-interest="Web Development">Web Development</button>
             </div>
-
+            <div class="add-interest-form">
+                <input type="text" id="customInterestInput" placeholder="Or add your own...">
+                <button type="button" id="addCustomInterestBtn" class="btn-add-tag">+</button>
+            </div>
             <div class="modal-footer">
                 <p id="interestModalError" class="modal-error-message">Vui lòng chọn ít nhất một sở thích để tiếp tục.</p>
 
@@ -558,10 +561,15 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('interestModal');
-        const modalContent = modal.querySelector('.modal-content'); // Lấy content để rung lắc
+        const modalContent = modal.querySelector('.modal-content');
         const saveInterestsBtn = document.getElementById('saveInterestsBtn');
         const interestsGrid = document.getElementById('interestsGrid');
-        const modalError = document.getElementById('interestModalError'); // Lấy thông báo lỗi
+        const modalError = document.getElementById('interestModalError');
+
+        // === LẤY CÁC PHẦN TỬ MỚI ===
+        const customInterestInput = document.getElementById('customInterestInput');
+        const addCustomInterestBtn = document.getElementById('addCustomInterestBtn');
+
 
         function openInterestModal() {
             if (modal) {
@@ -575,7 +583,44 @@
             }
         }
 
-        interestsGrid.addEventListener('click', function(e) {
+        // === HÀM THÊM TAG MỚI VÀO LƯỚI ===
+        function addNewInterestTag(interestName) {
+            // Chuẩn hóa tên (viết hoa chữ cái đầu, bỏ khoảng trắng thừa)
+            const formattedName = interestName.trim();
+            if (formattedName === "") {
+                return; // Không thêm nếu trống
+            }
+
+            // Kiểm tra xem tag đã tồn tại chưa
+            const existingTags = interestsGrid.querySelectorAll('.interest-tag');
+            let exists = false;
+            existingTags.forEach(tag => {
+                if (tag.dataset.interest.toLowerCase() === formattedName.toLowerCase()) {
+                    exists = true;
+                    // Nếu đã tồn tại, chỉ cần active nó lên
+                    tag.classList.add('active');
+                }
+            });
+
+            // Nếu chưa tồn tại, tạo mới
+            if (!exists) {
+                const newTag = document.createElement('button');
+                newTag.classList.add('interest-tag', 'active'); // Tự động active khi thêm
+                newTag.dataset.interest = formattedName;
+                newTag.textContent = formattedName;
+                interestsGrid.appendChild(newTag);
+            }
+
+            // Xóa nội dung ô input
+            customInterestInput.value = "";
+            // Ẩn lỗi (nếu có)
+            modalError.style.display = 'none';
+            modalContent.classList.remove('error-shake');
+        }
+
+
+        // === XỬ LÝ CLICK CHỌN SỞ THÍCH ===
+        interestsGrid.addEventListener('click', function (e) {
             if (e.target.classList.contains('interest-tag')) {
                 e.target.classList.toggle('active');
                 modalError.style.display = 'none';
@@ -583,6 +628,20 @@
             }
         });
 
+        // === XỬ LÝ NÚT THÊM TAG MỚI ===
+        addCustomInterestBtn.addEventListener('click', () => {
+            addNewInterestTag(customInterestInput.value);
+        });
+
+        // Xử lý khi nhấn Enter trong ô input
+        customInterestInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Ngăn form submit (nếu có)
+                addNewInterestTag(customInterestInput.value);
+            }
+        });
+
+        // === XỬ LÝ NÚT LƯU (BẮT BUỘC CHỌN) ===
         saveInterestsBtn.addEventListener('click', () => {
             const selectedInterests = [];
             interestsGrid.querySelectorAll('.interest-tag.active').forEach(tag => {
@@ -592,23 +651,21 @@
             if (selectedInterests.length === 0) {
                 modalError.style.display = 'block';
                 modalContent.classList.add('error-shake');
-
                 setTimeout(() => {
                     modalContent.classList.remove('error-shake');
                 }, 300);
-
                 return;
             }
 
             console.log('Sở thích đã chọn:', selectedInterests);
             // !! TẠI ĐÂY: Bạn sẽ gọi hàm fetch() để gửi mảng `selectedInterests` này lên server
-            // ví dụ: fetch('/api/user/SaveInterests', { method: 'POST', body: JSON.stringify(selectedInterests), ... })
 
             closeInterestModal();
         });
 
+        // Tự động mở modal
         setTimeout(() => {
-             openInterestModal();
+            openInterestModal();
         }, 1000);
 
     });

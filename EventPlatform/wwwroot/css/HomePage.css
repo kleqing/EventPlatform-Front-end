@@ -1082,4 +1082,46 @@ footer {
 .modal-content.error-shake {
     animation: shake-error 0.3s;
 }
+/* === CSS CHO THÊM SỞ THÍCH TÙY CHỈNH === */
+.add-interest-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-top: 1px solid var(--border-color, #e4e6eb);
+    padding-top: 20px;
+}
 
+    .add-interest-form input[type="text"] {
+        flex: 1; /* Chiếm hết không gian còn lại */
+        padding: 10px 15px;
+        border: 2px solid var(--border-color, #e4e6eb);
+        border-radius: 20px; /* Bo tròn giống thẻ tag */
+        font-size: 14px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: border-color 0.2s;
+    }
+
+        .add-interest-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color, #e91e63);
+        }
+
+.btn-add-tag {
+    flex-shrink: 0; /* Không bị co lại */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Nút tròn */
+    border: none;
+    background-color: var(--primary-color, #e91e63);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    line-height: 38px; /* Căn dấu + vào giữa */
+}
+
+    .btn-add-tag:hover {
+        background-color: var(--primary-color-dark, #c2154a);
+        transform: scale(1.05);
+    }
