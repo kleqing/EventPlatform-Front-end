@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Speaker Applications";
+}
+
+<section id="manage-speakers" class="content-section">
+    <div class="card">
+        <div class="card-header"><h3>Speaker Applications</h3></div>
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Company</th>
+                        <th>Job Title</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <img src="https://via.placeholder.com/40x40/e91e63/fff?text=SA" alt="Avatar">
+                                <strong>Santiago Axel</strong>
+                            </div>
+                        </td>
+                        <td>EventPlatform Inc.</td>
+                        <td>Lead Developer</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td class="table-actions">
+                            <button class="btn btn-secondary btn-sm open-speaker-modal-btn"><i class="fas fa-eye"></i> View Bio</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <img src="https://via.placeholder.com/40x40/7b1fa2/fff?text=B" alt="Avatar">
+                                <strong>Bao Tran</strong>
+                            </div>
+                        </td>
+                        <td>AI Solutions Ltd.</td>
+                        <td>Data Scientist</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td class="table-actions">
+                            <button class="btn btn-secondary btn-sm open-speaker-modal-btn"><i class="fas fa-eye"></i> View Bio</button>
+                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<div id="speakerDetailModal" class="modal-overlay">
+    <div class="modal-content">
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+        <h3>Speaker Application Details</h3>
+        <div class="modal-body">
+            <p><strong>Applicant:</strong> <span id="modalSpeakerName">Bao Tran</span></p>
+            <p><strong>Company:</strong> <span id="modalSpeakerCompany">AI Solutions Ltd.</span></p>
+            <p><strong>Job Title:</strong> <span id="modalSpeakerTitle">Data Scientist</span></p>
+            <hr style="border:0; border-top: 1px solid #eee; margin: 15px 0;">
+            <p><strong>Bio:</strong></p>
+            <p id="modalSpeakerBio">Passionate about AI and Machine Learning. Looking to connect with other professionals in the field and share insights on new data models.</p>
+            <p><strong>Topics:</strong></p>
+            <p id="modalSpeakerTopics">AI, Machine Learning, Startups, Data Science</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="modalCloseBtn">Close</button>
+            <button type="button" class="btn btn-danger"><i class="fas fa-times"></i> Reject</button>
+            <button type="button" class="btn btn-success"><i class="fas fa-check"></i> Approve</button>
+        </div>
+    </div>
+</div>

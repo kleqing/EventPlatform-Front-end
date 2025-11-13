@@ -1,0 +1,517 @@
+﻿/* === Kế thừa Biến màu từ trang User === */
+:root {
+    --primary-color: #e91e63;
+    --primary-color-dark: #c2154a;
+    --primary-color-light: #fdf2f7;
+    --secondary-color: #f4f7fc; /* Nền chính (sáng) */
+    --text-color-dark: #2c3e50; /* Sidebar Background */
+    --text-color-light: #8492a6; /* Chữ phụ */
+    --border-color: #e4e6eb;
+    --white-color: #fff;
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.12);
+    /* Màu trạng thái */
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+}
+
+/* === Reset & Body === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--text-color-dark);
+    line-height: 1.6;
+}
+
+/* === Bố cục Admin === */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr; /* Sidebar 260px, còn lại là nội dung */
+    min-height: 100vh;
+}
+
+/* === Sidebar (Khác biệt chính) === */
+.admin-sidebar {
+    background-color: var(--text-color-dark); /* Nền tối */
+    color: #ccc;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    width: 260px;
+}
+
+.admin-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white-color);
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #4a5a6a;
+    margin-bottom: 20px;
+}
+
+    .admin-logo i {
+        color: var(--primary-color);
+    }
+
+    .admin-logo span {
+        color: var(--text-color-light);
+        font-weight: 400;
+        font-size: 14px;
+    }
+
+.admin-nav {
+    list-style: none;
+    flex-grow: 1;
+}
+
+    .admin-nav li a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 14px 18px;
+        margin: 5px 0;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #ccc;
+        font-weight: 500; /* Chữ nhạt hơn */
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+        .admin-nav li a i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .admin-nav li a:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--white-color);
+        }
+
+        .admin-nav li a.active {
+            background-color: rgba(233, 30, 99, 0.1); /* Nền hồng mờ */
+            color: var(--primary-color); /* Chữ hồng */
+            font-weight: 600;
+            border-left: 4px solid var(--primary-color);
+        }
+
+    .admin-nav .nav-footer {
+        margin-top: auto;
+    }
+
+        .admin-nav .nav-footer a {
+            border-top: 1px solid #4a5a6a;
+            border-left: none;
+        }
+
+/* === Nội dung chính === */
+.admin-main {
+    grid-column: 2 / 3;
+    padding: 30px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: var(--white-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+    .admin-header h1 {
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+    .admin-profile img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #ddd;
+    }
+
+    .admin-profile span {
+        font-weight: 600;
+    }
+
+/* Animation chung cho trang */
+.content-section {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Thẻ Card */
+.card {
+    background: var(--white-color);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.card-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .card-header h3 {
+        font-size: 20px;
+        margin: 0;
+        color: var(--text-color-dark);
+    }
+
+/* Thẻ thống kê */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+/* auto-fit */
+.stat-card {
+    background: var(--white-color);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+.stat-icon {
+    font-size: 28px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Ngăn co lại */
+}
+
+.stat-icon-1 {
+    background-color: #e0f7fa;
+    color: #00796b;
+}
+/* Xanh mint */
+.stat-icon-2 {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+/* Cam */
+.stat-icon-3 {
+    background-color: #fce4ec;
+    color: #e91e63;
+}
+/* Hồng */
+.stat-icon-4 {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+/* Tím */
+.stat-info h4 {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stat-info p {
+    font-size: 15px;
+    color: var(--text-color-light);
+}
+
+/* Biểu đồ */
+.chart-container {
+    height: 350px;
+    margin-top: 20px;
+    position: relative; /* Thêm để chart.js responsive */
+}
+
+/* Bảng (Table) Admin */
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Cho phép cuộn ngang trên mobile */
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    min-width: 800px; /* Đảm bảo bảng không bị vỡ quá nhỏ */
+}
+
+    .admin-table thead {
+        background-color: #f1f3f5; /* Nền header bảng */
+    }
+
+    .admin-table th, .admin-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        white-space: nowrap; /* Ngăn text xuống dòng */
+    }
+
+    .admin-table th {
+        font-weight: 600;
+        color: var(--text-color-light);
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: #fdfdfd;
+    }
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .user-cell img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+    }
+
+/* Huy hiệu Trạng thái (Status Badges) */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-approved {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-active {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-banned {
+    background-color: #e5e7eb;
+    color: #4b5563;
+}
+
+/* Nút Admin */
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: #333;
+}
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Modal (Tái sử dụng từ MyProfile) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--white-color);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-hover);
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-color-light);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+    .modal-close-btn:hover {
+        color: var(--text-color-dark);
+    }
+
+.modal-content h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-color-dark);
+    margin-bottom: 25px;
+    padding-right: 30px;
+}
+
+.modal-body {
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+    .modal-body p {
+        margin-bottom: 10px;
+    }
+
+    .modal-body strong {
+        color: #555;
+    }
+
+.modal-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .admin-layout {
+        grid-template-columns: 1fr; /* Chuyển 1 cột */
+    }
+
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: static; /* Bỏ sticky */
+    }
+
+    .admin-main {
+        grid-column: 1 / -1;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}

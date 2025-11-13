@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Transaction History";
+}
+
+<!-- === TAB: QUẢN LÝ GIAO DỊCH === -->
+<section id="manage-transactions" class="content-section">
+    <div class="card">
+        <div class="card-header">
+            <h3>Transaction History</h3>
+        </div>
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>User Email</th>
+                        <th>Event</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span title="ch_3QCy8X...">ch_3QCy...</span>
+                        </td>
+                        <td>2025-11-10 14:30 PM</td>
+                        <td>santiago.axel@example.com</td>
+                        <td>Global Tech Conference 2025</td>
+                        <td>$120.00</td>
+                        <td><span class="status-badge status-approved">Succeeded</span></td>
+                        <td class="table-actions">
+                            <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> View Details</button>
+                        </td>
+                    </tr>
+                    <!-- ... (các hàng khác) ... -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
