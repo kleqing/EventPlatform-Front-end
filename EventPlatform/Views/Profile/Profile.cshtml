@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Profile.css" />
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
 
 </head>
 
@@ -101,53 +100,15 @@
 
                         <div class="tab-content-container">
                             <div id="tab-all" class="tab-content-panel active">
-                                <div id="calendar-container">
-                                    <div id="calendar"></div>
-                                </div>
+                                <div class="event-list" id="appliedEventsAll"></div>
                             </div>
 
                             <div id="tab-offline" class="tab-content-panel">
-                                <div class="event-list">
-                                    <div class="event-card" data-title="Global Tech Conference 2025"
-                                        data-start="2025-10-25T09:00:00" data-end="2025-10-25T17:00:00"
-                                        data-location="New York" data-type="Offline" data-icon="fas fa-globe">
-                                        <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf"
-                                            alt="Event" class="event-card-thumb">
-                                        <div class="event-card-details">
-                                            <h4>Global Tech Conference 2025</h4>
-                                            <div class="event-card-meta">
-                                                <span><i class="far fa-calendar-alt"></i> Oct 25, 2025</span>
-                                                <span><i class="fas fa-map-marker-alt"></i> New York</span>
-                                                <span><i class="fas fa-globe"></i> Offline</span>
-                                            </div>
-                                        </div>
-                                        <div class="event-card-actions">
-                                            <button class="btn btn-view-details">View Ticket</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="event-list" id="appliedEventsOffline"></div>
                             </div>
 
                             <div id="tab-online" class="tab-content-panel">
-                                <div class="event-list">
-                                    <div class="event-card" data-title="Advanced CSS Webinar"
-                                        data-start="2025-11-10T14:00:00" data-end="2025-11-10T16:00:00"
-                                        data-location="Zoom" data-type="Online" data-icon="fas fa-wifi">
-                                        <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar"
-                                            alt="Event" class="event-card-thumb">
-                                        <div class="event-card-details">
-                                            <h4>Advanced CSS Webinar</h4>
-                                            <div class="event-card-meta">
-                                                <span><i class="far fa-calendar-alt"></i> Nov 10, 2025</span>
-                                                <span><i class="fas fa-laptop"></i> Zoom</span>
-                                                <span><i class="fas fa-wifi"></i> Online</span>
-                                            </div>
-                                        </div>
-                                        <div class="event-card-actions">
-                                            <button class="btn btn-view-details">Join Event</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="event-list" id="appliedEventsOnline"></div>
                             </div>
                         </div>
                     </div>
@@ -592,71 +553,212 @@
                 });
             }
 
-            // === DỮ LIỆU SỰ KIỆN MẪU (BẠN SẼ TẢI TỪ DATABASE) ===
-            const myEvents = [
-                {
-                    title: 'Global Tech Conference',
-                    start: '2025-10-25T09:00:00',
-                    end: '2025-10-25T17:00:00',
-                    extendedProps: {
-                        location: 'New York',
-                        type: 'Offline',
-                        icon: 'fas fa-globe'
-                    }
-                },
-                {
-                    title: 'Advanced CSS Webinar',
-                    start: '2025-11-10T14:00:00',
-                    end: '2025-11-10T16:00:00',
-                    extendedProps: {
-                        location: 'Zoom',
-                        type: 'Online',
-                        icon: 'fas fa-wifi'
-                    }
-                },
-                {
-                    title: 'My Applied Event (Demo)',
-                    start: '2025-10-31T14:00:00', // 2:00 PM
-                    end: '2025-10-31T15:00:00',   // 3:00 PM
-                    extendedProps: {
-                        location: 'Da Nang, Vietnam',
-                        type: 'Offline',
-                        icon: 'fas fa-map-marker-alt'
-                    }
-                }
-            ];
+            // === Applied Events Section ===
+            const appliedEventsContainers = {
+                all: document.getElementById('appliedEventsAll'),
+                offline: document.getElementById('appliedEventsOffline'),
+                online: document.getElementById('appliedEventsOnline')
+            };
 
-            // === Code Lịch (Calendar) ===
-            var calendarEl = document.getElementById('calendar');
-            var calendar; // Khai báo calendar ở đây
+            const escapeHtml = (value) => {
+                if (typeof value !== 'string') {
+                    return '';
+                }
+                return value
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            };
+
+            const formatDateRange = (start, end) => {
+                const startDate = new Date(start);
+                const endDate = end ? new Date(end) : null;
+
+                if (Number.isNaN(startDate.getTime())) {
+                    return 'Date to be announced';
+                }
+
+                const options = {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+
+                if (!endDate || Number.isNaN(endDate.getTime())) {
+                    return startDate.toLocaleString('vi-VN', options);
+                }
+
+                const sameDay = startDate.toDateString() === endDate.toDateString();
+                if (sameDay) {
+                    return `${startDate.toLocaleDateString('vi-VN', options)} - ${endDate.toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}`;
+                }
+
+                return `${startDate.toLocaleString('vi-VN', options)} - ${endDate.toLocaleString('vi-VN', options)}`;
+            };
+
+            const truncateText = (text, length = 140) => {
+                if (!text) {
+                    return '';
+                }
+                return text.length > length ? `${text.substring(0, length - 1)}…` : text;
+            };
+
+            const buildEventCard = (event, type) => {
+                const displayType = type === 'Online' ? 'Online' : 'Offline';
+                const displayLocation = type === 'Online'
+                    ? (event.onlineUrl || 'Online event')
+                    : (event.location || 'Venue to be announced');
+
+                return `
+                    <div class="event-card" data-title="${escapeHtml(event.title)}"
+                         data-start="${event.startTime}" data-end="${event.endTime || ''}"
+                         data-location="${escapeHtml(displayLocation)}" data-type="${displayType}">
+                        <div class="event-card-details">
+                            <h4>${escapeHtml(event.title)}</h4>
+                            <div class="event-card-meta">
+                                <span><i class="far fa-calendar-alt"></i> ${formatDateRange(event.startTime, event.endTime)}</span>
+                                <span><i class="fas ${displayType === 'Online' ? 'fa-globe' : 'fa-map-marker-alt'}"></i> ${escapeHtml(displayLocation)}</span>
+                                <span><i class="fas fa-info-circle"></i> ${escapeHtml(event.eventStatus || 'Status unknown')}</span>
+                            </div>
+                            <p>${escapeHtml(truncateText(event.description))}</p>
+                        </div>
+                        <div class="event-card-actions">
+                            <button class="btn btn-view-details">View Details</button>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const renderEvents = (container, events, emptyMessage, type) => {
+                if (!container) {
+                    return;
+                }
+
+                if (!events || events.length === 0) {
+                    container.innerHTML = `<div class="empty-state">${emptyMessage}</div>`;
+                    return;
+                }
+
+                container.innerHTML = events
+                    .map(evt => buildEventCard(evt, type ?? (evt.onlineUrl ? 'Online' : 'Offline')))
+                    .join('');
+            };
+
+            const attachEventCardHandlers = () => {
+                document.querySelectorAll('.event-card .btn-view-details').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const card = this.closest('.event-card');
+                        if (!card) {
+                            return;
+                        }
+
+                        openEventModal(
+                            card.dataset.title,
+                            card.dataset.start,
+                            card.dataset.end,
+                            card.dataset.location,
+                            card.dataset.type
+                        );
+                    });
+                });
+            };
+
+            const showAppliedEventsError = (message) => {
+                Object.values(appliedEventsContainers).forEach(container => {
+                    if (!container) {
+                        return;
+                    }
+                    container.innerHTML = `<div class="empty-state error">${message}</div>`;
+                });
+            };
+
+            const fetchAppliedEvents = async () => {
+                if (!appliedEventsContainers.all) {
+                    return;
+                }
+
+                Object.values(appliedEventsContainers).forEach(container => {
+                    if (container) {
+                        container.innerHTML = '<div class="empty-state">Loading events...</div>';
+                    }
+                });
+
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/events/applied`, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+
+                    const result = await response.json().catch(() => null);
+
+                    if (!response.ok || !result?.success) {
+                        showAppliedEventsError(result?.message || 'Unable to load applied events.');
+                        return;
+                    }
+
+                    const offlineEvents = result.data?.offlineEvents ?? [];
+                    const onlineEvents = result.data?.onlineEvents ?? [];
+                    const allEvents = [...offlineEvents, ...onlineEvents];
+
+                    renderEvents(appliedEventsContainers.all, allEvents, 'You have not applied to any events yet.');
+                    renderEvents(appliedEventsContainers.offline, offlineEvents, 'No offline events found.', 'Offline');
+                    renderEvents(appliedEventsContainers.online, onlineEvents, 'No online events found.', 'Online');
+
+                    attachEventCardHandlers();
+                } catch (error) {
+                    showAppliedEventsError('Unable to load applied events.');
+                }
+            };
+
+            fetchAppliedEvents();
 
             // === Code Modal ===
             const modal = document.getElementById('eventDetailModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
 
             // --- Hàm mở Modal chung ---
-            function openEventModal(title, start, end, location, type, icon) {
-                var startTime = new Date(start).toLocaleString('en-US', {
-                    hour: 'numeric', minute: 'numeric', hour12: true
-                });
-                var endTime = new Date(end).toLocaleString('en-US', {
-                    hour: 'numeric', minute: 'numeric', hour12: true
-                });
-                var startDate = new Date(start).toLocaleString('en-US', {
-                    year: 'numeric', month: 'long', day: 'numeric'
-                });
+            function openEventModal(title, start, end, location, type) {
+                const startDate = new Date(start);
+                const endDate = end ? new Date(end) : null;
 
-                document.getElementById('modalEventTitle').textContent = title;
-                document.getElementById('modalEventTime').textContent = `${startDate} (${startTime} - ${endTime})`;
-                document.getElementById('modalEventLocation').textContent = location;
-                document.getElementById('modalEventType').textContent = type;
+                const hasValidStart = !Number.isNaN(startDate.getTime());
+                const hasValidEnd = endDate && !Number.isNaN(endDate.getTime());
 
-                var locationIcon = document.getElementById('modalEventLocation').previousElementSibling;
-                locationIcon.className = `fas ${icon || 'fa-map-marker-alt'}`;
-                // Cập nhật icon cho Type
-                var typeIconEl = document.getElementById('modalEventType').previousElementSibling;
-                typeIconEl.className = `fas ${icon || 'fa-globe'}`;
+                const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
 
+                const startDateText = hasValidStart ? startDate.toLocaleDateString('vi-VN', dateOptions) : 'Date to be announced';
+                const startTimeText = hasValidStart ? startDate.toLocaleTimeString('vi-VN', timeOptions) : '';
+                const endTimeText = hasValidEnd ? endDate.toLocaleTimeString('vi-VN', timeOptions) : '';
+
+                let timeDisplay = startDateText;
+                if (startTimeText) {
+                    timeDisplay += ` (${startTimeText}`;
+                    timeDisplay += endTimeText ? ` - ${endTimeText})` : ')';
+                }
+
+                const normalizedType = type === 'Online' ? 'Online' : 'Offline';
+                const locationIconClass = normalizedType === 'Online' ? 'fa-globe' : 'fa-map-marker-alt';
+                const typeIconClass = normalizedType === 'Online' ? 'fa-wifi' : 'fa-users';
+                const locationDisplay = location || (normalizedType === 'Online' ? 'Online event' : 'Venue to be announced');
+
+                document.getElementById('modalEventTitle').textContent = title || 'Event details';
+                document.getElementById('modalEventTime').textContent = timeDisplay;
+                document.getElementById('modalEventLocation').textContent = locationDisplay;
+                document.getElementById('modalEventType').textContent = normalizedType;
+
+                const locationIcon = document.getElementById('modalEventLocation').previousElementSibling;
+                locationIcon.className = `fas ${locationIconClass}`;
+
+                const typeIconEl = document.getElementById('modalEventType').previousElementSibling;
+                typeIconEl.className = `fas ${typeIconClass}`;
 
                 modal.style.display = 'flex';
             }
@@ -668,97 +770,23 @@
                     if (e.target === modal) { modal.style.display = 'none'; }
                 });
             }
-
             // === Code điều khiển Tab Lịch/List (All/Offline/Online) ===
             const tabButtons = document.querySelectorAll('#applied-events .tab-button');
             const tabPanels = document.querySelectorAll('#applied-events .tab-content-panel');
 
             tabButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    // Bỏ active
                     tabButtons.forEach(btn => btn.classList.remove('active'));
                     tabPanels.forEach(panel => panel.classList.remove('active'));
 
-                    // Active cái mới
                     this.classList.add('active');
                     const targetPanelId = this.dataset.tab;
                     const targetPanel = document.getElementById(targetPanelId);
-                    targetPanel.classList.add('active');
-
-                    // **QUAN TRỌNG: Render lại lịch nếu là tab 'All'**
-                    if (targetPanelId === 'tab-all') {
-                        // Khởi tạo calendar nếu chưa có
-                        if (!calendar) {
-                            calendar = new FullCalendar.Calendar(calendarEl, {
-                                initialView: 'dayGridMonth',
-                                headerToolbar: {
-                                    left: 'prev,next today',
-                                    center: 'title',
-                                    right: 'dayGridMonth,timeGridWeek'
-                                },
-                                events: myEvents, // Sử dụng dữ liệu mẫu
-                                eventClick: function (info) {
-                                    info.jsEvent.preventDefault();
-                                    openEventModal(
-                                        info.event.title,
-                                        info.event.start,
-                                        info.event.end,
-                                        info.event.extendedProps.location,
-                                        info.event.extendedProps.type,
-                                        info.event.extendedProps.icon
-                                    );
-                                }
-                            });
-                            calendar.render();
-                        } else {
-                            calendar.render(); // Chỉ render lại nếu đã tồn tại
-                        }
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
                     }
                 });
             });
-
-            // === Code click cho Event List (Offline/Online) ===
-            document.querySelectorAll('.event-card .btn-view-details').forEach(button => {
-                button.addEventListener('click', function () {
-                    const card = this.closest('.event-card');
-
-                    // Lấy dữ liệu từ data attributes
-                    openEventModal(
-                        card.dataset.title,
-                        new Date(card.dataset.start), // Chuyển string thành Date
-                        new Date(card.dataset.end),   // Chuyển string thành Date
-                        card.dataset.location,
-                        card.dataset.type,
-                        card.dataset.icon
-                    );
-                });
-            });
-
-            // --- Tự động kích hoạt tab "All" và render lịch lần đầu ---
-            // (Nếu tab "All" là active mặc định)
-            if (document.querySelector('#tab-all').classList.contains('active')) {
-                calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek'
-                    },
-                    events: myEvents, // Sử dụng dữ liệu mẫu
-                    eventClick: function (info) {
-                        info.jsEvent.preventDefault();
-                        openEventModal(
-                            info.event.title,
-                            info.event.start,
-                            info.event.end,
-                            info.event.extendedProps.location,
-                            info.event.extendedProps.type,
-                            info.event.extendedProps.icon
-                        );
-                    }
-                });
-                calendar.render();
-            }
         });
     </script>
 </body>
