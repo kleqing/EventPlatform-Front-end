@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,20 +15,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Profile.css" />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
-    
+
 </head>
+
 <body>
     <div class="container">
         <div class="profile-layout">
             <aside class="profile-sidebar">
                 <div class="sidebar-header">
-                    <div class="sidebar-avatar" style="background-image: url('https://via.placeholder.com/100x100/e91e63/ffffff?text=SA');"></div>
+                    <div class="sidebar-avatar"
+                        style="background-image: url('https://via.placeholder.com/100x100/e91e63/ffffff?text=SA');">
+                    </div>
                     <h2 class="sidebar-name">Santiago Axel</h2>
                     <p class="sidebar-title">Senior Visual Designer</p>
                 </div>
                 <nav class="sidebar-nav">
                     <ul>
-                        <li><a href="#profile-details" class="active"><i class="fas fa-user-edit"></i> Profile Details</a></li>
+                        <li><a href="#profile-details" class="active"><i class="fas fa-user-edit"></i> Profile
+                                Details</a></li>
                         <li><a href="#applied-events"><i class="fas fa-calendar-check"></i> Applied Events</a></li>
                         <li><a href="#speaker-profile"><i class="fas fa-microphone-alt"></i> Speaker Profile</a></li>
                         <li><a href="#change-password"><i class="fas fa-key"></i> Change Password</a></li>
@@ -80,7 +85,9 @@
 
                 <section id="applied-events" class="content-section">
                     <div class="card">
-                        <div class="card-header"><h3>My Applied Events</h3></div>
+                        <div class="card-header">
+                            <h3>My Applied Events</h3>
+                        </div>
 
                         <div class="tabs">
                             <button class="tab-button active" data-tab="tab-all">All</button>
@@ -97,14 +104,11 @@
 
                             <div id="tab-offline" class="tab-content-panel">
                                 <div class="event-list">
-                                    <div class="event-card"
-                                         data-title="Global Tech Conference 2025"
-                                         data-start="2025-10-25T09:00:00"
-                                         data-end="2025-10-25T17:00:00"
-                                         data-location="New York"
-                                         data-type="Offline"
-                                         data-icon="fas fa-globe">
-                                        <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf" alt="Event" class="event-card-thumb">
+                                    <div class="event-card" data-title="Global Tech Conference 2025"
+                                        data-start="2025-10-25T09:00:00" data-end="2025-10-25T17:00:00"
+                                        data-location="New York" data-type="Offline" data-icon="fas fa-globe">
+                                        <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf"
+                                            alt="Event" class="event-card-thumb">
                                         <div class="event-card-details">
                                             <h4>Global Tech Conference 2025</h4>
                                             <div class="event-card-meta">
@@ -122,14 +126,11 @@
 
                             <div id="tab-online" class="tab-content-panel">
                                 <div class="event-list">
-                                    <div class="event-card"
-                                         data-title="Advanced CSS Webinar"
-                                         data-start="2025-11-10T14:00:00"
-                                         data-end="2025-11-10T16:00:00"
-                                         data-location="Zoom"
-                                         data-type="Online"
-                                         data-icon="fas fa-wifi">
-                                        <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar" alt="Event" class="event-card-thumb">
+                                    <div class="event-card" data-title="Advanced CSS Webinar"
+                                        data-start="2025-11-10T14:00:00" data-end="2025-11-10T16:00:00"
+                                        data-location="Zoom" data-type="Online" data-icon="fas fa-wifi">
+                                        <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar"
+                                            alt="Event" class="event-card-thumb">
                                         <div class="event-card-details">
                                             <h4>Advanced CSS Webinar</h4>
                                             <div class="event-card-meta">
@@ -170,12 +171,14 @@
                             </div>
 
                             <div class="form-group">
-                                <textarea id="speakerBio" placeholder=" ">Passionate about .NET, C#, and building communities. Eager to share insights on modern web development.</textarea>
+                                <textarea id="speakerBio"
+                                    placeholder=" ">Passionate about .NET, C#, and building communities. Eager to share insights on modern web development.</textarea>
                                 <label for="speakerBio">Speaker Bio</label>
                             </div>
 
                             <div class="form-group">
-                                <textarea id="speakerTopics" rows="3" placeholder=" ">e.g., ASP.NET Core, Blazor, Microservices, Public Speaking...</textarea>
+                                <textarea id="speakerTopics" rows="3"
+                                    placeholder=" ">e.g., ASP.NET Core, Blazor, Microservices, Public Speaking...</textarea>
                                 <label for="speakerTopics">Topics of Interest</label>
                             </div>
 
@@ -185,7 +188,8 @@
                                     <label for="speakerWebsite">Website/Blog URL</label>
                                 </div>
                                 <div class="form-group">
-                                    <input type="url" id="speakerLinkedIn" value="https://linkedin.com/in/..." placeholder=" ">
+                                    <input type="url" id="speakerLinkedIn" value="https://linkedin.com/in/..."
+                                        placeholder=" ">
                                     <label for="speakerLinkedIn">LinkedIn URL</label>
                                 </div>
                             </div>
@@ -199,17 +203,21 @@
                         <div class="card-header"><h3>Change Your Password</h3></div>
                         <form id="changePasswordForm">
                             <div class="form-group">
-                                <input type="password" id="currentPassword" placeholder=" ">
+                                <input type="password" id="currentPassword" name="currentPassword" placeholder=" "
+                                    autocomplete="current-password">
                                 <label for="currentPassword">Current Password</label>
                             </div>
                             <div class="form-group">
-                                <input type="password" id="newPassword" placeholder=" ">
+                                <input type="password" id="newPassword" name="newPassword" placeholder=" "
+                                    autocomplete="new-password">
                                 <label for="newPassword">New Password</label>
                             </div>
                             <div class="form-group">
-                                <input type="password" id="confirmPassword" placeholder=" ">
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder=" "
+                                    autocomplete="new-password">
                                 <label for="confirmPassword">Confirm New Password</label>
                             </div>
+                            <div id="changePasswordMessage" class="form-message" style="display:none;"></div>
                             <button type="submit" class="btn">Update Password</button>
                         </form>
                     </div>
@@ -217,10 +225,13 @@
 
                 <section id="recommended-events" class="content-section">
                     <div class="card">
-                        <div class="card-header"><h3>Recommended For You</h3></div>
+                        <div class="card-header">
+                            <h3>Recommended For You</h3>
+                        </div>
                         <div class="form-grid">
                             <div class="recommended-event-card">
-                                <img src="https://via.placeholder.com/300x180/ccc/333?text=Design+Meetup" class="recommended-event-thumb" alt="Event">
+                                <img src="https://via.placeholder.com/300x180/ccc/333?text=Design+Meetup"
+                                    class="recommended-event-thumb" alt="Event">
                                 <div class="recommended-event-content">
                                     <h4>UI/UX Design Meetup 2025</h4>
                                     <div class="event-card-meta">
@@ -232,7 +243,8 @@
                                 </div>
                             </div>
                             <div class="recommended-event-card">
-                                <img src="https://via.placeholder.com/300x180/2c3e50/fff?text=AI+Summit" class="recommended-event-thumb" alt="Event">
+                                <img src="https://via.placeholder.com/300x180/2c3e50/fff?text=AI+Summit"
+                                    class="recommended-event-thumb" alt="Event">
                                 <div class="recommended-event-content">
                                     <h4>Vietnam AI Summit</h4>
                                     <div class="event-card-meta">
@@ -249,11 +261,14 @@
 
                 <section id="partner-recommendations" class="content-section">
                     <div class="card">
-                        <div class="card-header"><h3>Find Partners With Similar Interests</h3></div>
+                        <div class="card-header">
+                            <h3>Find Partners With Similar Interests</h3>
+                        </div>
                         <div class="partner-list">
                             <div class="partner-card">
                                 <div class="partner-card-inner">
-                                    <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=AN" class="partner-avatar" alt="Avatar">
+                                    <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=AN"
+                                        class="partner-avatar" alt="Avatar">
                                     <div class="partner-info">
                                         <div class="name">An Nguyen</div>
                                         <div class="interests">Interests: UI/UX, Web Development</div>
@@ -263,7 +278,8 @@
                             </div>
                             <div class="partner-card">
                                 <div class="partner-card-inner">
-                                    <img src="https://via.placeholder.com/50x50/2c3e50/ffffff?text=BT" class="partner-avatar" alt="Avatar">
+                                    <img src="https://via.placeholder.com/50x50/2c3e50/ffffff?text=BT"
+                                        class="partner-avatar" alt="Avatar">
                                     <div class="partner-info">
                                         <div class="name">Bao Tran</div>
                                         <div class="interests">Interests: AI, Machine Learning, Startups</div>
@@ -816,4 +832,5 @@ document.querySelector("#speaker-profile form").addEventListener("submit", async
     })();
 </script>
 </body>
+
 </html>
