@@ -59,7 +59,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             requestAnimationFrame(resolve);
         });
 
-        window.location.replace("/Home");
+        window.location.replace("/HomePage/HomePage");
     } catch (error) {
         errorDiv.textContent = "Unable to connect to server.";
         errorDiv.style.display = "block";
@@ -67,7 +67,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 });
 
 document.querySelector('.social-btn[title="Login with Google"]').addEventListener('click', function() {
-    const currentUrl = window.location.origin + '/Home';
+    const currentUrl = window.location.origin + '/HomePage/HomePage';
     const loginGoogleUrl = `https://localhost:7063/api/auth/login-google?returnUrl=${encodeURIComponent(currentUrl)}`;
     window.location.href = loginGoogleUrl;
 });
@@ -102,7 +102,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         }
 
         alert("Registration successful! Please verify your email and log in.");
-        window.location.href = "/";
+        window.location.href = "/HomePage/HomePage";
     } catch {
         errorDiv.textContent = "Unable to connect to server.";
         errorDiv.style.display = "block";
