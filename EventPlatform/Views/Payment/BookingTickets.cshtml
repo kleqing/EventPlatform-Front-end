@@ -136,9 +136,9 @@
                     </div>
 
                     <!-- Nút hành động -->
-                    <button class="action-btn" id="btn-submit" disabled>
-                        Vui lòng chọn vé <i class="fas fa-chevron-right"></i>
-                    </button>
+                    <a id="btn-submit" asp-controller="Payment" asp-action="Index" class="btn btn-secondary">
+                        Vui lòng chọn vé
+                    </a>
                 </div>
             </aside>
 
@@ -158,6 +158,14 @@
             const totalPriceEl = document.getElementById('total-price');
             const submitBtn = document.getElementById('btn-submit');
 
+            submitBtn.addEventListener('click', function (e) {
+
+                if (this.classList.contains('btn-secondary') || this.textContent.trim() === "Vui lòng chọn vé") {
+                    e.preventDefault(); 
+                    alert("Bạn chưa chọn vé nào!");
+                } else {
+                }
+            });
 
             const formatCurrency = (amount) => {
                 return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -194,11 +202,22 @@
 
                 if (totalQty === 0) {
                     summaryContainer.innerHTML = '<p style="font-size:13px; color:#999; text-align:center;">Chưa có vé nào được chọn</p>';
+
                     submitBtn.textContent = "Vui lòng chọn vé";
-                    submitBtn.disabled = true;
+                    submitBtn.disabled = true; // Dành cho logic
+
+                    // Thêm class màu xám, xóa class màu chính
+                    submitBtn.classList.add('btn-secondary');
+                    submitBtn.classList.remove('btn-primary'); // Hoặc btn-danger tùy css của bạn
                 } else {
                     submitBtn.innerHTML = `Tiếp tục <i class="fas fa-chevron-right"></i>`;
                     submitBtn.disabled = false;
+
+                    // Xóa class màu xám (btn-secondary) để nó không bị chặn bởi sự kiện click
+                    submitBtn.classList.remove('btn-secondary');
+
+                    // Thêm class màu nổi (ví dụ btn-primary hoặc btn-danger)
+                    submitBtn.classList.add('btn-primary');
                 }
 
                 totalPriceEl.textContent = formatCurrency(total);

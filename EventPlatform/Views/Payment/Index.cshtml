@@ -155,9 +155,9 @@
                         <span class="label">Tổng tiền</span>
                         <span class="value" style="color: var(--primary-color);">3,000,000 đ</span>
                     </div>
-                    <button class="btn btn-submit-order" id="btnMainAction">
-                        Tiếp tục <i class="fas fa-arrow-right"></i>
-                    </button>
+                    <a asp-controller="Payment" asp-action="PayQRCode" class="btn btn-danger">
+                        Tiếp tục
+                    </a>
                     <p class="sidebar-note">
                         Bằng việc nhấn Tiếp tục, bạn đồng ý với <a href="#">Siêu Điều Khoản Chung</a>.
                     </p>
@@ -369,6 +369,18 @@
                     method.classList.add('selected');
                     method.querySelector('input[type="radio"]').checked = true;
                 });
+            });
+            btnMainAction.addEventListener('click', function () {
+                if (currentStep === 1) {
+                    stepQuestions.classList.remove('active');
+                    stepPayment.classList.add('active');
+                    btnMainAction.innerHTML = 'Thanh toán <i class="fas fa-lock"></i>';
+                    currentStep = 2;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+
+                    window.location.href = '/Payment/PayQRCode';
+                }
             });
         });
     </script>
