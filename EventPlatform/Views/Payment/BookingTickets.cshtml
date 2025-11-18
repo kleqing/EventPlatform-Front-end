@@ -1,0 +1,226 @@
+﻿@{
+    ViewData["Title"] = "Chọn Vé";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="/css/BookingTicket.css" />
+</head>
+<body>
+
+    <div class="container">
+        <div class="booking-header">
+            <a href="#" class="back-btn"><i class="fas fa-arrow-left"></i> Trở về</a>
+            <h1 class="page-title">Chọn Vé</h1>
+            <div style="width: 70px;"></div> 
+        </div>
+
+        <div class="booking-layout">
+
+            <main class="ticket-list-container">
+                <div class="ticket-list">
+
+                    <div class="ticket-item">
+                        <div class="ticket-header">
+                            <div class="ticket-info">
+                                <h3 class="ticket-svip">SVIP</h3>
+                                <span class="ticket-price" data-price="2500000">2.500.000 ₫</span>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="qty-btn minus" disabled>-</button>
+                                <span class="qty-input" id="qty-svip">0</span>
+                                <button class="qty-btn plus" data-target="svip">+</button>
+                            </div>
+                        </div>
+                        <div class="ticket-desc-box">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Vé SVIP gần khu vực sân khấu, lối đi riêng. Quà tặng kèm: Gạo hữu cơ Ông Điền 2kg trị giá 238k.</span>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Item: VIP -->
+                    <div class="ticket-item">
+                        <div class="ticket-header">
+                            <div class="ticket-info">
+                                <h3 class="ticket-vip">VIP</h3>
+                                <span class="ticket-price" data-price="2000000">2.000.000 ₫</span>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="qty-btn minus" disabled>-</button>
+                                <span class="qty-input" id="qty-vip">0</span>
+                                <button class="qty-btn plus" data-target="vip">+</button>
+                            </div>
+                        </div>
+                        <div class="ticket-desc-box">
+                            <i class="fas fa-info-circle"></i>
+                            <span>View trung tâm, âm thanh ánh sáng cực chuẩn. Quà tặng kèm: Voucher đồ uống.</span>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Item: Diamond -->
+                    <div class="ticket-item">
+                        <div class="ticket-header">
+                            <div class="ticket-info">
+                                <h3 class="ticket-diamond">Diamond</h3>
+                                <span class="ticket-price" data-price="1600000">1.600.000 ₫</span>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="qty-btn minus" disabled>-</button>
+                                <span class="qty-input" id="qty-diamond">0</span>
+                                <button class="qty-btn plus" data-target="diamond">+</button>
+                            </div>
+                        </div>
+                        <div class="ticket-desc-box">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Vị trí đẹp, bao trọn tầm nhìn sân khấu. Ghế ngồi mềm mại.</span>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Item: Gold -->
+                    <div class="ticket-item">
+                        <div class="ticket-header">
+                            <div class="ticket-info">
+                                <h3>Gold</h3>
+                                <span class="ticket-price" data-price="1200000">1.200.000 ₫</span>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="qty-btn minus" disabled>-</button>
+                                <span class="qty-input" id="qty-gold">0</span>
+                                <button class="qty-btn plus" data-target="gold">+</button>
+                            </div>
+                        </div>
+                        <div class="ticket-desc-box">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Vị trí cao hơn, view thoáng. Phù hợp cho nhóm bạn.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <!-- CỘT PHẢI: SIDEBAR -->
+            <aside class="booking-sidebar">
+                <div class="sidebar-card">
+                    <!-- Thông tin sự kiện -->
+                    <div class="mini-event-info">
+                        <h4>Liveshow Hoài Lâm "Buồn làm chi em ơi"</h4>
+                        <div class="mini-info-row">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>20:00, 29 tháng 11, 2025</span>
+                        </div>
+                        <div class="mini-info-row">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Khách sạn Sheraton Hải Phòng</span>
+                        </div>
+                    </div>
+
+                    <!-- Bảng giá động -->
+                    <div class="price-summary">
+                        <div id="summary-items">
+                            <!-- Các dòng vé đã chọn sẽ hiện ở đây bằng JS -->
+                            <p style="font-size:13px; color:#999; text-align:center;">Chưa có vé nào được chọn</p>
+                        </div>
+
+                        <div class="summary-row total">
+                            <span>Tổng cộng</span>
+                            <span id="total-price">0 ₫</span>
+                        </div>
+                    </div>
+
+                    <!-- Nút hành động -->
+                    <button class="action-btn" id="btn-submit" disabled>
+                        Vui lòng chọn vé <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ticketInputs = {
+                'svip': { price: 2500000, name: 'SVIP', qty: 0 },
+                'vip': { price: 2000000, name: 'VIP', qty: 0 },
+                'diamond': { price: 1600000, name: 'Diamond', qty: 0 },
+                'gold': { price: 1200000, name: 'Gold', qty: 0 }
+            };
+
+            const summaryContainer = document.getElementById('summary-items');
+            const totalPriceEl = document.getElementById('total-price');
+            const submitBtn = document.getElementById('btn-submit');
+
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            };
+
+            const updateUI = () => {
+                let total = 0;
+                let totalQty = 0;
+                summaryContainer.innerHTML = ''; 
+
+                for (const [key, data] of Object.entries(ticketInputs)) {
+
+                    const qtyDisplay = document.getElementById(`qty-${key}`);
+                    if(qtyDisplay) qtyDisplay.textContent = data.qty;
+
+                    const container = document.getElementById(`qty-${key}`).parentElement;
+                    const btnM = container.querySelector('.minus');
+                    if(btnM) btnM.disabled = (data.qty <= 0);
+
+                    if (data.qty > 0) {
+                        const subtotal = data.qty * data.price;
+                        total += subtotal;
+                        totalQty += data.qty;
+
+                        const row = document.createElement('div');
+                        row.className = 'summary-row';
+                        row.innerHTML = `
+                            <span>${data.name} <span style="color:#999; font-size:12px;">x${data.qty}</span></span>
+                            <span>${formatCurrency(subtotal)}</span>
+                        `;
+                        summaryContainer.appendChild(row);
+                    }
+                }
+
+                if (totalQty === 0) {
+                    summaryContainer.innerHTML = '<p style="font-size:13px; color:#999; text-align:center;">Chưa có vé nào được chọn</p>';
+                    submitBtn.textContent = "Vui lòng chọn vé";
+                    submitBtn.disabled = true;
+                } else {
+                    submitBtn.innerHTML = `Tiếp tục <i class="fas fa-chevron-right"></i>`;
+                    submitBtn.disabled = false;
+                }
+
+                totalPriceEl.textContent = formatCurrency(total);
+            };
+
+            document.querySelectorAll('.quantity-control').forEach(control => {
+                const plusBtn = control.querySelector('.plus');
+                const minusBtn = control.querySelector('.minus');
+                const targetKey = plusBtn.dataset.target;
+
+                plusBtn.onclick = () => {
+                        if (ticketInputs[targetKey].qty < 10) ticketInputs[targetKey].qty++;
+                        updateUI();
+                };
+                minusBtn.onclick = () => {
+                        if (ticketInputs[targetKey].qty > 0) ticketInputs[targetKey].qty--;
+                        updateUI();
+                };
+            });
+
+            updateUI();
+        });
+    </script>
+</body>
+</html>
