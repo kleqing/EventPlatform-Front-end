@@ -1,10 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "My Profile";
+ViewData["Title"] = "My Profile";
 }
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,692 +14,703 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Profile.css" />
 
+    <style>
+        /* * Đoạn CSS này dùng để ghi đè, sửa lỗi layout bị lệch.
+         * Chúng ta dùng !important để đảm bảo nó "thắng" file Profile.css
+         */
+        
+        /* 1. Căn giữa toàn bộ layout và giới hạn chiều rộng tối đa */
+        .container {
+            max-width: 1320px !important; /* Giới hạn chiều rộng */
+            margin-left: auto !important;  /* Tự động căn lề trái */
+            margin-right: auto !important; /* Tự động căn lề phải */
+            padding-left: 15px !important;   /* Thêm khoảng đệm nhỏ */
+            padding-right: 15px !important;  /* Thêm khoảng đệm nhỏ */
+        }
+
+        /* 2. Thiết lập layout 2 cột (sidebar + main) dùng Flexbox */
+        .profile-layout {
+            display: flex !important;
+            flex-wrap: wrap; /* Cho phép xuống hàng khi màn hình nhỏ */
+            gap: 24px !important; /* Khoảng cách giữa sidebar và nội dung chính */
+        }
+
+        /* 3. Cố định chiều rộng cho sidebar */
+        .profile-sidebar {
+            width: 300px !important;      /* Chiều rộng cố định */
+            flex-shrink: 0 !important;    /* Không cho sidebar co lại */
+        }
+
+        /* 4. Cho nội dung chính lấp đầy phần còn lại */
+        .profile-main-content {
+            flex-grow: 1 !important;      /* Lấp đầy không gian */
+            min-width: 0; /* Fix lỗi flex item bị tràn */
+            width: auto !important; /* Đảm bảo nó không bị set width 100% sai */
+            margin-left: 0 !important; /* Reset lại mọi margin-left có thể có */
+            padding-left: 0 !important; /* Reset lại mọi padding-left có thể có */
+        }
+
+        /* * CSS Chat Widget (giữ nguyên của bạn)
+         */
+        .chat-widget {
+            display: none; /* Ẩn mặc định */
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 320px;
+            max-width: 90vw;
+            background-color: #ffffff;
+            border: 1px solid #dbdbdb;
+            border-bottom: 0;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #dbdbdb;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+        }
+
+        .chat-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .chat-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #888;
+            padding: 0;
+        }
+        .chat-close-btn:hover {
+            color: #333;
+        }
+
+        .chat-body {
+            height: 280px;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #fafafa;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 75%;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+        }
+
+        .message.sent {
+            background-color: #e91e63; /* Màu chính của bạn */
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: #e4e6eb;
+            color: #050505;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #dbdbdb;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-right: 8px;
+        }
+        .chat-footer .btn {
+            flex-shrink: 0;
+            border-radius: 50%; /* Nút gửi tròn */
+            width: 40px;
+            height: 40px;
+            padding: 0;
+        }
+    </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="profile-layout">
-            <aside class="profile-sidebar">
-                <div class="sidebar-header">
-                    <div class="sidebar-avatar"
-                        style="background-image: url('https://via.placeholder.com/100x100/e91e63/ffffff?text=SA');">
-                    </div>
-                    <h2 class="sidebar-name">Santiago Axel</h2>
-                    <p class="sidebar-title">Senior Visual Designer</p>
-                </div>
-                <nav class="sidebar-nav">
-                    <ul>
-                        <li><a href="#profile-details" class="active"><i class="fas fa-user-edit"></i> Profile
-                                Details</a></li>
-                        <li><a href="#applied-events"><i class="fas fa-calendar-check"></i> Applied Events</a></li>
-                        <li><a href="#speaker-profile"><i class="fas fa-microphone-alt"></i> Speaker Profile</a></li>
-                        <li><a href="#change-password"><i class="fas fa-key"></i> Change Password</a></li>
-                        <li><a href="#recommended-events"><i class="fas fa-star"></i> Recommended Events</a></li>
-                        <li><a href="#partner-recommendations"><i class="fas fa-users"></i> Partner Recommendations</a>
-                        </li>
-                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </nav>
-            </aside>
+<div class="container">
+    <div class="profile-layout">
+        <aside class="profile-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-avatar" style="background-image: url('https://via.placeholder.com/100x100/e91e63/ffffff?text=SA');"></div>
+                <h2 class="sidebar-name">Santiago Axel</h2>
+                <p class="sidebar-title">Senior Visual Designer</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#profile-details" class="active"><i class="fas fa-user-edit"></i> Profile Details</a></li>
+                    <li><a href="#applied-events"><i class="fas fa-calendar-check"></i> Applied Events</a></li>
+                    <li><a href="#speaker-profile"><i class="fas fa-microphone-alt"></i> Speaker Profile</a></li>
+                    <li><a href="#change-password"><i class="fas fa-key"></i> Change Password</a></li>
+                    <li><a href="#recommended-events"><i class="fas fa-star"></i> Recommended Events</a></li>
+                    <li><a href="#partner-recommendations"><i class="fas fa-users"></i> Partner Recommendations</a></li>
+                    @* <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li> *@
+                </ul>
+            </nav>
+        </aside>
 
-            <main class="profile-main-content">
-                <section id="profile-details" class="content-section active">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Edit Your Profile</h3>
-                        </div>
-                        <form id="profileDetailsForm" novalidate>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <input type="text" id="fullName" name="fullName" placeholder=" ">
-                                    <label for="fullName">Full Name</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="tel" id="phoneNumber" name="phoneNumber" placeholder=" ">
-                                    <label for="phoneNumber">Phone Number</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="date" id="dateOfBirth" name="dateOfBirth" placeholder=" ">
-                                    <label for="dateOfBirth">Date of Birth</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" id="addressWard" name="addressWard" placeholder=" ">
-                                    <label for="addressWard">Address Ward</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" id="addressDistrict" name="addressDistrict" placeholder=" ">
-                                    <label for="addressDistrict">Address District</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" id="addressCity" name="addressCity" placeholder=" ">
-                                    <label for="addressCity">Address City</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" id="email" name="email" placeholder=" " disabled>
-                                <label for="email">Email Address</label>
-                            </div>
-                            <div id="profileMessage" class="form-message" style="display:none;"></div>
-                            <button type="submit" class="btn">Save Changes</button>
-                        </form>
-                    </div>
-                </section>
-
-                <section id="applied-events" class="content-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>My Applied Events</h3>
-                        </div>
-
-                        <div class="tabs">
-                            <button class="tab-button active" data-tab="tab-all">All</button>
-                            <button class="tab-button" data-tab="tab-offline">Offline</button>
-                            <button class="tab-button" data-tab="tab-online">Online</button>
-                        </div>
-
-                        <div class="tab-content-container">
-                            <div id="tab-all" class="tab-content-panel active">
-                                <div class="event-list" id="appliedEventsAll"></div>
-                            </div>
-
-                            <div id="tab-offline" class="tab-content-panel">
-                                <div class="event-list" id="appliedEventsOffline"></div>
-                            </div>
-
-                            <div id="tab-online" class="tab-content-panel">
-                                <div class="event-list" id="appliedEventsOnline"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section id="speaker-profile" class="content-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Speaker Profile</h3>
-                        </div>
-                        <form>
-                            <div class="form-group">
-                                <input type="text" id="speakerStatus" value="Approved" placeholder=" " disabled>
-                                <label for="speakerStatus">Approval Status</label>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <input type="text" id="speakerCompany" value="EventPlatform Inc." placeholder=" ">
-                                    <label for="speakerCompany">Company</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" id="speakerJobTitle" value="Lead Developer" placeholder=" ">
-                                    <label for="speakerJobTitle">Job Title</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <textarea id="speakerBio"
-                                    placeholder=" ">Passionate about .NET, C#, and building communities. Eager to share insights on modern web development.</textarea>
-                                <label for="speakerBio">Speaker Bio</label>
-                            </div>
-
-                            <div class="form-group">
-                                <textarea id="speakerTopics" rows="3"
-                                    placeholder=" ">e.g., ASP.NET Core, Blazor, Microservices, Public Speaking...</textarea>
-                                <label for="speakerTopics">Topics of Interest</label>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <input type="url" id="speakerWebsite" value="https://myblog.com" placeholder=" ">
-                                    <label for="speakerWebsite">Website/Blog URL</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="url" id="speakerLinkedIn" value="https://linkedin.com/in/..."
-                                        placeholder=" ">
-                                    <label for="speakerLinkedIn">LinkedIn URL</label>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn">Update Speaker Profile</button>
-                        </form>
-                    </div>
-                </section>
-                <section id="change-password" class="content-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Change Your Password</h3>
-                        </div>
-                        <form id="changePasswordForm" novalidate>
-                            <div class="form-group">
-                                <input type="password" id="currentPassword" name="currentPassword" placeholder=" "
-                                    autocomplete="current-password">
-                                <label for="currentPassword">Current Password</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="password" id="newPassword" name="newPassword" placeholder=" "
-                                    autocomplete="new-password">
-                                <label for="newPassword">New Password</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder=" "
-                                    autocomplete="new-password">
-                                <label for="confirmPassword">Confirm New Password</label>
-                            </div>
-                            <div id="changePasswordMessage" class="form-message" style="display:none;"></div>
-                            <button type="submit" class="btn">Update Password</button>
-                        </form>
-                    </div>
-                </section>
-
-                <section id="recommended-events" class="content-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Recommended For You</h3>
-                        </div>
+        <main class="profile-main-content">
+            <section id="profile-details" class="content-section active">
+                <div class="card">
+                    <div class="card-header"><h3>Edit Your Profile</h3></div>
+                    <form id="profileForm">
                         <div class="form-grid">
-                            <div class="recommended-event-card">
-                                <img src="https://via.placeholder.com/300x180/ccc/333?text=Design+Meetup"
-                                    class="recommended-event-thumb" alt="Event">
-                                <div class="recommended-event-content">
-                                    <h4>UI/UX Design Meetup 2025</h4>
-                                    <div class="event-card-meta">
-                                        <span><i class="far fa-calendar-alt"></i> Nov 15, 2025</span>
-                                        <span><i class="fas fa-map-marker-alt"></i> Da Nang</span>
-                                    </div>
-                                    <p>A great opportunity for designers to network and share ideas.</p>
-                                    <button class="btn" style="width:100%">View Details</button>
-                                </div>
+                            <div class="form-group">
+                                <input type="text" id="fullName" placeholder=" ">
+                                <label for="fullName">Full Name</label>
                             </div>
-                            <div class="recommended-event-card">
-                                <img src="https://via.placeholder.com/300x180/2c3e50/fff?text=AI+Summit"
-                                    class="recommended-event-thumb" alt="Event">
-                                <div class="recommended-event-content">
-                                    <h4>Vietnam AI Summit</h4>
-                                    <div class="event-card-meta">
-                                        <span><i class="far fa-calendar-alt"></i> Dec 05, 2025</span>
-                                        <span><i class="fas fa-map-marker-alt"></i> Ho Chi Minh City</span>
-                                    </div>
-                                    <p>Explore the future of Artificial Intelligence with industry leaders.</p>
-                                    <button class="btn" style="width:100%">View Details</button>
-                                </div>
+                            <div class="form-group">
+                                <input type="text" id="phoneNumber" placeholder=" ">
+                                <label for="phoneNumber">Phone Number</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="date" id="dateOfBirth" placeholder=" ">
+                                <label for="dateOfBirth">Date of Birth</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="addressWard" placeholder=" ">
+                                <label for="addressWard">Address Ward</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="addressDistrict" placeholder=" ">
+                                <label for="addressDistrict">Address District</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="addressCity" placeholder=" ">
+                                <label for="addressCity">Address City</label>
                             </div>
                         </div>
-                    </div>
-                </section>
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder=" " disabled>
+                            <label for="email">Email Address</label>
+                        </div>
+                        <button type="submit" class="btn">Save Changes</button>
+                    </form>
+                </div>
+            </section>
 
-                <section id="partner-recommendations" class="content-section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Find Partners With Similar Interests</h3>
+            <section id="applied-events" class="content-section">
+                <div class="card">
+                    <div class="card-header"><h3>My Applied Events</h3></div>
+
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="tab-all">All</button>
+                        <button class="tab-button" data-tab="tab-offline">Offline</button>
+                        <button class="tab-button" data-tab="tab-online">Online</button>
+                    </div>
+
+                    <div class="tab-content-container">
+                        <div id="tab-all" class="tab-content-panel active">
+                            <div id="calendar-container">
+                                <div id="calendar"></div>
+                            </div>
                         </div>
-                        <div class="partner-list">
-                            <div class="partner-card">
-                                <div class="partner-card-inner">
-                                    <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=AN"
-                                        class="partner-avatar" alt="Avatar">
-                                    <div class="partner-info">
-                                        <div class="name">An Nguyen</div>
-                                        <div class="interests">Interests: UI/UX, Web Development</div>
+
+                        <div id="tab-offline" class="tab-content-panel">
+                            <div class="event-list">
+                                <div class="event-card"
+                                     data-title="Global Tech Conference 2025"
+                                     data-start="2025-10-25T09:00:00"
+                                     data-end="2025-10-25T17:00:00"
+                                     data-location="New York"
+                                     data-type="Offline"
+                                     data-icon="fas fa-globe">
+                                    <img src="https://via.placeholder.com/120x80/e91e63/fff?text=TechConf" alt="Event" class="event-card-thumb">
+                                    <div class="event-card-details">
+                                        <h4>Global Tech Conference 2025</h4>
+                                        <div class="event-card-meta">
+                                            <span><i class="far fa-calendar-alt"></i> Oct 25, 2025</span>
+                                            <span><i class="fas fa-map-marker-alt"></i> New York</span>
+                                            <span><i class="fas fa-globe"></i> Offline</span>
+                                        </div>
                                     </div>
-                                    <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                                    <div class="event-card-actions">
+                                        <button class="btn btn-view-details">View Ticket</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="partner-card">
-                                <div class="partner-card-inner">
-                                    <img src="https://via.placeholder.com/50x50/2c3e50/ffffff?text=BT"
-                                        class="partner-avatar" alt="Avatar">
-                                    <div class="partner-info">
-                                        <div class="name">Bao Tran</div>
-                                        <div class="interests">Interests: AI, Machine Learning, Startups</div>
+                        </div>
+
+                        <div id="tab-online" class="tab-content-panel">
+                            <div class="event-list">
+                                <div class="event-card"
+                                     data-title="Advanced CSS Webinar"
+                                     data-start="2025-11-10T14:00:00"
+                                     data-end="2025-11-10T16:00:00"
+                                     data-location="Zoom"
+                                     data-type="Online"
+                                     data-icon="fas fa-wifi">
+                                    <img src="https://via.placeholder.com/120x80/2c3e50/fff?text=Webinar" alt="Event" class="event-card-thumb">
+                                    <div class="event-card-details">
+                                        <h4>Advanced CSS Webinar</h4>
+                                        <div class="event-card-meta">
+                                            <span><i class="far fa-calendar-alt"></i> Nov 10, 2025</span>
+                                            <span><i class="fas fa-laptop"></i> Zoom</span>
+                                            <span><i class="fas fa-wifi"></i> Online</span>
+                                        </div>
                                     </div>
-                                    <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                                    <div class="event-card-actions">
+                                        <button class="btn btn-view-details">Join Event</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-            </main>
-        </div>
+                </div>
+            </section>
+            <section id="speaker-profile" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Speaker Profile</h3>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" id="speakerStatus" value="Approved" placeholder=" " disabled>
+                            <label for="speakerStatus">Approval Status</label>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <input type="text" id="speakerCompany" value="EventPlatform Inc." placeholder=" ">
+                                <label for="speakerCompany">Company</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="speakerJobTitle" value="Lead Developer" placeholder=" ">
+                                <label for="speakerJobTitle">Job Title</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="speakerBio" placeholder=" ">Passionate about .NET, C#, and building communities. Eager to share insights on modern web development.</textarea>
+                            <label for="speakerBio">Speaker Bio</label>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="speakerTopics" rows="3" placeholder=" ">e.g., ASP.NET Core, Blazor, Microservices, Public Speaking...</textarea>
+                            <label for="speakerTopics">Topics of Interest</label>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <input type="url" id="speakerWebsite" value="https://myblog.com" placeholder=" ">
+                                <label for="speakerWebsite">Website/Blog URL</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="url" id="speakerLinkedIn" value="https://linkedin.com/in/..." placeholder=" ">
+                                <label for="speakerLinkedIn">LinkedIn URL</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn">Update Speaker Profile</button>
+                    </form>
+                </div>
+            </section>
+            <section id="change-password" class="content-section">
+                <div class="card">
+                    <div class="card-header"><h3>Change Your Password</h3></div>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <input type="password" id="currentPassword" placeholder=" ">
+                            <label for="currentPassword">Current Password</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="newPassword" placeholder=" ">
+                            <label for="newPassword">New Password</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="confirmPassword" placeholder=" ">
+                            <label for="confirmPassword">Confirm New Password</label>
+                        </div>
+                        <button type="submit" class="btn">Update Password</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="recommended-events" class="content-section">
+                <div class="card">
+                    <div class="card-header"><h3>Recommended For You</h3></div>
+                    <div class="form-grid">
+                        <div class="recommended-event-card">
+                            <img src="https://via.placeholder.com/300x180/ccc/333?text=Design+Meetup" class="recommended-event-thumb" alt="Event">
+                            <div class="recommended-event-content">
+                                <h4>UI/UX Design Meetup 2025</h4>
+                                <div class="event-card-meta">
+                                    <span><i class="far fa-calendar-alt"></i> Nov 15, 2025</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> Da Nang</span>
+                                </div>
+                                <p>A great opportunity for designers to network and share ideas.</p>
+                                <button class="btn" style="width:100%">View Details</button>
+                            </div>
+                        </div>
+                        <div class="recommended-event-card">
+                            <img src="https://via.placeholder.com/300x180/2c3e50/fff?text=AI+Summit" class="recommended-event-thumb" alt="Event">
+                            <div class="recommended-event-content">
+                                <h4>Vietnam AI Summit</h4>
+                                <div class="event-card-meta">
+                                    <span><i class="far fa-calendar-alt"></i> Dec 05, 2025</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> Ho Chi Minh City</span>
+                                </div>
+                                <p>Explore the future of Artificial Intelligence with industry leaders.</p>
+                                <button class="btn" style="width:100%">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="partner-recommendations" class="content-section">
+                <div class="card">
+                    <div class="card-header"><h3>Find Partners With Similar Interests</h3></div>
+                    <div class="partner-list">
+                        <div class="partner-card">
+                            <div class="partner-card-inner">
+                                <img src="https://via.placeholder.com/50x50/e91e63/ffffff?text=AN" class="partner-avatar" alt="Avatar">
+                                <div class="partner-info">
+                                    <div class="name">An Nguyen</div>
+                                    <div class="interests">Interests: UI/UX, Web Development</div>
+                                </div>
+                                <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                            </div>
+                        </div>
+                        <div class="partner-card">
+                            <div class="partner-card-inner">
+                                <img src="https://via.placeholder.com/50x50/2c3e50/ffffff?text=BT" class="partner-avatar" alt="Avatar">
+                                <div class="partner-info">
+                                    <div class="name">Bao Tran</div>
+                                    <div class="interests">Interests: AI, Machine Learning, Startups</div>
+                                </div>
+                                <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
+</div>
 
-    <div id="eventDetailModal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="closeModalBtn" class="modal-close-btn">&times;</button>
-            <h3 id="modalEventTitle">Event Title</h3>
-            <div class="modal-body">
-                <div class="modal-detail-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span id="modalEventTime">Date and Time</span>
-                </div>
-                <div class="modal-detail-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span id="modalEventLocation">Location</span>
-                </div>
-                <div class="modal-detail-item">
-                    <i class="fas fa-globe"></i>
-                    <span id="modalEventType">Type (Online/Offline)</span>
-                </div>
+<div id="eventDetailModal" class="modal-overlay">
+    <div class="modal-content">
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+        <h3 id="modalEventTitle">Event Title</h3>
+        <div class="modal-body">
+            <div class="modal-detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="modalEventTime">Date and Time</span>
+            </div>
+            <div class="modal-detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="modalEventLocation">Location</span>
+            </div>
+            <div class="modal-detail-item">
+                <i class="fas fa-globe"></i>
+                <span id="modalEventType">Type (Online/Offline)</span>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // === Code điều khiển Tab Sidebar ===
-            const navLinks = document.querySelectorAll('.sidebar-nav a');
-            const contentSections = document.querySelectorAll('.content-section');
+<div id="chatWidget" class="chat-widget">
+    <div class="chat-header">
+        <h5 id="chatPartnerName">Chat</h5>
+        <button id="closeChatBtn" class="chat-close-btn">&times;</button>
+    </div>
+    <div class="chat-body">
+        <div class="message received">Xin chào! Rất vui được kết nối.</div>
+        <div class="message sent">Chào bạn! Mình thấy bạn cũng quan tâm đến AI.</div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn...">
+        <button class="btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        // === Code điều khiển Tab Sidebar ===
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+        const contentSections = document.querySelectorAll('.content-section');
 
-            function switchTab(targetId) {
-                navLinks.forEach(nav => {
-                    if (nav.getAttribute('href') === targetId) {
-                        nav.classList.add('active');
-                    } else {
-                        nav.classList.remove('active');
-                    }
-                });
-
-                contentSections.forEach(section => {
-                    if ('#' + section.id === targetId) {
-                        section.classList.add('active');
-                    } else {
-                        section.classList.remove('active');
-                    }
-                });
-            }
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    const targetId = this.getAttribute('href');
-                    if (targetId && targetId.startsWith('#')) {
-                        e.preventDefault();
-                        switchTab(targetId);
-                        if (history.pushState) {
-                            history.pushState(null, null, targetId);
-                        } else {
-                            window.location.hash = targetId;
-                        }
-                    }
-                });
+        function switchTab(targetId) {
+            navLinks.forEach(nav => {
+                if (nav.getAttribute('href') === targetId) {
+                    nav.classList.add('active');
+                } else {
+                    nav.classList.remove('active');
+                }
             });
 
-            const initialTab = window.location.hash || '#profile-details';
-            switchTab(initialTab);
-
-            const apiBaseUrl = 'https://localhost:7063';
-
-            // === Profile Details Form ===
-            const profileDetailsForm = document.getElementById('profileDetailsForm');
-            const profileMessage = document.getElementById('profileMessage');
-
-            const profileFields = {
-                fullName: document.getElementById('fullName'),
-                phoneNumber: document.getElementById('phoneNumber'),
-                dateOfBirth: document.getElementById('dateOfBirth'),
-                addressWard: document.getElementById('addressWard'),
-                addressDistrict: document.getElementById('addressDistrict'),
-                addressCity: document.getElementById('addressCity'),
-                email: document.getElementById('email')
-            };
-
-            const setProfileMessage = (message, isError = false) => {
-                if (!profileMessage) {
-                    return;
+            contentSections.forEach(section => {
+                if ('#' + section.id === targetId) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
                 }
-                profileMessage.textContent = message;
-                profileMessage.style.display = message ? 'block' : 'none';
-                profileMessage.style.color = isError ? '#e74c3c' : '#2ecc71';
-            };
+            });
 
-            const normalizeDate = (value) => {
-                if (!value) {
-                    return '';
-                }
-
-                if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-                    return value;
-                }
-
-                const parsed = new Date(value);
-                if (Number.isNaN(parsed.getTime())) {
-                    return '';
-                }
-                return parsed.toISOString().split('T')[0];
-            };
-
-            const populateProfileForm = (data) => {
-                if (!data) {
-                    return;
-                }
-
-                profileFields.fullName && (profileFields.fullName.value = data.fullName || '');
-                profileFields.phoneNumber && (profileFields.phoneNumber.value = data.phoneNumber || '');
-                profileFields.dateOfBirth && (profileFields.dateOfBirth.value = normalizeDate(data.dateOfBirth));
-                profileFields.addressWard && (profileFields.addressWard.value = data.addressWard || '');
-                profileFields.addressDistrict && (profileFields.addressDistrict.value = data.addressDistrict || '');
-                profileFields.addressCity && (profileFields.addressCity.value = data.addressCity || '');
-                profileFields.email && (profileFields.email.value = data.email || '');
-            };
-
-            const fetchProfileDetails = async () => {
-                if (!profileDetailsForm) {
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`${apiBaseUrl}/api/user/profile`, {
-                        method: 'GET',
-                        credentials: 'include'
+            if (targetId === '#applied-events') {
+                if (!calendar && calendarEl && myEvents) {
+                    calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek'
+                        },
+                        events: myEvents,
+                        eventClick: function (info) {
+                            info.jsEvent.preventDefault();
+                            openEventModal(
+                                info.event.title,
+                                info.event.start,
+                                info.event.end,
+                                info.event.extendedProps.location,
+                                info.event.extendedProps.type,
+                                info.event.extendedProps.icon
+                            );
+                        }
                     });
-
-                    const result = await response.json().catch(() => null);
-
-                    if (!response.ok || !result?.success) {
-                        setProfileMessage(result?.message || 'Unable to load profile information.', true);
-                        return;
-                    }
-
-                    populateProfileForm(result.data);
-                    setProfileMessage('');
-                } catch (error) {
-                    setProfileMessage('Unable to load profile information.', true);
+                    calendar.render();
+                } else if (calendar) {
+                    calendar.render();
                 }
-            };
-
-            if (profileDetailsForm) {
-                fetchProfileDetails();
-
-                profileDetailsForm.addEventListener('submit', async (event) => {
-                    event.preventDefault();
-                    setProfileMessage('');
-
-                    const submitButton = profileDetailsForm.querySelector('button[type="submit"]');
-                    if (submitButton) {
-                        submitButton.disabled = true;
-                    }
-
-                    const payload = {
-                        fullName: profileFields.fullName?.value.trim() || '',
-                        phoneNumber: profileFields.phoneNumber?.value.trim() || null,
-                        dateOfBirth: profileFields.dateOfBirth?.value || null,
-                        addressWard: profileFields.addressWard?.value.trim() || null,
-                        addressDistrict: profileFields.addressDistrict?.value.trim() || null,
-                        addressCity: profileFields.addressCity?.value.trim() || null
-                    };
-
-                    if (!payload.fullName) {
-                        setProfileMessage('Full name is required.', true);
-                        if (submitButton) {
-                            submitButton.disabled = false;
-                        }
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch(`${apiBaseUrl}/api/user/profile`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            credentials: 'include',
-                            body: JSON.stringify(payload)
-                        });
-
-                        const result = await response.json().catch(() => null);
-
-                        if (!response.ok || !result?.success) {
-                            const errorMessage = result?.errors?.length
-                                ? result.errors.join(', ')
-                                : (result?.message || 'Unable to update profile.');
-                            setProfileMessage(errorMessage, true);
-                            return;
-                        }
-
-                        populateProfileForm(result.data);
-                        setProfileMessage(result.message || 'Profile updated successfully.');
-                    } catch (error) {
-                        setProfileMessage('Unable to connect to server.', true);
-                    } finally {
-                        if (submitButton) {
-                            submitButton.disabled = false;
-                        }
-                    }
-                });
             }
+        }
 
-            // === Change Password Form ===
-            const changePasswordForm = document.getElementById('changePasswordForm');
-            const changePasswordMessage = document.getElementById('changePasswordMessage');
-
-            if (changePasswordForm) {
-                const showMessage = (message, isError = false) => {
-                    if (!changePasswordMessage) {
-                        return;
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    e.preventDefault();
+                    switchTab(targetId);
+                    if (history.pushState) {
+                        history.pushState(null, null, targetId);
+                    } else {
+                        window.location.hash = targetId;
                     }
-                    changePasswordMessage.textContent = message;
-                    changePasswordMessage.style.display = 'block';
-                    changePasswordMessage.style.color = isError ? '#e74c3c' : '#2ecc71';
-                };
+                }
+            });
+        });
 
-                changePasswordForm.addEventListener('submit', async (event) => {
-                    event.preventDefault();
+        const initialTab = window.location.hash || '#profile-details';
+        switchTab(initialTab);
 
-                    const submitButton = changePasswordForm.querySelector('button[type="submit"]');
-                    const currentPassword = document.getElementById('currentPassword')?.value.trim() ?? '';
-                    const newPassword = document.getElementById('newPassword')?.value.trim() ?? '';
-                    const confirmPassword = document.getElementById('confirmPassword')?.value.trim() ?? '';
+        // === TẢI DỮ LIỆU SỰ KIỆN TỪ API ===
+        let allAppliedEvents = []; // Biến này sẽ giữ dữ liệu gốc
 
-                    if (changePasswordMessage) {
-                        changePasswordMessage.style.display = 'none';
-                    }
+        try {
+            const res = await fetch("https://localhost:7063/api/user/applied-events-this-month", {
+                credentials: "include"
+            });
 
-                    if (!currentPassword || !newPassword || !confirmPassword) {
-                        showMessage('Please fill in all password fields.', true);
-                        return;
-                    }
-
-                    if (newPassword !== confirmPassword) {
-                        showMessage('New password and confirmation do not match.', true);
-                        return;
-                    }
-
-                    if (submitButton) {
-                        submitButton.disabled = true;
-                    }
-
-                    try {
-                        const response = await fetch(`${apiBaseUrl}/api/auth/change-password`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            credentials: 'include',
-                            body: JSON.stringify({
-                                currentPassword,
-                                newPassword,
-                                confirmPassword
-                            })
-                        });
-
-                        let result;
-                        try {
-                            result = await response.json();
-                        } catch (error) {
-                            result = null;
-                        }
-
-                        const getErrorMessage = () => {
-                            if (!result) {
-                                return 'Unable to connect to server.';
-                            }
-                            if (Array.isArray(result.errors) && result.errors.length > 0) {
-                                return result.errors.join(', ');
-                            }
-                            return result.message || 'Unable to change password.';
-                        };
-
-                        if (!response.ok || !result?.success) {
-                            showMessage(getErrorMessage(), true);
-                            return;
-                        }
-
-                        showMessage(result.message || 'Password changed successfully.');
-                        changePasswordForm.reset();
-                    } catch (error) {
-                        showMessage('Unable to connect to server.', true);
-                    } finally {
-                        if (submitButton) {
-                            submitButton.disabled = false;
-                        }
-                    }
-                });
+            if (res.ok) {
+                const result = await res.json();
+                allAppliedEvents = result.data || []; // Lấy mảng data từ response
+            } else {
+                console.error("Failed to load applied events");
             }
+        } catch (err) {
+            console.error("Error fetching events:", err);
+        }
 
-            // === Applied Events Section ===
-            const appliedEventsContainers = {
-                all: document.getElementById('appliedEventsAll'),
-                offline: document.getElementById('appliedEventsOffline'),
-                online: document.getElementById('appliedEventsOnline')
-            };
+        // === HÀM HELPER ĐỂ TẠO EVENT CARD HTML ===
+        function createEventCardHtml(event) {
+            const isOnline = event.onlineUrl && event.onlineUrl.trim() !== "";
+            const eventType = isOnline ? "Online" : "Offline";
+            // Nếu online, hiển thị URL. Nếu offline, hiển thị location.
+            const locationText = isOnline ? event.onlineUrl : event.location;
+            const icon = isOnline ? "fas fa-wifi" : "fas fa-map-marker-alt";
+            const locationIcon = isOnline ? "fas fa-laptop" : "fas fa-map-marker-alt";
+            const buttonText = isOnline ? "Join Event" : "View Ticket";
 
-            const escapeHtml = (value) => {
-                if (typeof value !== 'string') {
-                    return '';
-                }
-                return value
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#39;');
-            };
+            // Format ngày tháng
+            const eventDate = new Date(event.startTime).toLocaleString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric'
+            });
 
-            const formatDateRange = (start, end) => {
-                const startDate = new Date(start);
-                const endDate = end ? new Date(end) : null;
-
-                if (Number.isNaN(startDate.getTime())) {
-                    return 'Date to be announced';
-                }
-
-                const options = {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                };
-
-                if (!endDate || Number.isNaN(endDate.getTime())) {
-                    return startDate.toLocaleString('vi-VN', options);
-                }
-
-                const sameDay = startDate.toDateString() === endDate.toDateString();
-                if (sameDay) {
-                    return `${startDate.toLocaleDateString('vi-VN', options)} - ${endDate.toLocaleTimeString('vi-VN', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    })}`;
-                }
-
-                return `${startDate.toLocaleString('vi-VN', options)} - ${endDate.toLocaleString('vi-VN', options)}`;
-            };
-
-            const truncateText = (text, length = 140) => {
-                if (!text) {
-                    return '';
-                }
-                return text.length > length ? `${text.substring(0, length - 1)}…` : text;
-            };
-
-            const buildEventCard = (event, type) => {
-                const displayType = type === 'Online' ? 'Online' : 'Offline';
-                const displayLocation = type === 'Online'
-                    ? (event.onlineUrl || 'Online event')
-                    : (event.location || 'Venue to be announced');
-
-                return `
-                    <div class="event-card" data-title="${escapeHtml(event.title)}"
-                         data-start="${event.startTime}" data-end="${event.endTime || ''}"
-                         data-location="${escapeHtml(displayLocation)}" data-type="${displayType}">
-                        <div class="event-card-details">
-                            <h4>${escapeHtml(event.title)}</h4>
-                            <div class="event-card-meta">
-                                <span><i class="far fa-calendar-alt"></i> ${formatDateRange(event.startTime, event.endTime)}</span>
-                                <span><i class="fas ${displayType === 'Online' ? 'fa-globe' : 'fa-map-marker-alt'}"></i> ${escapeHtml(displayLocation)}</span>
-                                <span><i class="fas fa-info-circle"></i> ${escapeHtml(event.eventStatus || 'Status unknown')}</span>
-                            </div>
-                            <p>${escapeHtml(truncateText(event.description))}</p>
-                        </div>
-                        <div class="event-card-actions">
-                            <button class="btn btn-view-details">View Details</button>
-                        </div>
+            return `
+            <div class="event-card"
+                    data-title="${event.title}"
+                    data-start="${event.startTime}"
+                    data-end="${event.endTime}"
+                    data-location="${locationText}"
+                    data-type="${eventType}"
+                    data-icon="${icon}">
+                <img src="${event.cardImageUrl || 'https://via.placeholder.com/120x80/2c3e50/fff?text=Event'}" alt="Event" class="event-card-thumb">
+                <div class="event-card-details">
+                    <h4>${event.title}</h4>
+                    <div class="event-card-meta">
+                        <span><i class="far fa-calendar-alt"></i> ${eventDate}</span>
+                        <span><i class="${locationIcon}"></i> ${locationText}</span>
+                        <span><i class="${icon}"></i> ${eventType}</span>
                     </div>
-                `;
-            };
+                </div>
+                <div class="event-card-actions">
+                    <button class="btn btn-view-details">${buttonText}</button>
+                </div>
+            </div>
+            `;
+        }
 
-            const renderEvents = (container, events, emptyMessage, type) => {
-                if (!container) {
-                    return;
+        // === XỬ LÝ DỮ LIỆU CHO CÁC TAB ===
+
+        // 1. Dữ liệu cho Lịch (Tab "All")
+        const calendarEvents = allAppliedEvents.map(event => {
+            const isOnline = event.onlineUrl && event.onlineUrl.trim() !== "";
+            return {
+                title: event.title,
+                start: event.startTime,
+                end: event.endTime,
+                extendedProps: {
+                    location: isOnline ? event.onlineUrl : event.location,
+                    type: isOnline ? 'Online' : 'Offline',
+                    icon: isOnline ? 'fas fa-wifi' : 'fas fa-map-marker-alt'
                 }
-
-                if (!events || events.length === 0) {
-                    container.innerHTML = `<div class="empty-state">${emptyMessage}</div>`;
-                    return;
-                }
-
-                container.innerHTML = events
-                    .map(evt => buildEventCard(evt, type ?? (evt.onlineUrl ? 'Online' : 'Offline')))
-                    .join('');
             };
+        });
 
-            const attachEventCardHandlers = () => {
-                document.querySelectorAll('.event-card .btn-view-details').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const card = this.closest('.event-card');
-                        if (!card) {
-                            return;
-                        }
+        // 2. Dữ liệu cho Tab "Offline"
+        const offlineEventsContainer = document.querySelector("#tab-offline .event-list");
+        const offlineEvents = allAppliedEvents.filter(e => !e.onlineUrl || e.onlineUrl.trim() === "");
+        if (offlineEventsContainer) {
+            if (offlineEvents.length > 0) {
+                offlineEventsContainer.innerHTML = offlineEvents.map(createEventCardHtml).join('');
+            } else {
+                offlineEventsContainer.innerHTML = "<p style='text-align:center; padding: 20px;'>You have no applied offline events this month.</p>";
+            }
+        }
 
-                        openEventModal(
-                            card.dataset.title,
-                            card.dataset.start,
-                            card.dataset.end,
-                            card.dataset.location,
-                            card.dataset.type
-                        );
-                    });
-                });
-            };
+        // 3. Dữ liệu cho Tab "Online"
+        const onlineEventsContainer = document.querySelector("#tab-online .event-list");
+        const onlineEvents = allAppliedEvents.filter(e => e.onlineUrl && e.onlineUrl.trim() !== "");
+        if (onlineEventsContainer) {
+            if (onlineEvents.length > 0) {
+                onlineEventsContainer.innerHTML = onlineEvents.map(createEventCardHtml).join('');
+            } else {
+                onlineEventsContainer.innerHTML = "<p style='text-align:center; padding: 20px;'>You have no applied online events this month.</p>";
+            }
+        }
 
-            const showAppliedEventsError = (message) => {
-                Object.values(appliedEventsContainers).forEach(container => {
-                    if (!container) {
-                        return;
-                    }
-                    container.innerHTML = `<div class="empty-state error">${message}</div>`;
-                });
-            };
 
-            const fetchAppliedEvents = async () => {
-                if (!appliedEventsContainers.all) {
-                    return;
-                }
+        // === DỮ LIỆU SỰ KIỆN (THAY THẾ DỮ LIỆU MẪU) ===
+        const myEvents = calendarEvents; // Sử dụng dữ liệu vừa fetch
 
-                Object.values(appliedEventsContainers).forEach(container => {
-                    if (container) {
-                        container.innerHTML = '<div class="empty-state">Loading events...</div>';
-                    }
-                });
+        // === Code Lịch (Calendar) ===
+        var calendarEl = document.getElementById('calendar');
+        var calendar; // Khai báo calendar ở đây
 
-                try {
-                    const response = await fetch(`${apiBaseUrl}/api/events/applied`, {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
+        // === Code Modal ===
+        const modal = document.getElementById('eventDetailModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
 
-                    const result = await response.json().catch(() => null);
+        // --- Hàm mở Modal chung ---
+        function openEventModal(title, start, end, location, type, icon) {
+            var startTime = new Date(start).toLocaleString('en-US', {
+                hour: 'numeric', minute: 'numeric', hour12: true
+            });
+            var endTime = new Date(end).toLocaleString('en-US', {
+                hour: 'numeric', minute: 'numeric', hour12: true
+            });
+            var startDate = new Date(start).toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
 
-                    if (!response.ok || !result?.success) {
-                        showAppliedEventsError(result?.message || 'Unable to load applied events.');
-                        return;
+            document.getElementById('modalEventTitle').textContent = title;
+            document.getElementById('modalEventTime').textContent = `${startDate} (${startTime} - ${endTime})`;
+            document.getElementById('modalEventLocation').textContent = location;
+            document.getElementById('modalEventType').textContent = type;
+
+            var locationIcon = document.getElementById('modalEventLocation').previousElementSibling;
+
+            // Cập nhật icon cho Type và Location dựa trên logic online/offline
+            var typeIconEl = document.getElementById('modalEventType').previousElementSibling;
+            if(type === 'Online') {
+                locationIcon.className = 'fas fa-laptop';
+                typeIconEl.className = 'fas fa-wifi';
+            } else {
+                locationIcon.className = 'fas fa-map-marker-alt';
+                typeIconEl.className = 'fas fa-globe';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        // --- Logic đóng modal ---
+        if (modal && closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) { modal.style.display = 'none'; }
+            });
+        }
+
+        // === Code điều khiển Tab Lịch/List (All/Offline/Online) ===
+        const tabButtons = document.querySelectorAll('#applied-events .tab-button');
+        const tabPanels = document.querySelectorAll('#applied-events .tab-content-panel');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Bỏ active
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanels.forEach(panel => panel.classList.remove('active'));
+
+                // Active cái mới
+                this.classList.add('active');
+                const targetPanelId = this.dataset.tab;
+                const targetPanel = document.getElementById(targetPanelId);
+                targetPanel.classList.add('active');
+
+                // **QUAN TRỌNG: Render lại lịch nếu là tab 'All'**
+                if (targetPanelId === 'tab-all') {
+                    // Khởi tạo calendar nếu chưa có
+                    if (!calendar) {
+                        calendar = new FullCalendar.Calendar(calendarEl, {
+                            initialView: 'dayGridMonth',
+                            headerToolbar: {
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth,timeGridWeek'
+                            },
+                            events: myEvents, // Sử dụng dữ liệu động
+                            eventClick: function (info) {
+                                info.jsEvent.preventDefault();
+                                openEventModal(
+                                    info.event.title,
+                                    info.event.start,
+                                    info.event.end,
+                                    info.event.extendedProps.location,
+                                    info.event.extendedProps.type,
+                                    info.event.extendedProps.icon
+                                );
+                            }
+                        });
+                        calendar.render();
+                    } else {
+                        calendar.render(); // Chỉ render lại nếu đã tồn tại
                     }
 
                     const offlineEvents = result.data?.offlineEvents ?? [];
@@ -715,80 +725,294 @@
                 } catch (error) {
                     showAppliedEventsError('Unable to load applied events.');
                 }
-            };
-
-            fetchAppliedEvents();
-
-            // === Code Modal ===
-            const modal = document.getElementById('eventDetailModal');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-
-            // --- Hàm mở Modal chung ---
-            function openEventModal(title, start, end, location, type) {
-                const startDate = new Date(start);
-                const endDate = end ? new Date(end) : null;
-
-                const hasValidStart = !Number.isNaN(startDate.getTime());
-                const hasValidEnd = endDate && !Number.isNaN(endDate.getTime());
-
-                const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
-
-                const startDateText = hasValidStart ? startDate.toLocaleDateString('vi-VN', dateOptions) : 'Date to be announced';
-                const startTimeText = hasValidStart ? startDate.toLocaleTimeString('vi-VN', timeOptions) : '';
-                const endTimeText = hasValidEnd ? endDate.toLocaleTimeString('vi-VN', timeOptions) : '';
-
-                let timeDisplay = startDateText;
-                if (startTimeText) {
-                    timeDisplay += ` (${startTimeText}`;
-                    timeDisplay += endTimeText ? ` - ${endTimeText})` : ')';
-                }
-
-                const normalizedType = type === 'Online' ? 'Online' : 'Offline';
-                const locationIconClass = normalizedType === 'Online' ? 'fa-globe' : 'fa-map-marker-alt';
-                const typeIconClass = normalizedType === 'Online' ? 'fa-wifi' : 'fa-users';
-                const locationDisplay = location || (normalizedType === 'Online' ? 'Online event' : 'Venue to be announced');
-
-                document.getElementById('modalEventTitle').textContent = title || 'Event details';
-                document.getElementById('modalEventTime').textContent = timeDisplay;
-                document.getElementById('modalEventLocation').textContent = locationDisplay;
-                document.getElementById('modalEventType').textContent = normalizedType;
-
-                const locationIcon = document.getElementById('modalEventLocation').previousElementSibling;
-                locationIcon.className = `fas ${locationIconClass}`;
-
-                const typeIconEl = document.getElementById('modalEventType').previousElementSibling;
-                typeIconEl.className = `fas ${typeIconClass}`;
-
-                modal.style.display = 'flex';
-            }
-
-            // --- Logic đóng modal ---
-            if (modal && closeModalBtn) {
-                closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) { modal.style.display = 'none'; }
-                });
-            }
-            // === Code điều khiển Tab Lịch/List (All/Offline/Online) ===
-            const tabButtons = document.querySelectorAll('#applied-events .tab-button');
-            const tabPanels = document.querySelectorAll('#applied-events .tab-content-panel');
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabPanels.forEach(panel => panel.classList.remove('active'));
-
-                    this.classList.add('active');
-                    const targetPanelId = this.dataset.tab;
-                    const targetPanel = document.getElementById(targetPanelId);
-                    if (targetPanel) {
-                        targetPanel.classList.add('active');
-                    }
-                });
             });
         });
-    </script>
-</body>
 
+        // === Code click cho Event List (Offline/Online) - SỬ DỤNG EVENT DELEGATION ===
+        const eventListContainer = document.querySelector('.tab-content-container');
+        if (eventListContainer) {
+            eventListContainer.addEventListener('click', function(e) {
+                // Kiểm tra xem có click trúng nút .btn-view-details không
+                const viewButton = e.target.closest('.btn-view-details');
+
+                if (viewButton) {
+                    const card = viewButton.closest('.event-card');
+                    if (!card) return;
+
+                    // Lấy dữ liệu từ data attributes
+                    openEventModal(
+                        card.dataset.title,
+                        new Date(card.dataset.start), // Chuyển string thành Date
+                        new Date(card.dataset.end),   // Chuyển string thành Date
+                        card.dataset.location,
+                        card.dataset.type,
+                        card.dataset.icon
+                    );
+                }
+            });
+        }
+
+        // /* MỚI: LOGIC CHO CHAT WIDGET */
+        const chatWidget = document.getElementById('chatWidget');
+        const chatPartnerNameEl = document.getElementById('chatPartnerName');
+        const closeChatBtn = document.getElementById('closeChatBtn');
+        const partnerSection = document.getElementById('partner-recommendations');
+
+        if (partnerSection && chatWidget && chatPartnerNameEl && closeChatBtn) {
+
+            // 1. Mở chat khi click "Message" (Dùng event delegation)
+            partnerSection.addEventListener('click', function(e) {
+                // Tìm nút message
+                const messageButton = e.target.closest('.partner-card .btn');
+
+                if (messageButton) {
+                    e.preventDefault(); // Ngăn hành vi mặc định (nếu có)
+
+                    // Tìm card cha
+                    const partnerCard = e.target.closest('.partner-card');
+                    if (!partnerCard) return;
+
+                    // Lấy tên
+                    const partnerName = partnerCard.querySelector('.partner-info .name').textContent;
+
+                    // Cập nhật header và hiển thị widget
+                    chatPartnerNameEl.textContent = 'Chat với ' + partnerName;
+                    chatWidget.style.display = 'block';
+                }
+            });
+
+            // 2. Đóng chat
+            closeChatBtn.addEventListener('click', () => {
+                chatWidget.style.display = 'none';
+            });
+        }
+        // /* HẾT LOGIC MỚI */
+
+
+        // --- Tự động kích hoạt tab "All" và render lịch lần đầu ---
+        // (Nếu tab "All" là active mặc định)
+        if (document.querySelector('#tab-all').classList.contains('active')) {
+            if (calendarEl) { // Đảm bảo calendarEl tồn tại
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek'
+                    },
+                    events: myEvents, // Sử dụng dữ liệu động
+                    eventClick: function (info) {
+                        info.jsEvent.preventDefault();
+                        openEventModal(
+                            info.event.title,
+                            info.event.start,
+                            info.event.end,
+                            info.event.extendedProps.location,
+                            info.event.extendedProps.type,
+                            info.event.extendedProps.icon
+                        );
+                    }
+                });
+                calendar.render();
+            }
+        }
+    });
+</script>
+
+@* CALL API FROM JS*@
+<script>
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+            fullName: document.getElementById("fullName").value,
+            phoneNumber: document.getElementById("phoneNumber").value,
+            dateOfBirth: document.getElementById("dateOfBirth").value,
+            addressWard: document.getElementById("addressWard").value,
+            addressDistrict: document.getElementById("addressDistrict").value,
+            addressCity: document.getElementById("addressCity").value,
+            email: document.getElementById("email").value
+        };
+
+        console.log("Data gửi API:", data);
+
+        await fetch("https://localhost:7063/api/user/update-profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+            credentials: "include"
+        });
+
+        alert("Updated!");
+    });
+    document.getElementById("changePasswordForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const body = {
+            currentPassword: document.getElementById("currentPassword").value,
+            newPassword: document.getElementById("newPassword").value,
+            confirmNewPassword: document.getElementById("confirmPassword").value
+        };
+
+        const res = await fetch("https://localhost:7063/api/user/change-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alert("Password changed successfully!");
+        } else {
+            alert(data.message ?? "Failed to change password");
+        }
+    });
+    (async function loadUser() {
+        const res = await fetch("https://localhost:7063/api/user/me", { credentials: "include" });
+        if (!res.ok) return;
+
+        const user = await res.json();
+
+        document.getElementById("fullName").value = user.fullName;
+        document.getElementById("phoneNumber").value = user.phoneNumber;
+        document.getElementById("dateOfBirth").value = user.dateOfBirth?.split("T")[0];
+        document.getElementById("addressWard").value = user.addressWard;
+        document.getElementById("addressDistrict").value = user.addressDistrict;
+        document.getElementById("addressCity").value = user.addressCity;
+        document.getElementById("email").value = user.email;
+
+        // === Update sidebar avatar ===
+        const sidebarAvatar = document.querySelector(".sidebar-avatar");
+        if (sidebarAvatar) {
+            sidebarAvatar.style.backgroundImage = `url('${user.avatarUrl || 'https://via.placeholder.com/100x100/e91e63/ffffff?text=SA'}')`;
+        }
+
+        // === Update sidebar "title" ===
+        const sidebarTitle = document.querySelector(".sidebar-title");
+        if (sidebarTitle) {
+            sidebarTitle.textContent = `${user.addressWard || ''}, ${user.addressDistrict || ''}, ${user.addressCity || ''}`;
+        }
+
+        const sidebarName = document.querySelector(".sidebar-name");
+        if (sidebarName) {
+            sidebarName.textContent = user.fullName || "User";
+        }
+    })();
+    (async function loadSpeakerProfile() {
+        const res = await fetch("https://localhost:7063/api/user/speaker-profile", { credentials: "include" });
+        if (!res.ok) return;
+
+        const result = await res.json();
+        const data = result.data;
+
+        if (!data) return;
+
+        document.getElementById("speakerCompany").value = data.company || "";
+        document.getElementById("speakerJobTitle").value = data.jobTitle || "";
+        document.getElementById("speakerBio").value = data.bio || "";
+        document.getElementById("speakerTopics").value = data.topics || "";
+        document.getElementById("speakerStatus").value = data.approvalStatus || "Pending";
+        document.getElementById("speakerWebsite").value = data.websiteUrl || "";
+        document.getElementById("speakerLinkedIn").value = data.linkedInUrl || "";
+    })();
+    document.querySelector("#speaker-profile form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const data = {
+            company: document.getElementById("speakerCompany").value,
+            jobTitle: document.getElementById("speakerJobTitle").value,
+            bio: document.getElementById("speakerBio").value,
+            topics: document.getElementById("speakerTopics").value,
+            websiteUrl: document.getElementById("speakerWebsite").value,
+            linkedInUrl: document.getElementById("speakerLinkedIn").value
+        };
+
+        const res = await fetch("https://localhost:7063/api/user/update-speaker-profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+            alert("Speaker profile updated!");
+        } else {
+            const err = await res.json();
+            alert(err.message || "Update failed");
+        }
+    });
+    (async function loadRecommendedEvents() {
+        try {
+            const res = await fetch("https://localhost:7063/api/user/recommended-events", {
+                credentials: "include"
+            });
+            if (!res.ok) throw new Error("Failed to fetch recommended events");
+
+            const result = await res.json();
+            const events = result.data;
+
+            const container = document.querySelector("#recommended-events .form-grid");
+            if (!container) return;
+            container.innerHTML = ""; // xóa các mẫu tạm
+
+            events.forEach(event => {
+                const card = document.createElement("div");
+                card.className = "recommended-event-card";
+                card.innerHTML = `
+                <img src="${event.cardImageUrl || 'https://via.placeholder.com/300x180/ccc/333?text=Event'}" class="recommended-event-thumb" alt="Event">
+                <div class="recommended-event-content">
+                    <h4>${event.title}</h4>
+                    <div class="event-card-meta">
+                        <span><i class="far fa-calendar-alt"></i> ${new Date(event.startTime).toLocaleDateString()}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${event.location || "TBD"}</span>
+                    </div>
+                    <p>${event.description || ""}</p>
+                    <button class="btn" style="width:100%">View Details</button>
+                </div>
+            `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    })();
+
+    // === Load Recommended Partners ===
+    (async function loadRecommendedPartners() {
+        try {
+            const res = await fetch("https://localhost:7063/api/user/recommended-partners", {
+                credentials: "include"
+            });
+            if (!res.ok) throw new Error("Failed to fetch recommended partners");
+
+            const result = await res.json();
+            const partners = result.data;
+
+            const container = document.querySelector("#partner-recommendations .partner-list");
+            if (!container) return;
+            container.innerHTML = "";
+
+            partners.forEach(partner => {
+                const card = document.createElement("div");
+                card.className = "partner-card";
+                card.innerHTML = `
+                <div class="partner-card-inner">
+                    <img src="${partner.avatarUrl || 'https://via.placeholder.com/50x50'}" class="partner-avatar" alt="Avatar">
+                    <div class="partner-info">
+                        <div class="name">${partner.fullName}</div>
+                        <div class="interests">City: ${partner.addressCity || "Unknown"}</div>
+                    </div>
+                    <button class="btn"><i class="fas fa-comment-dots"></i> Message</button>
+                </div>
+            `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    })();
+</script>
+</body>
 </html>

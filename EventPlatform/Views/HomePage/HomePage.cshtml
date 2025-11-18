@@ -36,15 +36,15 @@
             <p>Help us recommend the best events for you. What are you interested in?</p>
 
             <div class="interests-grid" id="interestsGrid">
-                <button class="interest-tag" data-interest="Technology">Technology</button>
-                <button class="interest-tag" data-interest="Business">Business</button>
-                <button class="interest-tag" data-interest="Marketing">Marketing</button>
-                <button class="interest-tag" data-interest="Design">Design</button>
-                <button class="interest-tag" data-interest="AI & ML">AI & ML</button>
-                <button class="interest-tag" data-interest="Music">Music</button>
-                <button class="interest-tag" data-interest="Health & Wellness">Health & Wellness</button>
-                <button class="interest-tag" data-interest="Startups">Startups</button>
-                <button class="interest-tag" data-interest="Web Development">Web Development</button>
+                @* <button class="interest-tag" data-interest="Technology">Technology</button> *@
+                @* <button class="interest-tag" data-interest="Business">Business</button> *@
+                @* <button class="interest-tag" data-interest="Marketing">Marketing</button> *@
+                @* <button class="interest-tag" data-interest="Design">Design</button> *@
+                @* <button class="interest-tag" data-interest="AI & ML">AI & ML</button> *@
+                @* <button class="interest-tag" data-interest="Music">Music</button> *@
+                @* <button class="interest-tag" data-interest="Health & Wellness">Health & Wellness</button> *@
+                @* <button class="interest-tag" data-interest="Startups">Startups</button> *@
+                @* <button class="interest-tag" data-interest="Web Development">Web Development</button> *@
             </div>
             <div class="add-interest-form">
                 <input type="text" id="customInterestInput" placeholder="Or add your own...">
@@ -559,114 +559,150 @@
 </body>
 </html>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.getElementById('interestModal');
-        const modalContent = modal.querySelector('.modal-content');
-        const saveInterestsBtn = document.getElementById('saveInterestsBtn');
-        const interestsGrid = document.getElementById('interestsGrid');
-        const modalError = document.getElementById('interestModalError');
+document.addEventListener('DOMContentLoaded', async function () {
+    const modal = document.getElementById('interestModal');
+    const modalContent = modal.querySelector('.modal-content');
+    const saveInterestsBtn = document.getElementById('saveInterestsBtn');
+    const interestsGrid = document.getElementById('interestsGrid');
+    const modalError = document.getElementById('interestModalError');
+    const customInterestInput = document.getElementById('customInterestInput');
+    const addCustomInterestBtn = document.getElementById('addCustomInterestBtn');
 
-        // === LẤY CÁC PHẦN TỬ MỚI ===
-        const customInterestInput = document.getElementById('customInterestInput');
-        const addCustomInterestBtn = document.getElementById('addCustomInterestBtn');
+    // Lấy thông tin user từ localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) return;
 
+    // === Hàm kiểm tra user đã có tag chưa ===
+    async function checkUserHasTag(userId) {
+        try {
+            const res = await fetch(`https://localhost:7063/api/tag/isuserhavetag/${userId}`);
+            if (!res.ok) return false;
+            const data = await res.json();
+            return !!data.data;
+        } catch (err) {
+            console.error('Lỗi khi kiểm tra tag user:', err);
+            return false;
+        }
+    }
 
-        function openInterestModal() {
-            if (modal) {
-                modal.classList.add('show');
+    // === Hàm lấy danh sách tag từ API ===
+    async function fetchTags() {
+        try {
+            const res = await fetch('https://localhost:7063/api/tag/list-tags');
+            if (!res.ok) throw new Error('Không lấy được tag');
+            const data = await res.json();
+            return data.data || [];
+        } catch (err) {
+            console.error('Lỗi fetch tags:', err);
+            return [];
+        }
+    }
+
+    // === Hàm tạo button tag ===
+    function createTagButton(tagName) {
+        const btn = document.createElement('button');
+        btn.classList.add('interest-tag');
+        btn.dataset.interest = tagName;
+        btn.textContent = tagName;
+        return btn;
+    }
+
+    // === Hàm mở modal ===
+    function openInterestModal() {
+        modal.classList.add('show');
+    }
+
+    // === Hàm đóng modal ===
+    function closeInterestModal() {
+        modal.classList.remove('show');
+    }
+
+    // === Thêm tag mới từ input ===
+    function addNewInterestTag(interestName) {
+        const formattedName = interestName.trim();
+        if (!formattedName) return;
+
+        // Kiểm tra tồn tại
+        let exists = false;
+        interestsGrid.querySelectorAll('.interest-tag').forEach(tag => {
+            if (tag.dataset.interest.toLowerCase() === formattedName.toLowerCase()) {
+                exists = true;
+                tag.classList.add('active');
             }
+        });
+
+        if (!exists) {
+            const newTag = createTagButton(formattedName);
+            newTag.classList.add('active');
+            interestsGrid.appendChild(newTag);
         }
 
-        function closeInterestModal() {
-            if (modal) {
-                modal.classList.remove('show');
-            }
-        }
+        customInterestInput.value = "";
+        modalError.style.display = 'none';
+        modalContent.classList.remove('error-shake');
+    }
 
-        // === HÀM THÊM TAG MỚI VÀO LƯỚI ===
-        function addNewInterestTag(interestName) {
-            // Chuẩn hóa tên (viết hoa chữ cái đầu, bỏ khoảng trắng thừa)
-            const formattedName = interestName.trim();
-            if (formattedName === "") {
-                return; // Không thêm nếu trống
-            }
-
-            // Kiểm tra xem tag đã tồn tại chưa
-            const existingTags = interestsGrid.querySelectorAll('.interest-tag');
-            let exists = false;
-            existingTags.forEach(tag => {
-                if (tag.dataset.interest.toLowerCase() === formattedName.toLowerCase()) {
-                    exists = true;
-                    // Nếu đã tồn tại, chỉ cần active nó lên
-                    tag.classList.add('active');
-                }
-            });
-
-            // Nếu chưa tồn tại, tạo mới
-            if (!exists) {
-                const newTag = document.createElement('button');
-                newTag.classList.add('interest-tag', 'active'); // Tự động active khi thêm
-                newTag.dataset.interest = formattedName;
-                newTag.textContent = formattedName;
-                interestsGrid.appendChild(newTag);
-            }
-
-            // Xóa nội dung ô input
-            customInterestInput.value = "";
-            // Ẩn lỗi (nếu có)
+    // === Event click chọn tag ===
+    interestsGrid.addEventListener('click', function (e) {
+        if (e.target.classList.contains('interest-tag')) {
+            e.target.classList.toggle('active');
             modalError.style.display = 'none';
             modalContent.classList.remove('error-shake');
         }
+    });
 
+    addCustomInterestBtn.addEventListener('click', () => {
+        addNewInterestTag(customInterestInput.value);
+    });
 
-        // === XỬ LÝ CLICK CHỌN SỞ THÍCH ===
-        interestsGrid.addEventListener('click', function (e) {
-            if (e.target.classList.contains('interest-tag')) {
-                e.target.classList.toggle('active');
-                modalError.style.display = 'none';
-                modalContent.classList.remove('error-shake');
-            }
-        });
-
-        // === XỬ LÝ NÚT THÊM TAG MỚI ===
-        addCustomInterestBtn.addEventListener('click', () => {
+    customInterestInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
             addNewInterestTag(customInterestInput.value);
+        }
+    });
+
+    // === Lưu sở thích ===
+    saveInterestsBtn.addEventListener('click', async () => {
+        const selectedInterests = [];
+        interestsGrid.querySelectorAll('.interest-tag.active').forEach(tag => {
+            selectedInterests.push(tag.dataset.interest);
         });
 
-        // Xử lý khi nhấn Enter trong ô input
-        customInterestInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Ngăn form submit (nếu có)
-                addNewInterestTag(customInterestInput.value);
-            }
-        });
+        if (selectedInterests.length === 0) {
+            modalError.style.display = 'block';
+            modalContent.classList.add('error-shake');
+            setTimeout(() => modalContent.classList.remove('error-shake'), 300);
+            return;
+        }
 
-        // === XỬ LÝ NÚT LƯU (BẮT BUỘC CHỌN) ===
-        saveInterestsBtn.addEventListener('click', () => {
-            const selectedInterests = [];
-            interestsGrid.querySelectorAll('.interest-tag.active').forEach(tag => {
-                selectedInterests.push(tag.dataset.interest);
+        try {
+            const res = await fetch(`https://localhost:7063/api/tag/assign-tags/${user.userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selectedInterests)
             });
 
-            if (selectedInterests.length === 0) {
-                modalError.style.display = 'block';
-                modalContent.classList.add('error-shake');
-                setTimeout(() => {
-                    modalContent.classList.remove('error-shake');
-                }, 300);
-                return;
-            }
-
-            console.log('Sở thích đã chọn:', selectedInterests);
-            // !! TẠI ĐÂY: Bạn sẽ gọi hàm fetch() để gửi mảng `selectedInterests` này lên server
-
+            if (!res.ok) throw new Error('Lưu tag thất bại');
+            console.log('Tag đã lưu thành công:', selectedInterests);
             closeInterestModal();
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    // === Khởi tạo modal nếu user chưa có tag ===
+    const hasTag = await checkUserHasTag(user.userId);
+    if (!hasTag) {
+        const tags = await fetchTags();
+        tags.forEach(tag => {
+            const btn = createTagButton(tag.tagName);
+            interestsGrid.appendChild(btn);
         });
 
-        // Tự động mở modal
-        setTimeout(() => {
-            openInterestModal();
-        }, 1000);
+        setTimeout(openInterestModal, 500); // tự động show modal
+    }
 
-    });
+});
 </script>
+
