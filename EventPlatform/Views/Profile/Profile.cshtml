@@ -13,7 +13,6 @@ ViewData["Title"] = "My Profile";
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Profile.css" />
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
 
     <style>
         /* * Đoạn CSS này dùng để ghi đè, sửa lỗi layout bị lệch.
@@ -713,6 +712,18 @@ ViewData["Title"] = "My Profile";
                     } else {
                         calendar.render(); // Chỉ render lại nếu đã tồn tại
                     }
+
+                    const offlineEvents = result.data?.offlineEvents ?? [];
+                    const onlineEvents = result.data?.onlineEvents ?? [];
+                    const allEvents = [...offlineEvents, ...onlineEvents];
+
+                    renderEvents(appliedEventsContainers.all, allEvents, 'You have not applied to any events yet.');
+                    renderEvents(appliedEventsContainers.offline, offlineEvents, 'No offline events found.', 'Offline');
+                    renderEvents(appliedEventsContainers.online, onlineEvents, 'No online events found.', 'Online');
+
+                    attachEventCardHandlers();
+                } catch (error) {
+                    showAppliedEventsError('Unable to load applied events.');
                 }
             });
         });
