@@ -17,115 +17,37 @@
 <body>
 
     <div class="container">
-        <div class="booking-header">
-            <a href="#" class="back-btn"><i class="fas fa-arrow-left"></i> Trở về</a>
+        <div id="loading-spinner" style="text-align: center; padding: 50px; font-size: 2em;"><i class="fas fa-spinner fa-spin"></i></div>
+
+        <div class="booking-header" id="main-content-header" style="display:none;">
+            <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Trở về</a>
             <h1 class="page-title">Chọn Vé</h1>
-            <div style="width: 70px;"></div> 
+            <div style="width: 70px;"></div>
         </div>
 
-        <div class="booking-layout">
+        <div class="booking-layout" id="main-content-body" style="display:none;">
 
             <main class="ticket-list-container">
-                <div class="ticket-list">
-
-                    <div class="ticket-item">
-                        <div class="ticket-header">
-                            <div class="ticket-info">
-                                <h3 class="ticket-svip">SVIP</h3>
-                                <span class="ticket-price" data-price="2500000">2.500.000 ₫</span>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="qty-btn minus" disabled>-</button>
-                                <span class="qty-input" id="qty-svip">0</span>
-                                <button class="qty-btn plus" data-target="svip">+</button>
-                            </div>
-                        </div>
-                        <div class="ticket-desc-box">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Vé SVIP gần khu vực sân khấu, lối đi riêng. Quà tặng kèm: Gạo hữu cơ Ông Điền 2kg trị giá 238k.</span>
-                        </div>
-                    </div>
-
-                    <!-- Ticket Item: VIP -->
-                    <div class="ticket-item">
-                        <div class="ticket-header">
-                            <div class="ticket-info">
-                                <h3 class="ticket-vip">VIP</h3>
-                                <span class="ticket-price" data-price="2000000">2.000.000 ₫</span>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="qty-btn minus" disabled>-</button>
-                                <span class="qty-input" id="qty-vip">0</span>
-                                <button class="qty-btn plus" data-target="vip">+</button>
-                            </div>
-                        </div>
-                        <div class="ticket-desc-box">
-                            <i class="fas fa-info-circle"></i>
-                            <span>View trung tâm, âm thanh ánh sáng cực chuẩn. Quà tặng kèm: Voucher đồ uống.</span>
-                        </div>
-                    </div>
-
-                    <!-- Ticket Item: Diamond -->
-                    <div class="ticket-item">
-                        <div class="ticket-header">
-                            <div class="ticket-info">
-                                <h3 class="ticket-diamond">Diamond</h3>
-                                <span class="ticket-price" data-price="1600000">1.600.000 ₫</span>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="qty-btn minus" disabled>-</button>
-                                <span class="qty-input" id="qty-diamond">0</span>
-                                <button class="qty-btn plus" data-target="diamond">+</button>
-                            </div>
-                        </div>
-                        <div class="ticket-desc-box">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Vị trí đẹp, bao trọn tầm nhìn sân khấu. Ghế ngồi mềm mại.</span>
-                        </div>
-                    </div>
-
-                    <!-- Ticket Item: Gold -->
-                    <div class="ticket-item">
-                        <div class="ticket-header">
-                            <div class="ticket-info">
-                                <h3>Gold</h3>
-                                <span class="ticket-price" data-price="1200000">1.200.000 ₫</span>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="qty-btn minus" disabled>-</button>
-                                <span class="qty-input" id="qty-gold">0</span>
-                                <button class="qty-btn plus" data-target="gold">+</button>
-                            </div>
-                        </div>
-                        <div class="ticket-desc-box">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Vị trí cao hơn, view thoáng. Phù hợp cho nhóm bạn.</span>
-                        </div>
-                    </div>
-
+                <div class="ticket-list" id="ticket-list-renderer">
                 </div>
             </main>
 
-            <!-- CỘT PHẢI: SIDEBAR -->
             <aside class="booking-sidebar">
                 <div class="sidebar-card">
-                    <!-- Thông tin sự kiện -->
                     <div class="mini-event-info">
-                        <h4>Liveshow Hoài Lâm "Buồn làm chi em ơi"</h4>
+                        <h4 id="mini-event-title">Đang tải...</h4>
                         <div class="mini-info-row">
                             <i class="far fa-calendar-alt"></i>
-                            <span>20:00, 29 tháng 11, 2025</span>
+                            <span id="mini-event-time">...</span>
                         </div>
                         <div class="mini-info-row">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Khách sạn Sheraton Hải Phòng</span>
+                            <span id="mini-event-location">...</span>
                         </div>
                     </div>
 
-                    <!-- Bảng giá động -->
                     <div class="price-summary">
                         <div id="summary-items">
-                            <!-- Các dòng vé đã chọn sẽ hiện ở đây bằng JS -->
                             <p style="font-size:13px; color:#999; text-align:center;">Chưa có vé nào được chọn</p>
                         </div>
 
@@ -135,8 +57,7 @@
                         </div>
                     </div>
 
-                    <!-- Nút hành động -->
-                    <a id="btn-submit" asp-controller="Payment" asp-action="Index" class="btn btn-secondary">
+                    <a id="btn-submit" href="#" class="btn btn-secondary">
                         Vui lòng chọn vé
                     </a>
                 </div>
@@ -146,99 +67,223 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ticketInputs = {
-                'svip': { price: 2500000, name: 'SVIP', qty: 0 },
-                'vip': { price: 2000000, name: 'VIP', qty: 0 },
-                'diamond': { price: 1600000, name: 'Diamond', qty: 0 },
-                'gold': { price: 1200000, name: 'Gold', qty: 0 }
-            };
-
+        document.addEventListener('DOMContentLoaded', async function() {
+            const API_BASE_URL = "https://localhost:7063";
+            const ticketListContainer = document.getElementById('ticket-list-renderer');
             const summaryContainer = document.getElementById('summary-items');
             const totalPriceEl = document.getElementById('total-price');
             const submitBtn = document.getElementById('btn-submit');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const mainContentHeader = document.getElementById('main-content-header');
+            const mainContentBody = document.getElementById('main-content-body');
 
-            submitBtn.addEventListener('click', function (e) {
+            // State quản lý giỏ hàng
+            let cartState = {};
+            let eventData = null;
 
-                if (this.classList.contains('btn-secondary') || this.textContent.trim() === "Vui lòng chọn vé") {
-                    e.preventDefault(); 
-                    alert("Bạn chưa chọn vé nào!");
-                } else {
-                }
-            });
+            // 1. Lấy EventID từ URL
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('eventId');
 
+            if(!eventId) {
+                alert("Không tìm thấy sự kiện!");
+                window.location.href = "/";
+                return;
+            }
+
+            // 2. Hàm format tiền tệ
             const formatCurrency = (amount) => {
                 return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
             };
 
-            const updateUI = () => {
+            // 3. Fetch dữ liệu từ API
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/Events/${eventId}`);
+
+                if(!response.ok) {
+                    if(response.status === 404) throw new Error("Sự kiện không tồn tại");
+                    throw new Error("Lỗi tải dữ liệu sự kiện");
+                }
+
+                eventData = await response.json();
+
+                // Ẩn spinner, hiện content
+                loadingSpinner.style.display = 'none';
+                mainContentHeader.style.display = 'flex';
+                mainContentBody.style.display = 'grid';
+
+                renderPage(eventData);
+
+            } catch (err) {
+                console.error(err);
+                loadingSpinner.innerHTML = `<p class="text-danger" style="color:red;">Lỗi: ${err.message}</p>`;
+            }
+
+            function renderPage(event) {
+                // Fill thông tin sidebar
+                document.getElementById('mini-event-title').textContent = event.title;
+                document.getElementById('mini-event-location').textContent = event.location;
+
+                const eventDate = new Date(event.startTime);
+                // Format: HH:mm, DD tháng MM, YYYY
+                const timeString = `${eventDate.getHours().toString().padStart(2,'0')}:${eventDate.getMinutes().toString().padStart(2,'0')}, ${eventDate.getDate()} tháng ${eventDate.getMonth() + 1}, ${eventDate.getFullYear()}`;
+                document.getElementById('mini-event-time').textContent = timeString;
+
+                // Render danh sách vé từ ticketTypes
+                if (event.ticketTypes && event.ticketTypes.length > 0) {
+
+                    ticketListContainer.innerHTML = ''; // Clear cũ
+
+                    event.ticketTypes.forEach(ticket => {
+                        // Lưu ý: Property từ API thường là camelCase (ticketTypeId, name, price...)
+                        // Kiểm tra network tab xem API trả về hoa hay thường để sửa cho đúng
+
+                        // Khởi tạo state
+                        cartState[ticket.ticketTypeId] = {
+                            id: ticket.ticketTypeId,
+                            name: ticket.name,
+                            price: ticket.price,
+                            qty: 0,
+                            max: ticket.availableQuantity
+                        };
+
+                        const isSoldOut = ticket.availableQuantity <= 0;
+
+                        const ticketHtml = `
+                            <div class="ticket-item">
+                                <div class="ticket-header">
+                                    <div class="ticket-info">
+                                        <h3 style="margin:0; font-size:18px; font-weight:600;" class="ticket-name-${ticket.ticketTypeId}">${ticket.name}</h3>
+                                        <span class="ticket-price" style="color:#e91e63; font-weight:bold; font-size:16px;">${formatCurrency(ticket.price)}</span>
+                                    </div>
+                                    <div class="quantity-control">
+                                        <button class="qty-btn minus" data-id="${ticket.ticketTypeId}" disabled>-</button>
+                                        <span class="qty-input" id="qty-${ticket.ticketTypeId}">0</span>
+                                        <button class="qty-btn plus" data-id="${ticket.ticketTypeId}" ${isSoldOut ? 'disabled' : ''}>+</button>
+                                    </div>
+                                </div>
+                                <div class="ticket-desc-box" style="font-size:13px; color:#777; margin-top:10px; background:#f9f9f9; padding:10px; border-radius:5px;">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>${isSoldOut ? '<span style="color:red">Hết vé</span>' : `Còn lại: ${ticket.availableQuantity} vé`}</span>
+                                    </div>
+                            </div>
+                        `;
+                        ticketListContainer.insertAdjacentHTML('beforeend', ticketHtml);
+                    });
+                } else {
+                    ticketListContainer.innerHTML = "<p style='text-align:center; padding:20px;'>Hiện tại chưa có thông tin vé cho sự kiện này.</p>";
+                }
+            }
+
+            // 4. Xử lý sự kiện tăng giảm số lượng (Event Delegation)
+            ticketListContainer.addEventListener('click', function(e) {
+                // Tìm nút được click
+                const btn = e.target.closest('.qty-btn');
+                if(!btn) return; // Nếu click ra ngoài nút thì bỏ qua
+
+                const id = btn.dataset.id;
+                const item = cartState[id];
+
+                if(btn.classList.contains('plus')) {
+                    // Logic tăng số lượng
+                    if(item.qty < item.max && item.qty < 10) { // Giới hạn max 10 vé mỗi loại
+                        item.qty++;
+                    } else {
+                        alert(item.qty >= 10 ? "Giới hạn mỗi người chỉ được mua tối đa 10 vé." : "Số lượng vé còn lại không đủ.");
+                    }
+                } else if (btn.classList.contains('minus')) {
+                    // Logic giảm số lượng
+                    if(item.qty > 0) item.qty--;
+                }
+
+                updateUI();
+            });
+
+            // 5. Cập nhật Sidebar và Nút Submit
+            function updateUI() {
                 let total = 0;
                 let totalQty = 0;
-                summaryContainer.innerHTML = ''; 
+                summaryContainer.innerHTML = '';
 
-                for (const [key, data] of Object.entries(ticketInputs)) {
+                for (const key in cartState) {
+                    const item = cartState[key];
 
-                    const qtyDisplay = document.getElementById(`qty-${key}`);
-                    if(qtyDisplay) qtyDisplay.textContent = data.qty;
+                    // Cập nhật số lượng trên giao diện vé (ô số giữa dấu - và +)
+                    const qtyDisplay = document.getElementById(`qty-${item.id}`);
+                    if(qtyDisplay) qtyDisplay.textContent = item.qty;
 
-                    const container = document.getElementById(`qty-${key}`).parentElement;
-                    const btnM = container.querySelector('.minus');
-                    if(btnM) btnM.disabled = (data.qty <= 0);
+                    // Cập nhật trạng thái enable/disable nút trừ
+                    const minusBtn = document.querySelector(`.minus[data-id="${item.id}"]`);
+                    if(minusBtn) minusBtn.disabled = (item.qty <= 0);
 
-                    if (data.qty > 0) {
-                        const subtotal = data.qty * data.price;
+                    // Cập nhật trạng thái nút cộng (nếu max rồi thì disable)
+                    const plusBtn = document.querySelector(`.plus[data-id="${item.id}"]`);
+                    if(plusBtn) plusBtn.disabled = (item.qty >= item.max || item.qty >= 10);
+
+                    // Render dòng tóm tắt bên sidebar
+                    if (item.qty > 0) {
+                        const subtotal = item.qty * item.price;
                         total += subtotal;
-                        totalQty += data.qty;
+                        totalQty += item.qty;
 
                         const row = document.createElement('div');
                         row.className = 'summary-row';
+                        row.style.display = 'flex';
+                        row.style.justifyContent = 'space-between';
+                        row.style.marginBottom = '5px';
+                        row.style.fontSize = '14px';
+
                         row.innerHTML = `
-                            <span>${data.name} <span style="color:#999; font-size:12px;">x${data.qty}</span></span>
+                            <span>${item.name} <span style="color:#999; font-size:12px;">x${item.qty}</span></span>
                             <span>${formatCurrency(subtotal)}</span>
                         `;
                         summaryContainer.appendChild(row);
                     }
                 }
 
+                totalPriceEl.textContent = formatCurrency(total);
+
+                // Cập nhật nút submit
                 if (totalQty === 0) {
                     summaryContainer.innerHTML = '<p style="font-size:13px; color:#999; text-align:center;">Chưa có vé nào được chọn</p>';
-
                     submitBtn.textContent = "Vui lòng chọn vé";
-                    submitBtn.disabled = true; // Dành cho logic
-
-                    // Thêm class màu xám, xóa class màu chính
+                    submitBtn.classList.remove('btn-primary');
                     submitBtn.classList.add('btn-secondary');
-                    submitBtn.classList.remove('btn-primary'); // Hoặc btn-danger tùy css của bạn
+                    // Vô hiệu hóa nút bằng cách gỡ href hoặc xử lý trong event listener
                 } else {
                     submitBtn.innerHTML = `Tiếp tục <i class="fas fa-chevron-right"></i>`;
-                    submitBtn.disabled = false;
-
-                    // Xóa class màu xám (btn-secondary) để nó không bị chặn bởi sự kiện click
                     submitBtn.classList.remove('btn-secondary');
-
-                    // Thêm class màu nổi (ví dụ btn-primary hoặc btn-danger)
                     submitBtn.classList.add('btn-primary');
                 }
+            }
 
-                totalPriceEl.textContent = formatCurrency(total);
-            };
+            // 6. Xử lý nút Tiếp tục
+            submitBtn.addEventListener('click', function(e) {
+                // Chặn hành vi mặc định nếu là thẻ a
+                e.preventDefault();
 
-            document.querySelectorAll('.quantity-control').forEach(control => {
-                const plusBtn = control.querySelector('.plus');
-                const minusBtn = control.querySelector('.minus');
-                const targetKey = plusBtn.dataset.target;
+                if(this.classList.contains('btn-secondary')) {
+                    alert("Vui lòng chọn ít nhất 1 vé để tiếp tục.");
+                    return;
+                }
 
-                plusBtn.onclick = () => {
-                        if (ticketInputs[targetKey].qty < 10) ticketInputs[targetKey].qty++;
-                        updateUI();
+                // Lọc lấy các vé có số lượng > 0
+                const selectedTickets = Object.values(cartState).filter(i => i.qty > 0);
+
+                // Lưu vào SessionStorage để trang Payment đọc được
+                const bookingSession = {
+                    eventId: eventData.eventId,
+                    eventTitle: eventData.title,
+                    eventLocation: eventData.location,
+                    eventDate: eventData.startTime,
+                    tickets: selectedTickets
                 };
-                minusBtn.onclick = () => {
-                        if (ticketInputs[targetKey].qty > 0) ticketInputs[targetKey].qty--;
-                        updateUI();
-                };
+
+                sessionStorage.setItem('bookingSession', JSON.stringify(bookingSession));
+
+                // Chuyển hướng sang trang Payment
+                window.location.href = "/Payment/Index"; // Đảm bảo Route này đúng với Controller của bạn
             });
-
-            updateUI();
         });
     </script>
 </body>

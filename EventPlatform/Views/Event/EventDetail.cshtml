@@ -1180,7 +1180,7 @@
             const response = await fetch(`${baseUrl}/api/Events/${id}`);
             if (!response.ok) throw new Error("Failed to load event data.");
             const event = await response.json();
-            populatePageBasicInfo(event);
+            populatePage(event);
         }
 
         // ---------------------------------------------------------
@@ -1438,21 +1438,20 @@
             });
         }
 
-        // ---------------------------------------------------------
-        // Helper: Đổ dữ liệu cơ bản (Ảnh, Tên, Giá...)
-        // ---------------------------------------------------------
-        function populatePageBasicInfo(event) {
-            const eventDate = new Date(event.startTime).toLocaleDateString('en-US', {
-                year: 'numeric', month: 'long', day: 'numeric'
-            });
+    function populatePage(event) {
+        // Định dạng ngày
+        const eventDate = new Date(event.startTime).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric'
+        });
+        const bookBtn = document.querySelector('.book-event-form .btn-primary');
+        if (bookBtn) {
+            // Khi bấm sẽ nhảy qua /Payment/BookingTickets kèm theo id sự kiện
+            bookBtn.href = `/Payment/BookingTickets?eventId=${event.eventId}`;
 
-            // Update Book Button Link
-            const bookBtn = document.querySelector('.book-event-form .btn-primary');
-            if (bookBtn) {
-                bookBtn.href = `/Payment/BookingTickets?eventId=${event.id}`;
-                bookBtn.removeAttribute('asp-controller');
-                bookBtn.removeAttribute('asp-action');
-            }
+            // Xóa thuộc tính asp-action/controller cũ để tránh xung đột (vì ta xử lý bằng JS)
+            bookBtn.removeAttribute('asp-controller');
+            bookBtn.removeAttribute('asp-action');
+        }
 
             document.querySelector('.event-main-image').src = event.coverImageUrl || 'https://via.placeholder.com/800x400';
             document.getElementById('event-meta-date').innerHTML = `<i class="far fa-calendar-alt"></i> ${eventDate}`;

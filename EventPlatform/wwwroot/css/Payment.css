@@ -350,6 +350,218 @@ body {
         flex-grow: 1;
     }
 
+/* Payment Card Styles */
+.payment-card {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+    .payment-header h3 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+/* Tabs */
+.payment-tabs {
+    display: flex;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: white;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+    .tab-btn.active {
+        color: #28a745; /* Màu xanh lá giống VietQR */
+        border-bottom: 2px solid #28a745;
+        background: #f9fffb;
+    }
+
+/* Body Layout */
+.payment-body {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 30px;
+    gap: 40px;
+}
+
+.payment-content-left {
+    flex: 1;
+    min-width: 300px;
+}
+
+.payment-content-right {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* QR View */
+.qr-frame {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid #eee;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.qr-image {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.qr-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #666;
+}
+
+    .qr-total .price {
+        font-weight: bold;
+        color: #333;
+        font-size: 18px;
+    }
+
+/* Manual Info View */
+.manual-info-list {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.info-item {
+    display: grid;
+    grid-template-columns: 100px 1fr 70px;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+.info-label {
+    font-size: 13px;
+    color: #666;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #333;
+    word-break: break-all;
+}
+
+.btn-copy {
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+}
+
+    .btn-copy:hover {
+        background: #555;
+    }
+
+.manual-note {
+    background: #fff3cd;
+    color: #856404;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Right Instructions */
+.steps-list {
+    margin-top: 20px;
+}
+
+.step-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+}
+
+.step-num {
+    background: #28a745;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    margin-top: 3px;
+}
+
+/* Countdown */
+.transaction-countdown {
+    background: #f0f8ff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+    .transaction-countdown p {
+        margin: 0 0 10px 0;
+        color: #777;
+        font-size: 14px;
+    }
+
+.timer-box span {
+    background: #ff9800;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 
 /* === (Phải) SIDEBAR TÓM TẮT === */
 .summary-row {
