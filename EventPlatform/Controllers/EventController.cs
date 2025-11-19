@@ -20,5 +20,11 @@ namespace EventPlatform.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult OrganizerCheckin()
+        {
+            // thêm [Authorize] ở đây nếu chỉ Admin/BTC vào được
+            return View();
+        }
     }
 }

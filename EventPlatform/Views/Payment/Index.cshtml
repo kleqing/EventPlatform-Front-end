@@ -13,63 +13,259 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Payment.css" />
+    <style>
+        #main-checkout-layout {
+            display: none;
+        }
+
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* --- PAYMENT MODAL STYLES --- */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .payment-modal-content {
+            background: white;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-close-top {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+        }
+
+        /* Layout bên trong Modal */
+        .payment-modal-body {
+            display: flex;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-left {
+            flex: 1.5;
+            padding: 20px;
+            border-right: 1px solid #eee;
+            background: #fff;
+        }
+
+        .modal-right {
+            flex: 1;
+            padding: 20px;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Tabs trong Modal */
+        .payment-tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+            .tab-btn.active {
+                color: #28a745;
+                border-bottom-color: #28a745;
+                background: #f0fff4;
+            }
+
+        /* QR View */
+        .qr-frame {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            margin: 0 auto;
+            max-width: 300px;
+        }
+
+        .qr-image {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .qr-total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        /* Manual Info */
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #333;
+            max-width: 200px;
+            word-break: break-all;
+            text-align: right;
+        }
+
+            .info-value.highlight {
+                color: #e91e63;
+            }
+
+        .btn-copy {
+            background: #eee;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+            .btn-copy:hover {
+                background: #ddd;
+            }
+
+        /* Right Column Steps */
+        .step-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .step-num {
+            background: #28a745;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+
+        .step-text {
+            line-height: 1.4;
+            color: #333;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .payment-modal-body
+
+        {
+            flex-direction: column;
+        }
+
+        .modal-left, .modal-right {
+            border: none;
+            width: 100%;
+        }
+
+        }
+    </style>
 </head>
 <body>
 
     <section class="checkout-banner">
         <div class="container">
             <div class="event-banner-info">
-                <h2>DOMIE HOMIE - 2025 Dương Domic Fan Meeting in DANANG</h2>
-                <p><i class="fas fa-calendar-alt"></i> 19:00 - 21:00, 23 Tháng 11, 2025</p>
-                <p><i class="fas fa-map-marker-alt"></i> Nhà Hát Trưng Vương</p>
+                <h2 id="banner-event-title">Đang tải thông tin...</h2>
+                <p><i class="fas fa-calendar-alt"></i> <span id="banner-event-time">...</span></p>
+                <p><i class="fas fa-map-marker-alt"></i> <span id="banner-event-location">...</span></p>
             </div>
             <div class="countdown-box">
                 <p>Hoàn tất đặt vé trong</p>
                 <div class="countdown-timer">
-                    <span id="countdown-minutes">11</span>
-                    <span>:</span>
-                    <span id="countdown-seconds">05</span>
+                    <span id="countdown-minutes">15</span> : <span id="countdown-seconds">00</span>
                 </div>
             </div>
         </div>
     </section>
 
     <div class="container">
-        <div class="checkout-layout">
+        <div id="empty-cart-message" style="display:none; text-align:center; padding:50px;">
+            <h3>Bạn chưa chọn vé nào.</h3>
+            <a href="/" class="btn btn-primary" style="margin-top:20px;">Về trang chủ</a>
+        </div>
 
+        <div class="checkout-layout" id="main-checkout-layout">
             <main class="checkout-main">
-
                 <section id="step-questions" class="checkout-step active">
                     <div class="card">
-                        <div class="card-header">Bảng Câu Hỏi</div>
+                        <div class="card-header">Thông tin người mua</div>
                         <div class="form-check">
                             <input type="checkbox" id="agreeTerms" checked>
-                            <label for="agreeTerms">Tôi đồng ý cho Ticketbox & BTC sử dụng thông tin đặt vé...</label>
+                            <label for="agreeTerms">Tôi đồng ý cho Ticketbox & BTC sử dụng thông tin đặt vé.</label>
                         </div>
                         <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
                         <form id="questionsForm">
                             <div class="form-group">
-                                <input type="text" id="q_fullName" value="Trần Hữu Thành" placeholder=" " required>
-                                <label for="q_fullName">Họ & Tên của bạn?</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="q_cccd" value="048099000123" placeholder=" " required>
-                                <label for="q_cccd">Số CCCD người tham dự?</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="q_address" value="123 Đường Nguyễn Văn Linh, Q. Hải Châu, TP. Đà Nẵng" placeholder=" " required>
-                                <label for="q_address">Địa chỉ của bạn?</label>
+                                <input type="text" id="q_fullName" class="form-control" placeholder=" " required>
+                                <label for="q_fullName">Họ & Tên</label>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <input type="email" id="q_email" value="thanhthde180390@fpt.edu.vn" placeholder=" " required>
-                                    <label for="q_email">Email của bạn?</label>
+                                    <input type="email" id="q_email" class="form-control" placeholder=" " required>
+                                    <label for="q_email">Email nhận vé</label>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" id="q_phone" value="0905123456" placeholder=" " required>
-                                    <label for="q_phone">Số điện thoại của bạn?</label>
+                                    <input type="text" id="q_phone" class="form-control" placeholder=" " required>
+                                    <label for="q_phone">Số điện thoại</label>
                                 </div>
                             </div>
+                            <button type="button" id="btnToPayment" class="btn btn-primary" style="width:100%; margin-top:20px;">
+                                Tiếp tục thanh toán
+                            </button>
                         </form>
                     </div>
                 </section>
@@ -78,312 +274,457 @@
                     <div class="card">
                         <div class="card-header">Thanh Toán</div>
                         <div class="info-box">
-                            <div class="info-box-header">
-                                <h5>Thông tin nhận vé</h5>
-                                <button class="btn-link" id="btnEditAttendee">Chỉnh sửa</button>
-                            </div>
-                            <p>
-                                Vé điện tử sẽ được hiển thị...<br>
-                                <span id="attendeeEmailDisplay">thanhthde180390@fpt.edu.vn</span>
-                            </p>
-                        </div>
-                        <div class="info-box">
-                            <div class="info-box-header">
-                                <h5>Mã khuyến mãi</h5>
-                                <a href="#" class="btn-link">Chọn voucher</a>
-                            </div>
-                            <form class="promo-form">
-                                <input type="text" placeholder="Nhập mã khuyến mãi...">
-                                <button type="button" class="btn btn-secondary">Áp dụng</button>
-                            </form>
+                            <div class="info-box-header"><h5>Thông tin nhận vé</h5></div>
+                            <p>Vé điện tử sẽ được gửi tới: <span id="attendeeEmailDisplay" style="font-weight:bold; color:#e91e63;"></span></p>
                         </div>
                         <div class="info-box">
                             <h5>Phương thức thanh toán</h5>
                             <ul class="payment-method-list">
                                 <li class="payment-method selected">
-                                    <input type="radio" name="payment" id="pay_vnpay" checked>
-                                    <img src="https://via.placeholder.com/30x30/005baa/fff?text=V" alt="VNPay">
-                                    <label for="pay_vnpay">VNPAY/Ứng dụng ngân hàng</label>
-                                </li>
-                                <li class="payment-method">
-                                    <input type="radio" name="payment" id="pay_vietqr">
-                                    <img src="https://via.placeholder.com/30x30/e30613/fff?text=Q" alt="VietQR">
-                                    <label for="pay_vietqr">VietQR</label>
-                                </li>
-                                <li class="payment-method">
-                                    <input type="radio" name="payment" id="pay_shopee">
-                                    <img src="https://via.placeholder.com/30x30/ee4d2d/fff?text=S" alt="ShopeePay">
-                                    <label for="pay_shopee">ShopeePay</label>
+                                    <input type="radio" name="payment" id="pay_sepay" checked>
+                                    <img src="https://img.icons8.com/ios-filled/50/000000/qr-code.png" alt="QR" style="width:24px;">
+                                    <label for="pay_sepay">Chuyển khoản ngân hàng (Quét mã QR)</label>
                                 </li>
                             </ul>
                         </div>
+                        <button type="button" id="btnFinalPay" class="btn btn-danger" style="width:100%; margin-top:20px; font-size:18px;">
+                            Thanh toán ngay
+                        </button>
+                        <button type="button" id="btnBackToInfo" class="btn btn-link" style="width:100%; margin-top:10px;">
+                            Quay lại
+                        </button>
                     </div>
                 </section>
             </main>
 
             <aside class="checkout-sidebar">
                 <div class="card">
-                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        Thông tin đặt vé
-                        <button class="btn-link" id="btnChooseTickets">Chọn lại vé</button>
-                    </div>
-                    <div class="summary-row">
-                        <span class="label">Loại vé</span>
-                        <span class="value">Số lượng</span>
-                    </div>
-                    <div class="summary-row ticket-details">
-                        <span class="label">CAT 2<span class="seat">E-28</span><span class="seat">E-24</span></span>
-                        <span class="value">02</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="label">1,500,000 đ</span>
-                        <span class="value">1,500,000 đ</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">Thông tin đơn hàng</div>
-                    <div class="summary-row">
-                        <span class="label">Tạm tính (2 vé)</span>
-                        <span class="value">3,000,000 đ</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="label">Phí tiện ích</span>
-                        <span class="value">0 đ</span>
-                    </div>
+                    <div class="card-header">Thông tin đặt vé</div>
+                    <div id="sidebar-ticket-list"></div>
+                    <hr />
                     <div class="summary-row total">
                         <span class="label">Tổng tiền</span>
-                        <span class="value" style="color: var(--primary-color);">3,000,000 đ</span>
+                        <span class="value" id="sidebar-total-price" style="color: var(--primary-color);">0 đ</span>
                     </div>
-                    <a asp-controller="Payment" asp-action="PayQRCode" class="btn btn-danger">
-                        Tiếp tục
-                    </a>
-                    <p class="sidebar-note">
-                        Bằng việc nhấn Tiếp tục, bạn đồng ý với <a href="#">Siêu Điều Khoản Chung</a>.
-                    </p>
                 </div>
             </aside>
         </div>
     </div>
 
-    <div id="attendeeInfoModal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="closeAttendeeModal" class="modal-close-btn">&times;</button>
-            <h4>Cập nhật thông tin nhận vé</h4>
-            <form>
-                <div class="form-group">
-                    <input type="text" id="modal_name" value="Trần Hữu Thành" placeholder=" " required>
-                    <label for="modal_name">Tên người nhận</label>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="modal_phone" value="0905123456" placeholder=" " required>
-                    <label for="modal_phone">Số điện thoại</label>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="modal_email" value="thanhthde180390@fpt.edu.vn" placeholder=" " required>
-                    <label for="modal_email">Email</label>
-                </div>
-                <div class="form-group">
-                    <select id="modal_city" required>
-                        <option value="" disabled></option>
-                        <option value="danang" selected>Đà Nẵng</option>
-                        <option value="hanoi">Hà Nội</option>
-                        <option value="hcm">TP. Hồ Chí Minh</option>
-                    </select>
-                    <label for="modal_city">Tỉnh/Thành Phố</label>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <select id="modal_district" required>
-                            <option value="" disabled></option>
-                            <option value="camle" selected>Cẩm Lệ</option>
-                            <option value="haichau">Hải Châu</option>
-                        </select>
-                        <label for="modal_district">Quận/Huyện</label>
-                    </div>
-                    <div class="form-group">
-                        <select id="modal_ward" required>
-                            <option value="" disabled></option>
-                            <option value="khuetrung" selected>Khuê Trung</option>
-                            <option value="hoaxuan">Hòa Xuân</option>
-                        </select>
-                        <label for="modal_ward">Phường/Xã</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="modal_address" value="123 Đường Nguyễn Văn Linh, Q. Hải Châu, TP. Đà Nẵng" placeholder=" ">
-                    <label for="modal_address">Địa chỉ</label>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="modal_notes" placeholder=" ">
-                    <label for="modal_notes">Lưu ý</label>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="cancelAttendeeUpdate">Hủy bỏ</button>
-                    <button type="submit" class="btn" id="saveAttendeeUpdate">Xác nhận</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div id="paymentModal" class="payment-modal-overlay">
+        <div class="payment-modal-content">
+            <button class="modal-close-top" id="btnClosePaymentModal">&times;</button>
 
-    <div id="chooseTicketModal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="closeTicketModal" class="modal-close-btn">&times;</button>
-            <h4>Chọn lại vé</h4>
-            <div class="modal-body">
-                <ul class="ticket-selection-list">
-                    <li class="ticket-selection-item">
-                        <div>
-                            <h5>CAT 2</h5>
-                            <p>Thời gian bán: 01/11 - 22/11</p>
-                            <span class="ticket-price">1,500,000 đ</span>
-                        </div>
-                        <div class="quantity-selector">
-                            <button class="quantity-btn quantity-btn-minus" data-action="decrease">-</button>
-                            <input class="quantity-input" type="number" value="2" min="0" max="10" readonly>
-                            <button class="quantity-btn quantity-btn-plus" data-action="increase">+</button>
-                        </div>
-                    </li>
-                    <li class="ticket-selection-item">
-                        <div>
-                            <h5>CAT 5 (Free)</h5>
-                            <p>Số lượng còn lại: 50/100</p>
-                            <span class="ticket-price">Miễn phí</span>
-                        </div>
-                        <div class="quantity-selector">
-                            <button class="quantity-btn quantity-btn-minus" data-action="decrease">-</button>
-                            <input class="quantity-input" type="number" value="0" min="0" max="5" readonly>
-                            <button class="quantity-btn quantity-btn-plus" data-action="increase">+</button>
-                        </div>
-                    </li>
-                </ul>
+            <div style="padding: 15px 20px; border-bottom: 1px solid #eee; display:flex; align-items:center; gap:10px;">
+                <img src="https://img.vietqr.io/image/vietqr-logo.png" alt="VietQR" style="height: 24px;">
+                <h3 style="margin:0; font-size:18px;">Cổng thanh toán</h3>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn" id="confirmTicketSelection">Xác nhận</button>
+
+            <div class="payment-modal-body">
+                <div class="modal-left">
+                    <div class="payment-tabs">
+                        <button class="tab-btn active" data-tab="qr">Thanh toán bằng mã QR</button>
+                        <button class="tab-btn" data-tab="manual">Chuyển khoản ngân hàng</button>
+                    </div>
+
+                    <div id="view-qr" class="tab-content active">
+                        <div class="qr-frame">
+                            <img id="display-qr-img" src="" alt="QR Code" class="qr-image">
+                            <div class="qr-total">
+                                <span>Tổng: </span> <span id="display-amount-qr">0 đ</span>
+                            </div>
+                        </div>
+                        <p style="text-align:center; font-size:13px; color:#777; margin-top:10px;">
+                            Sử dụng App Ngân hàng hoặc Ví điện tử để quét mã.
+                        </p>
+                    </div>
+
+                    <div id="view-manual" class="tab-content" style="display: none;">
+                        <div class="info-item">
+                            <span class="info-label">Ngân hàng:</span>
+                            <div style="display:flex; align-items:center;">
+                                <span class="info-value" id="display-bank-name">MB</span>
+                                <button class="btn-copy" onclick="copyText('display-bank-name')">Copy</button>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Số tài khoản:</span>
+                            <div style="display:flex; align-items:center;">
+                                <span class="info-value highlight" id="display-acc-num">...</span>
+                                <button class="btn-copy" onclick="copyText('display-acc-num')">Copy</button>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Chủ tài khoản:</span>
+                            <span class="info-value" id="display-acc-name">...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Số tiền:</span>
+                            <div style="display:flex; align-items:center;">
+                                <span class="info-value highlight" id="display-amount-manual">0</span>
+                                <button class="btn-copy" onclick="copyText('display-amount-manual-raw')">Copy</button>
+                                <span id="display-amount-manual-raw" style="display:none;">0</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Nội dung:</span>
+                            <div style="display:flex; align-items:center;">
+                                <span class="info-value highlight" id="display-content">...</span>
+                                <button class="btn-copy" onclick="copyText('display-content')">Copy</button>
+                            </div>
+                        </div>
+                        <div style="background:#fff3cd; color:#856404; padding:10px; font-size:12px; margin-top:15px; border-radius:5px;">
+                            Lưu ý: Nhập chính xác <strong>Nội dung chuyển khoản</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-right">
+                    <h4 style="margin-top:0; margin-bottom:15px; font-size:16px;" id="modal-instruction-title">Hướng dẫn thanh toán</h4>
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text" id="step-instruction-1">Mở ứng dụng Ngân hàng trên điện thoại.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text" id="step-instruction-2">Chọn <strong>Quét mã QR</strong>.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text" id="step-instruction-3">Quét mã ở bên trái và hoàn tất chuyển khoản.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text" id="step-instruction-4">Thực hiện thanh toán và xem kết quả giao dịch tại trang này (không tắt popup).</div>
+                    </div>
+
+                    <div style="margin-top:auto; text-align:center;">
+                        <p style="font-size:13px; color:#666; margin-bottom:5px;">Giao dịch hết hạn sau:</p>
+                        <div style="font-weight:bold; font-size:24px; color:#e91e63; margin-bottom:15px;">
+                            <span id="qr-countdown-min">10</span>:<span id="qr-countdown-sec">00</span>
+                        </div>
+                        <button id="btn-confirm-paid" class="btn btn-success" style="width:100%; background:#28a745; border:none;">
+                            Tôi đã thanh toán
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Hàm tiện ích copy
+        window.copyText = function(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => alert("Đã sao chép: " + text));
+        };
+
         document.addEventListener('DOMContentLoaded', function () {
+            const formatCurrency = (amount) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            const API_BASE_URL = "https://localhost:7063";
 
+        let checkInterval;
+        let currentRegistrationId = null;
 
-            const stepQuestions = document.getElementById('step-questions');
-            const stepPayment = document.getElementById('step-payment');
-            const btnMainAction = document.getElementById('btnMainAction');
-            const btnChooseTickets = document.getElementById('btnChooseTickets');
-            let currentStep = 1;
+        // --- HÀM KIỂM TRA THANH TOÁN (POLLING) ---
+        function startPaymentCheck(registrationId) {
+            // Xóa interval cũ nếu có để tránh chạy chồng chéo
+            if (checkInterval) clearInterval(checkInterval);
 
-            btnMainAction.addEventListener('click', function () {
-                if (currentStep === 1) {
+            checkInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/Payments/check-status/${registrationId}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
 
+                    if (response.ok) {
+                        const data = await response.json();
 
-                    stepQuestions.classList.remove('active');
-                    stepPayment.classList.add('active');
-                    btnMainAction.innerHTML = 'Thanh toán <i class="fas fa-lock"></i>';
-                    currentStep = 2;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    alert('Xử lý thanh toán...');
-                }
-            });
+                        // Nếu trạng thái là Success
+                        if (data.status === 'Success') {
+                            clearInterval(checkInterval); // Dừng kiểm tra
 
-            const attendeeModal = document.getElementById('attendeeInfoModal');
-            const btnEditAttendee = document.getElementById('btnEditAttendee');
-            const closeAttendeeModal = document.getElementById('closeAttendeeModal');
-            const cancelAttendeeUpdate = document.getElementById('cancelAttendeeUpdate');
+                            // 1. Thông báo thành công
+                            alert("Thanh toán thành công! Đang chuyển hướng...");
 
-            btnEditAttendee.addEventListener('click', () => attendeeModal.classList.add('show'));
-            closeAttendeeModal.addEventListener('click', () => attendeeModal.classList.remove('show'));
-            cancelAttendeeUpdate.addEventListener('click', () => attendeeModal.classList.remove('show'));
-            attendeeModal.addEventListener('click', function (e) {
-                if (e.target === attendeeModal) attendeeModal.classList.remove('show');
-            });
+                            // 2. Xóa session
+                            sessionStorage.removeItem('bookingSession');
 
-            const chooseTicketModal = document.getElementById('chooseTicketModal');
-            const btnOpenChooseTicket = document.getElementById('btnChooseTickets');
-            const btnCloseTicketModal = document.getElementById('closeTicketModal');
-            const btnConfirmTickets = document.getElementById('confirmTicketSelection');
-            const ticketSelectionList = document.querySelector('.ticket-selection-list');
-
-            btnOpenChooseTicket.addEventListener('click', function (e) {
-                e.preventDefault();
-                chooseTicketModal.classList.add('show');
-            });
-
-            btnCloseTicketModal.addEventListener('click', () => chooseTicketModal.classList.remove('show'));
-            btnConfirmTickets.addEventListener('click', () => {
-                console.log('Cập nhật giỏ hàng...');
-                chooseTicketModal.classList.remove('show');
-            });
-            chooseTicketModal.addEventListener('click', function (e) {
-                if (e.target === chooseTicketModal) chooseTicketModal.classList.remove('show');
-            });
-
-            if (ticketSelectionList) {
-                ticketSelectionList.addEventListener('click', function (e) {
-                    const button = e.target.closest('.quantity-btn');
-                    if (!button) return;
-
-                    const action = button.dataset.action;
-                    const input = button.parentElement.querySelector('.quantity-input');
-                    let currentValue = parseInt(input.value);
-                    const maxValue = parseInt(input.max);
-                    const minValue = parseInt(input.min);
-
-                    if (action === 'increase' && currentValue < maxValue) {
-                        input.value = currentValue + 1;
-                    } else if (action === 'decrease' && currentValue > minValue) {
-                        input.value = currentValue - 1;
+                            // 3. Chuyển hướng sang trang Cảm ơn / Vé của tôi
+                            window.location.href = "/Profile/AppliedEvent"; // Hoặc trang xác nhận
+                        }
                     }
+                } catch (err) {
+                    console.error("Lỗi kiểm tra trạng thái:", err);
+                }
+            }, 3000); // Kiểm tra mỗi 3 giây
+        }
 
-                    const currentVal = parseInt(input.value);
-                    button.parentElement.querySelector('.quantity-btn-minus').disabled = (currentVal <= minValue);
-                    button.parentElement.querySelector('.quantity-btn-plus').disabled = (currentVal >= maxValue);
-                });
+            // 1. Đọc dữ liệu Session
+            const bookingData = JSON.parse(sessionStorage.getItem('bookingSession'));
+
+            if (!bookingData || !bookingData.tickets || bookingData.tickets.length === 0) {
+                document.getElementById('empty-cart-message').style.display = 'block';
+                return;
             }
 
-            let timeInSeconds = 11 * 60 + 5;
-            const minutesEl = document.getElementById('countdown-minutes');
-            const secondsEl = document.getElementById('countdown-seconds');
+            // 2. Hiển thị dữ liệu
+            document.getElementById('main-checkout-layout').style.display = 'grid';
 
-            const timerInterval = setInterval(() => {
-                if (timeInSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    alert('Đã hết thời gian đặt vé!');
-                    btnMainAction.disabled = true;
-                    btnMainAction.textContent = "Đã hết hạn";
-                    return;
+            document.getElementById('banner-event-title').textContent = bookingData.eventTitle;
+            document.getElementById('banner-event-location').textContent = bookingData.eventLocation;
+            const evtDate = new Date(bookingData.eventDate);
+            document.getElementById('banner-event-time').textContent = `${evtDate.getDate()}/${evtDate.getMonth()+1}/${evtDate.getFullYear()}`;
+
+            const sidebarList = document.getElementById('sidebar-ticket-list');
+            let totalAmount = 0;
+
+            bookingData.tickets.forEach(t => {
+                const subtotal = t.price * t.qty;
+                totalAmount += subtotal;
+                sidebarList.insertAdjacentHTML('beforeend', `
+                    <div class="summary-row ticket-details" style="justify-content: space-between; margin-bottom:10px;">
+                        <div class="label">
+                            <strong style="display:block;">${t.name}</strong>
+                            <span style="font-size:12px; color:#777;">x${t.qty}</span>
+                        </div>
+                        <div class="value">${formatCurrency(subtotal)}</div>
+                    </div>`);
+            });
+            document.getElementById('sidebar-total-price').textContent = formatCurrency(totalAmount);
+
+            // 3. Điều hướng Step
+            const stepQuestions = document.getElementById('step-questions');
+            const stepPayment = document.getElementById('step-payment');
+            const btnToPayment = document.getElementById('btnToPayment');
+            const btnBackToInfo = document.getElementById('btnBackToInfo');
+
+            btnToPayment.addEventListener('click', () => {
+                const email = document.getElementById('q_email').value;
+                if(!document.getElementById('q_fullName').value || !email || !document.getElementById('q_phone').value){
+                    alert("Vui lòng điền đủ thông tin!"); return;
                 }
-                timeInSeconds--;
-                let min = Math.floor(timeInSeconds / 60);
-                let sec = timeInSeconds % 60;
-                minutesEl.textContent = min.toString().padStart(2, '0');
-                secondsEl.textContent = sec.toString().padStart(2, '0');
-            }, 1000);
+                document.getElementById('attendeeEmailDisplay').textContent = email;
+                stepQuestions.classList.remove('active');
+                stepQuestions.style.display = 'none';
+                stepPayment.style.display = 'block';
+            });
 
-            const paymentMethods = document.querySelectorAll('.payment-method');
-            paymentMethods.forEach(method => {
-                method.addEventListener('click', () => {
-                    paymentMethods.forEach(m => m.classList.remove('selected'));
-                    method.classList.add('selected');
-                    method.querySelector('input[type="radio"]').checked = true;
+            btnBackToInfo.addEventListener('click', () => {
+                stepPayment.style.display = 'none';
+                stepQuestions.style.display = 'block';
+                stepQuestions.classList.add('active');
+            });
+
+            async function cancelOrder(registrationId) {
+            if (!registrationId) return;
+
+            // Lấy lại bookingData mới nhất từ session (để chắc chắn có tickets)
+            const currentSession = JSON.parse(sessionStorage.getItem('bookingSession'));
+            if (!currentSession || !currentSession.tickets) return;
+
+            console.log("Đang hủy đơn hàng:", registrationId);
+
+            // Map dữ liệu vé đúng chuẩn Backend DTO
+            const ticketsPayload = currentSession.tickets.map(t => ({
+                ticketTypeId: parseInt(t.id),
+                quantity: parseInt(t.qty)
+            }));
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/Registrations/cancel`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        registrationId: registrationId,
+                        tickets: ticketsPayload
+                    }),
+                    keepalive: true
+                });
+
+                if (response.ok) {
+                    console.log("Hủy đơn thành công, vé đã được hoàn.");
+                } else {
+                    console.error("Lỗi server khi hủy đơn:", await response.text());
+                }
+            } catch (err) {
+                console.error("Lỗi kết nối khi hủy đơn:", err);
+            }
+                //Bắt sự kiện tắt Tab hoặc Reload hoặc Back
+        window.addEventListener('beforeunload', function (e) {
+            if (currentRegistrationId) {
+                cancelOrder(currentRegistrationId);
+            }
+        });
+        }
+
+            // 4. XỬ LÝ THANH TOÁN & HIỆN MODAL
+            const btnFinalPay = document.getElementById('btnFinalPay');
+            const paymentModal = document.getElementById('paymentModal');
+            const btnCloseModal = document.getElementById('btnClosePaymentModal');
+
+            btnFinalPay.addEventListener('click', async () => {
+                btnFinalPay.disabled = true;
+                btnFinalPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+                try {
+                    const createBookingPayload = {
+                        eventId: parseInt(bookingData.eventId),
+                        tickets: bookingData.tickets.map(t => ({ ticketTypeId: parseInt(t.id), quantity: parseInt(t.qty) })),
+                        customerName: document.getElementById('q_fullName').value,
+                        customerEmail: document.getElementById('q_email').value,
+                        customerPhone: document.getElementById('q_phone').value,
+                    };
+
+                    // Bước 1: Tạo đơn hàng
+                    const regResponse = await fetch(`${API_BASE_URL}/api/Registrations`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(createBookingPayload)
+                    });
+
+                    if (!regResponse.ok) {
+                        const err = await regResponse.json();
+                        if(regResponse.status === 401) throw new Error("Bạn cần đăng nhập.");
+                        throw new Error(err.message || "Lỗi tạo đơn.");
+                    }
+
+                    const regResult = await regResponse.json();
+                    const registrationId = regResult.mainRegistrationId;
+
+                    // Bước 2: Lấy QR
+                    const qrResponse = await fetch(`${API_BASE_URL}/api/Payments/initiate-sepay/${registrationId}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+
+                    if (!qrResponse.ok) throw new Error("Lỗi tạo QR.");
+                    const qrResult = await qrResponse.json();
+
+                    // Bước 3: Điền thông tin vào MODAL
+                    document.getElementById('display-qr-img').src = qrResult.qrCodeUrl;
+                    document.getElementById('display-amount-qr').innerText = formatCurrency(qrResult.amount);
+                    document.getElementById('display-bank-name').innerText = qrResult.bankName || "MB Bank";
+                    document.getElementById('display-acc-num').innerText = qrResult.accountNumber;
+                    document.getElementById('display-acc-name').innerText = qrResult.accountName || "EVENT PLATFORM";
+                    document.getElementById('display-amount-manual').innerText = formatCurrency(qrResult.amount);
+                    document.getElementById('display-amount-manual-raw').innerText = qrResult.amount;
+                    document.getElementById('display-content').innerText = qrResult.transactionDescription;
+
+                    // Hiện Modal
+                    paymentModal.style.display = 'flex';
+                    startQrCountdown(10 * 60); // Đếm ngược 10p
+                    startPaymentCheck(registrationId);
+
+                } catch (err) {
+                    alert("Lỗi: " + err.message);
+                } finally {
+                    btnFinalPay.disabled = false;
+                    btnFinalPay.innerText = "Thanh toán ngay";
+                }
+            });
+
+            // Đóng Modal 
+        btnCloseModal.addEventListener('click', async () => {
+            if(confirm("Bạn có muốn hủy thanh toán không? Vé sẽ được trả lại.")) {
+
+                // 1. Dừng kiểm tra thanh toán
+                if (checkInterval) clearInterval(checkInterval);
+                // Ẩn modal để UX mượt hơn (user ko phải chờ)
+                paymentModal.style.display = 'none';
+
+                // 2. Gọi API hủy vé
+                if (currentRegistrationId) {
+                    await cancelOrder(currentRegistrationId);
+                    currentRegistrationId = null;
+                }
+
+                // 3. Reset nút thanh toán
+                btnFinalPay.disabled = false;
+                btnFinalPay.innerText = "Thanh toán ngay";
+            }
+        });
+
+            // Logic Tabs trong Modal
+            const tabBtns = document.querySelectorAll('.payment-modal-content .tab-btn'); // Cụ thể hơn để không nhầm
+            const tabContents = document.querySelectorAll('.payment-modal-content .tab-content');
+            const modalInstructionTitle = document.getElementById('modal-instruction-title');
+            const stepInstruction1 = document.getElementById('step-instruction-1');
+            const stepInstruction2 = document.getElementById('step-instruction-2');
+            const stepInstruction3 = document.getElementById('step-instruction-3');
+            const stepInstruction4 = document.getElementById('step-instruction-4'); // Đảm bảo ID này tồn tại
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.style.display = 'none');
+                    btn.classList.add('active');
+
+                    if(btn.dataset.tab === 'qr') {
+                        document.getElementById('view-qr').style.display = 'block';
+                        modalInstructionTitle.innerText = "Quét mã QR để thanh toán";
+                        stepInstruction1.innerText = "Mở ứng dụng Ngân hàng trên điện thoại.";
+                        stepInstruction2.innerHTML = "Chọn biểu tượng <i class='fas fa-qrcode'></i> <strong>Quét mã QR</strong>."; // Icon QR
+                        stepInstruction3.innerText = "Quét mã QR ở trang này.";
+                        stepInstruction4.innerText = "Thực hiện thanh toán và xem kết quả giao dịch tại trang này (không tắt popup).";
+                    } else { // tab === 'manual'
+                        document.getElementById('view-manual').style.display = 'block';
+                        modalInstructionTitle.innerText = "Chuyển khoản ngân hàng";
+                        stepInstruction1.innerText = "Mở ứng dụng Ngân hàng trên điện thoại.";
+                        stepInstruction2.innerHTML = "Chọn tính năng <strong>Chuyển tiền</strong>, chọn ngân hàng và sao chép <strong>'Số tài khoản'</strong> của Event Platform.";
+                        stepInstruction3.innerHTML = "Nhập chính xác <strong>'Số tiền'</strong> và sao chép <strong>'Nội dung chuyển khoản'</strong>.";
+                        stepInstruction4.innerText = "Thực hiện thanh toán và xem kết quả giao dịch tại trang này (không tắt popup).";
+                    }
                 });
             });
-            btnMainAction.addEventListener('click', function () {
-                if (currentStep === 1) {
-                    stepQuestions.classList.remove('active');
-                    stepPayment.classList.add('active');
-                    btnMainAction.innerHTML = 'Thanh toán <i class="fas fa-lock"></i>';
-                    currentStep = 2;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
 
-                    window.location.href = '/Payment/PayQRCode';
-                }
+            // Nút Tôi đã thanh toán
+            document.getElementById('btn-confirm-paid').addEventListener('click', () => {
+                sessionStorage.removeItem('bookingSession');
+                alert("Hệ thống đang xử lý. Vui lòng kiểm tra email.");
+                window.location.href = "/";
             });
+
+            // Global Timer
+            let timeInSeconds = 15 * 60;
+            setInterval(() => {
+                if (timeInSeconds <= 0) {
+                    alert("Hết thời gian giữ vé."); window.location.href = "/"; return;
+                }
+                timeInSeconds--;
+                let m = Math.floor(timeInSeconds / 60);
+                let s = timeInSeconds % 60;
+                document.getElementById('countdown-minutes').textContent = String(m).padStart(2, '0');
+                document.getElementById('countdown-seconds').textContent = String(s).padStart(2, '0');
+            }, 1000);
+
+            function startQrCountdown(duration) {
+                let timer = duration;
+                const minEl = document.getElementById('qr-countdown-min');
+                const secEl = document.getElementById('qr-countdown-sec');
+                const interval = setInterval(() => {
+                    let m = parseInt(timer / 60, 10);
+                    let s = parseInt(timer % 60, 10);
+                    minEl.textContent = m < 10 ? "0" + m : m;
+                    secEl.textContent = s < 10 ? "0" + s : s;
+                    if (--timer < 0) { clearInterval(interval); alert("QR hết hạn."); 
+                    // Gọi API hủy vé trước khi reload (THÊM DÒNG NÀY)
+            if (currentRegistrationId) {
+                // Dùng cú pháp .then() vì hàm này chạy trong interval
+                cancelOrder(currentRegistrationId).then(() => {
+                    location.reload();
+                });
+            } else {
+                location.reload();
+            } }
+                }, 1000);
+            }
         });
     </script>
 </body>
-
 </html>

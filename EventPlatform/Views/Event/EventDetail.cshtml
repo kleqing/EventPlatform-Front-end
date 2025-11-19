@@ -1074,7 +1074,7 @@
         const bookBtn = document.querySelector('.book-event-form .btn-primary');
         if (bookBtn) {
             // Khi bấm sẽ nhảy qua /Payment/BookingTickets kèm theo id sự kiện
-            bookBtn.href = `/Payment/BookingTickets?eventId=${event.id}`;
+            bookBtn.href = `/Payment/BookingTickets?eventId=${event.eventId}`;
 
             // Xóa thuộc tính asp-action/controller cũ để tránh xung đột (vì ta xử lý bằng JS)
             bookBtn.removeAttribute('asp-controller');
