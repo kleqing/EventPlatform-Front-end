@@ -926,7 +926,9 @@
                     <div class="form-group">
                         <textarea placeholder="Message"></textarea>
                     </div>
-                    <button type="submit">Book Now</button>
+                    <a asp-controller="Payment" asp-action="BookingTickets" class="btn btn-primary">
+                        Book Now
+                    </a>
                 </form>
             </div>
 
@@ -1069,6 +1071,15 @@
         const eventDate = new Date(event.startTime).toLocaleDateString('en-US', {
             year: 'numeric', month: 'long', day: 'numeric'
         });
+        const bookBtn = document.querySelector('.book-event-form .btn-primary');
+        if (bookBtn) {
+            // Khi bấm sẽ nhảy qua /Payment/BookingTickets kèm theo id sự kiện
+            bookBtn.href = `/Payment/BookingTickets?eventId=${event.id}`;
+
+            // Xóa thuộc tính asp-action/controller cũ để tránh xung đột (vì ta xử lý bằng JS)
+            bookBtn.removeAttribute('asp-controller');
+            bookBtn.removeAttribute('asp-action');
+        }
 
         // Cột trái - Thông tin chung
         document.querySelector('.event-main-image').src = event.coverImageUrl || 'https://via.placeholder.com/800x400';
