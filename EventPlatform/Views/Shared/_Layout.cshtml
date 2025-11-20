@@ -306,7 +306,7 @@
 
                 async function syncUser() {
                     try {
-                        const res = await fetch('https://localhost:7063/api/user/me', {
+                        const res = await fetch('https://eventplatform.runasp.net/api/user/me', {
                             method: 'GET',
                             credentials: 'include'
                         });
@@ -339,7 +339,7 @@
                 document.body.addEventListener('click', async (event) => {
                     if (event.target.id === 'logoutBtn') {
                         try {
-                            const res = await fetch('https://localhost:7063/api/auth/logout', {
+                            const res = await fetch('https://eventplatform.runasp.net/api/auth/logout', {
                                 method: 'POST',
                                 credentials: 'include'
                             });
