@@ -13,7 +13,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/css/Payment.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
+        /* --- QUAN TRỌNG: Đẩy SweetAlert lên trên Modal của bạn --- */
+        .swal2-container {
+            z-index: 20000 !important;
+        }
+
         #main-checkout-layout {
             display: none;
         }
@@ -34,7 +42,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 9999; /* Modal của bạn ở 9999 */
         }
 
         .payment-modal-content {
@@ -200,17 +208,14 @@
 
         /* Responsive */
         @@media (max-width: 768px) {
-            .payment-modal-body
+            .payment-modal-body {
+                flex-direction: column;
+            }
 
-        {
-            flex-direction: column;
-        }
-
-        .modal-left, .modal-right {
-            border: none;
-            width: 100%;
-        }
-
+            .modal-left, .modal-right {
+                border: none;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -413,54 +418,90 @@
     </div>
 
     <script>
-        // Hàm tiện ích copy
-        window.copyText = function(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => alert("Đã sao chép: " + text));
-        };
-
         document.addEventListener('DOMContentLoaded', function () {
+            // === CẤU HÌNH SWEETALERT ===
+            // Helper để gọi nhanh và đồng bộ màu sắc
+            const SwalConfig = {
+                primary: '#e91e63',
+                success: (title, text) => Swal.fire({
+                    title: title, text: text, icon: 'success',
+                    confirmButtonColor: '#28a745', confirmButtonText: 'Tuyệt vời!'
+                }),
+                error: (text) => Swal.fire({
+                    title: 'Đã có lỗi xảy ra', text: text, icon: 'error',
+                    confirmButtonColor: '#e91e63', confirmButtonText: 'Thử lại'
+                }),
+                confirm: (title, text) => Swal.fire({
+                    title: title, text: text, icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e91e63', cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Đồng ý', cancelButtonText: 'Giữ lại'
+                }),
+                loading: (title = 'Đang xử lý...') => Swal.fire({
+                    title: title, html: 'Vui lòng không tắt trình duyệt.',
+                    allowOutsideClick: false, didOpen: () => Swal.showLoading()
+                }),
+                close: () => Swal.close(),
+                toast: (text) => {
+                    const Toast = Swal.mixin({
+                        toast: true, position: 'top-end', showConfirmButton: false,
+                        timer: 2000, timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+                    Toast.fire({ icon: 'success', title: text });
+                }
+            };
+
+            // Gắn hàm copyText vào window để gọi từ HTML (onclick)
+            window.copyText = function (elementId) {
+                const text = document.getElementById(elementId).innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    // Thay alert bằng Toast nhỏ góc màn hình
+                    SwalConfig.toast("Đã sao chép: " + text);
+                });
+            };
+
             const formatCurrency = (amount) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
             const API_BASE_URL = "https://eventplatform.runasp.net";
 
         let checkInterval;
         let currentRegistrationId = null;
 
-        // --- HÀM KIỂM TRA THANH TOÁN (POLLING) ---
-        function startPaymentCheck(registrationId) {
-            // Xóa interval cũ nếu có để tránh chạy chồng chéo
-            if (checkInterval) clearInterval(checkInterval);
+            // --- HÀM KIỂM TRA THANH TOÁN (POLLING) ---
+            function startPaymentCheck(registrationId) {
+                if (checkInterval) clearInterval(checkInterval);
 
-            checkInterval = setInterval(async () => {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/Payments/check-status/${registrationId}`, {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include'
-                    });
+                checkInterval = setInterval(async () => {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/api/Payments/check-status/${registrationId}`, {
+                            method: 'GET',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include'
+                        });
 
-                    if (response.ok) {
-                        const data = await response.json();
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.status === 'Success') {
+                                clearInterval(checkInterval);
 
-                        // Nếu trạng thái là Success
-                        if (data.status === 'Success') {
-                            clearInterval(checkInterval); // Dừng kiểm tra
+                                // Ẩn modal thanh toán
+                                document.getElementById('paymentModal').style.display = 'none';
 
-                            // 1. Thông báo thành công
-                            alert("Thanh toán thành công! Đang chuyển hướng...");
+                                // Thay alert bằng SweetAlert Success
+                                await SwalConfig.success("Thanh toán thành công!", "Vé điện tử đã được gửi đến email của bạn.");
 
-                            // 2. Xóa session
-                            sessionStorage.removeItem('bookingSession');
-
-                            // 3. Chuyển hướng sang trang Cảm ơn / Vé của tôi
-                            window.location.href = "/Profile/AppliedEvent"; // Hoặc trang xác nhận
+                                sessionStorage.removeItem('bookingSession');
+                                window.location.href = "/Profile/Profile/AppliedEvent";
+                            }
                         }
+                    } catch (err) {
+                        console.error("Lỗi polling:", err);
                     }
-                } catch (err) {
-                    console.error("Lỗi kiểm tra trạng thái:", err);
-                }
-            }, 3000); // Kiểm tra mỗi 3 giây
-        }
+                }, 3000);
+            }
 
             // 1. Đọc dữ liệu Session
             const bookingData = JSON.parse(sessionStorage.getItem('bookingSession'));
@@ -472,11 +513,10 @@
 
             // 2. Hiển thị dữ liệu
             document.getElementById('main-checkout-layout').style.display = 'grid';
-
             document.getElementById('banner-event-title').textContent = bookingData.eventTitle;
             document.getElementById('banner-event-location').textContent = bookingData.eventLocation;
             const evtDate = new Date(bookingData.eventDate);
-            document.getElementById('banner-event-time').textContent = `${evtDate.getDate()}/${evtDate.getMonth()+1}/${evtDate.getFullYear()}`;
+            document.getElementById('banner-event-time').textContent = `${evtDate.getDate()}/${evtDate.getMonth() + 1}/${evtDate.getFullYear()}`;
 
             const sidebarList = document.getElementById('sidebar-ticket-list');
             let totalAmount = 0;
@@ -503,8 +543,13 @@
 
             btnToPayment.addEventListener('click', () => {
                 const email = document.getElementById('q_email').value;
-                if(!document.getElementById('q_fullName').value || !email || !document.getElementById('q_phone').value){
-                    alert("Vui lòng điền đủ thông tin!"); return;
+                const name = document.getElementById('q_fullName').value;
+                const phone = document.getElementById('q_phone').value;
+
+                if (!name || !email || !phone) {
+                    // Thay alert bằng SweetAlert Error
+                    SwalConfig.error("Vui lòng điền đầy đủ Họ tên, Email và SĐT!");
+                    return;
                 }
                 document.getElementById('attendeeEmailDisplay').textContent = email;
                 stepQuestions.classList.remove('active');
@@ -519,47 +564,37 @@
             });
 
             async function cancelOrder(registrationId) {
-            if (!registrationId) return;
+                if (!registrationId) return;
+                const currentSession = JSON.parse(sessionStorage.getItem('bookingSession'));
+                if (!currentSession || !currentSession.tickets) return;
 
-            // Lấy lại bookingData mới nhất từ session (để chắc chắn có tickets)
-            const currentSession = JSON.parse(sessionStorage.getItem('bookingSession'));
-            if (!currentSession || !currentSession.tickets) return;
+                const ticketsPayload = currentSession.tickets.map(t => ({
+                    ticketTypeId: parseInt(t.id),
+                    quantity: parseInt(t.qty)
+                }));
 
-            console.log("Đang hủy đơn hàng:", registrationId);
-
-            // Map dữ liệu vé đúng chuẩn Backend DTO
-            const ticketsPayload = currentSession.tickets.map(t => ({
-                ticketTypeId: parseInt(t.id),
-                quantity: parseInt(t.qty)
-            }));
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/Registrations/cancel`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        registrationId: registrationId,
-                        tickets: ticketsPayload
-                    }),
-                    keepalive: true
-                });
-
-                if (response.ok) {
-                    console.log("Hủy đơn thành công, vé đã được hoàn.");
-                } else {
-                    console.error("Lỗi server khi hủy đơn:", await response.text());
+                try {
+                    await fetch(`${API_BASE_URL}/api/Registrations/cancel`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            registrationId: registrationId,
+                            tickets: ticketsPayload
+                        }),
+                        keepalive: true
+                    });
+                    console.log("Hủy đơn thành công");
+                } catch (err) {
+                    console.error("Lỗi hủy đơn:", err);
                 }
-            } catch (err) {
-                console.error("Lỗi kết nối khi hủy đơn:", err);
             }
-                //Bắt sự kiện tắt Tab hoặc Reload hoặc Back
-        window.addEventListener('beforeunload', function (e) {
-            if (currentRegistrationId) {
-                cancelOrder(currentRegistrationId);
-            }
-        });
-        }
+
+            window.addEventListener('beforeunload', function (e) {
+                if (currentRegistrationId) {
+                    cancelOrder(currentRegistrationId);
+                }
+            });
 
             // 4. XỬ LÝ THANH TOÁN & HIỆN MODAL
             const btnFinalPay = document.getElementById('btnFinalPay');
@@ -567,8 +602,8 @@
             const btnCloseModal = document.getElementById('btnClosePaymentModal');
 
             btnFinalPay.addEventListener('click', async () => {
-                btnFinalPay.disabled = true;
-                btnFinalPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+                // Thay đổi nút loading và dùng SweetAlert Loading
+                SwalConfig.loading("Đang tạo đơn hàng...");
 
                 try {
                     const createBookingPayload = {
@@ -589,15 +624,15 @@
 
                     if (!regResponse.ok) {
                         const err = await regResponse.json();
-                        if(regResponse.status === 401) throw new Error("Bạn cần đăng nhập.");
+                        if (regResponse.status === 401) throw new Error("Bạn cần đăng nhập.");
                         throw new Error(err.message || "Lỗi tạo đơn.");
                     }
 
                     const regResult = await regResponse.json();
-                    const registrationId = regResult.mainRegistrationId;
+                    currentRegistrationId = regResult.mainRegistrationId;
 
                     // Bước 2: Lấy QR
-                    const qrResponse = await fetch(`${API_BASE_URL}/api/Payments/initiate-sepay/${registrationId}`, {
+                    const qrResponse = await fetch(`${API_BASE_URL}/api/Payments/initiate-sepay/${currentRegistrationId}`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include'
@@ -616,48 +651,51 @@
                     document.getElementById('display-amount-manual-raw').innerText = qrResult.amount;
                     document.getElementById('display-content').innerText = qrResult.transactionDescription;
 
-                    // Hiện Modal
+                    // Tắt loading và hiện Modal
+                    SwalConfig.close();
                     paymentModal.style.display = 'flex';
-                    startQrCountdown(10 * 60); // Đếm ngược 10p
-                    startPaymentCheck(registrationId);
+
+                    startQrCountdown(10 * 60);
+                    startPaymentCheck(currentRegistrationId);
 
                 } catch (err) {
-                    alert("Lỗi: " + err.message);
-                } finally {
-                    btnFinalPay.disabled = false;
-                    btnFinalPay.innerText = "Thanh toán ngay";
+                    SwalConfig.close();
+                    // Hiện lỗi bằng SweetAlert
+                    SwalConfig.error(err.message);
                 }
             });
 
-            // Đóng Modal 
-        btnCloseModal.addEventListener('click', async () => {
-            if(confirm("Bạn có muốn hủy thanh toán không? Vé sẽ được trả lại.")) {
+            // --- QUAN TRỌNG: Xử lý nút Đóng Modal (Thay confirm() bằng Swal) ---
+            btnCloseModal.addEventListener('click', async () => {
+                // SweetAlert Confirm là hàm bất đồng bộ (Promise), cần await
+                const result = await SwalConfig.confirm(
+                    "Hủy thanh toán?",
+                    "Vé đang giữ sẽ bị hủy và trả lại kho."
+                );
 
-                // 1. Dừng kiểm tra thanh toán
-                if (checkInterval) clearInterval(checkInterval);
-                // Ẩn modal để UX mượt hơn (user ko phải chờ)
-                paymentModal.style.display = 'none';
+                if (result.isConfirmed) {
+                    SwalConfig.loading("Đang hủy đơn...");
 
-                // 2. Gọi API hủy vé
-                if (currentRegistrationId) {
-                    await cancelOrder(currentRegistrationId);
-                    currentRegistrationId = null;
+                    if (checkInterval) clearInterval(checkInterval);
+                    paymentModal.style.display = 'none';
+
+                    if (currentRegistrationId) {
+                        await cancelOrder(currentRegistrationId);
+                        currentRegistrationId = null;
+                    }
+                    SwalConfig.close();
                 }
-
-                // 3. Reset nút thanh toán
-                btnFinalPay.disabled = false;
-                btnFinalPay.innerText = "Thanh toán ngay";
-            }
-        });
+                // Nếu bấm Cancel thì không làm gì cả (modal vẫn mở)
+            });
 
             // Logic Tabs trong Modal
-            const tabBtns = document.querySelectorAll('.payment-modal-content .tab-btn'); // Cụ thể hơn để không nhầm
+            const tabBtns = document.querySelectorAll('.payment-modal-content .tab-btn');
             const tabContents = document.querySelectorAll('.payment-modal-content .tab-content');
             const modalInstructionTitle = document.getElementById('modal-instruction-title');
             const stepInstruction1 = document.getElementById('step-instruction-1');
             const stepInstruction2 = document.getElementById('step-instruction-2');
             const stepInstruction3 = document.getElementById('step-instruction-3');
-            const stepInstruction4 = document.getElementById('step-instruction-4'); // Đảm bảo ID này tồn tại
+            const stepInstruction4 = document.getElementById('step-instruction-4');
 
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -665,18 +703,18 @@
                     tabContents.forEach(c => c.style.display = 'none');
                     btn.classList.add('active');
 
-                    if(btn.dataset.tab === 'qr') {
+                    if (btn.dataset.tab === 'qr') {
                         document.getElementById('view-qr').style.display = 'block';
                         modalInstructionTitle.innerText = "Quét mã QR để thanh toán";
                         stepInstruction1.innerText = "Mở ứng dụng Ngân hàng trên điện thoại.";
-                        stepInstruction2.innerHTML = "Chọn biểu tượng <i class='fas fa-qrcode'></i> <strong>Quét mã QR</strong>."; // Icon QR
+                        stepInstruction2.innerHTML = "Chọn biểu tượng <i class='fas fa-qrcode'></i> <strong>Quét mã QR</strong>.";
                         stepInstruction3.innerText = "Quét mã QR ở trang này.";
                         stepInstruction4.innerText = "Thực hiện thanh toán và xem kết quả giao dịch tại trang này (không tắt popup).";
-                    } else { // tab === 'manual'
+                    } else {
                         document.getElementById('view-manual').style.display = 'block';
                         modalInstructionTitle.innerText = "Chuyển khoản ngân hàng";
                         stepInstruction1.innerText = "Mở ứng dụng Ngân hàng trên điện thoại.";
-                        stepInstruction2.innerHTML = "Chọn tính năng <strong>Chuyển tiền</strong>, chọn ngân hàng và sao chép <strong>'Số tài khoản'</strong> của Event Platform.";
+                        stepInstruction2.innerHTML = "Chọn tính năng <strong>Chuyển tiền</strong>, chọn ngân hàng và sao chép <strong>'Số tài khoản'</strong>.";
                         stepInstruction3.innerHTML = "Nhập chính xác <strong>'Số tiền'</strong> và sao chép <strong>'Nội dung chuyển khoản'</strong>.";
                         stepInstruction4.innerText = "Thực hiện thanh toán và xem kết quả giao dịch tại trang này (không tắt popup).";
                     }
@@ -685,16 +723,33 @@
 
             // Nút Tôi đã thanh toán
             document.getElementById('btn-confirm-paid').addEventListener('click', () => {
-                sessionStorage.removeItem('bookingSession');
-                alert("Hệ thống đang xử lý. Vui lòng kiểm tra email.");
-                window.location.href = "/";
+                // Thay alert bằng popup info
+                Swal.fire({
+                    title: 'Đã ghi nhận',
+                    text: 'Hệ thống đang xử lý, vui lòng kiểm tra email trong ít phút.',
+                    icon: 'info',
+                    confirmButtonColor: SwalConfig.primary
+                }).then(() => {
+                    sessionStorage.removeItem('bookingSession');
+                    window.location.href = "/";
+                });
             });
 
-            // Global Timer
+            // Global Timer (15 phút)
             let timeInSeconds = 15 * 60;
             setInterval(() => {
                 if (timeInSeconds <= 0) {
-                    alert("Hết thời gian giữ vé."); window.location.href = "/"; return;
+                    // Thay alert bằng Swal Error chặn người dùng
+                    Swal.fire({
+                        title: 'Hết thời gian giữ vé',
+                        text: 'Vui lòng thực hiện lại quy trình đặt vé.',
+                        icon: 'error',
+                        allowOutsideClick: false,
+                        confirmButtonColor: SwalConfig.primary
+                    }).then(() => {
+                        window.location.href = "/";
+                    });
+                    return;
                 }
                 timeInSeconds--;
                 let m = Math.floor(timeInSeconds / 60);
@@ -703,6 +758,7 @@
                 document.getElementById('countdown-seconds').textContent = String(s).padStart(2, '0');
             }, 1000);
 
+            // QR Timer (10 phút)
             function startQrCountdown(duration) {
                 let timer = duration;
                 const minEl = document.getElementById('qr-countdown-min');
@@ -712,19 +768,26 @@
                     let s = parseInt(timer % 60, 10);
                     minEl.textContent = m < 10 ? "0" + m : m;
                     secEl.textContent = s < 10 ? "0" + s : s;
-                    if (--timer < 0) { clearInterval(interval); alert("QR hết hạn."); 
-                    // Gọi API hủy vé trước khi reload (THÊM DÒNG NÀY)
-            if (currentRegistrationId) {
-                // Dùng cú pháp .then() vì hàm này chạy trong interval
-                cancelOrder(currentRegistrationId).then(() => {
-                    location.reload();
-                });
-            } else {
-                location.reload();
-            } }
+                    if (--timer < 0) {
+                        clearInterval(interval);
+                        // Thay alert bằng Swal Error
+                        Swal.fire({
+                            title: 'Mã QR hết hạn',
+                            text: 'Vui lòng tải lại trang để lấy mã mới.',
+                            icon: 'error',
+                            confirmButtonColor: SwalConfig.primary
+                        }).then(() => {
+                            if (currentRegistrationId) {
+                                cancelOrder(currentRegistrationId).then(() => location.reload());
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    }
                 }, 1000);
             }
         });
     </script>
 </body>
 </html>
+Đang hiển thị 379238825527738243.

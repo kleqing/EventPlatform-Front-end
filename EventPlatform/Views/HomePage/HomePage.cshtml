@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // === Hàm kiểm tra user đã có tag chưa ===
     async function checkUserHasTag(userId) {
         try {
-            const res = await fetch(`https://eventplatform.runasp.net/api/tag/isuserhavetag/${userId}`);
+            const res = await fetch(`https://localhost:7063/api/tag/isuserhavetag/${userId}`);
             if (!res.ok) return false;
             const data = await res.json();
             return !!data.data;
@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // === Hàm lấy danh sách tag từ API ===
     async function fetchTags() {
         try {
-            const res = await fetch('https://eventplatform.runasp.net/api/tag/list-tags');
+            const res = await fetch('https://localhost:7063/api/tag/list-tags');
             if (!res.ok) throw new Error('Không lấy được tag');
             const data = await res.json();
             return data.data || [];
@@ -677,7 +677,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         try {
-            const res = await fetch(`https://eventplatform.runasp.net/api/tag/assign-tags/${user.userId}`, {
+            const res = await fetch(`https://localhost:7063/api/tag/assign-tags/${user.userId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(selectedInterests)
