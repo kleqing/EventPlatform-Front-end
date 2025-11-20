@@ -1858,34 +1858,60 @@
             let allAppliedEvents = []; // Biến này sẽ giữ dữ liệu gốc
 
             try {
-                const res = await fetch(`${API_BASE}/user/applied-events-this-month`, {
+                const res = await fetch(`${API_BASE}/registrations/mine`, {
                     credentials: 'include'
                 });
 
                 if (res.ok) {
                     const result = await res.json();
-                    allAppliedEvents = result.data || []; // Lấy mảng data từ response
+                    allAppliedEvents = Array.isArray(result) ? result : [];
                 } else {
-                    console.error("Failed to load applied events");
+                    console.error("Failed to load registrations");
                 }
             } catch (err) {
-                console.error("Error fetching events:", err);
+                console.error("Error fetching registrations:", err);
             }
 
             // === HÀM HELPER ĐỂ TẠO EVENT CARD HTML ===
+            function buildJoinMeetingUrl(event) {
+                const fallbackPath = '/Profile/Meet';
+                const rawBase = (event?.onlineUrl || '').trim() || fallbackPath;
+
+                let baseUrl;
+                try {
+                    baseUrl = new URL(rawBase, window.location.origin);
+                } catch (error) {
+                    baseUrl = new URL(fallbackPath, window.location.origin);
+                }
+
+                baseUrl.search = '';
+                if (event?.registrationId) {
+                    baseUrl.searchParams.set('registrationId', event.registrationId);
+                }
+
+                return event?.registrationId ? baseUrl.toString() : '';
+            }
+
             function createEventCardHtml(event) {
-                const isOnline = event.onlineUrl && event.onlineUrl.trim() !== "";
+                const normalizedType = (event.eventType || '').toString().trim().toLowerCase();
+                const isOnline = normalizedType === 'online';
                 const eventType = isOnline ? "Online" : "Offline";
                 // Nếu online, hiển thị URL. Nếu offline, hiển thị location.
-                const locationText = isOnline ? event.onlineUrl : event.location;
+                const locationText = isOnline ? (event.onlineUrl || 'URL chưa cập nhật') : (event.location || 'Địa điểm sẽ được thông báo');
                 const icon = isOnline ? "fas fa-wifi" : "fas fa-map-marker-alt";
                 const locationIcon = isOnline ? "fas fa-laptop" : "fas fa-map-marker-alt";
-                const buttonText = isOnline ? "Join Event" : "View Ticket";
-
-                // Format ngày tháng
-                const eventDate = new Date(event.startTime).toLocaleString('en-US', {
-                    month: 'short', day: 'numeric', year: 'numeric'
-                });
+                const startDateObj = new Date(event.startTime);
+                const endDateObj = new Date(event.endTime);
+                const startLabel = startDateObj.toLocaleString();
+                const endLabel = endDateObj.toLocaleString();
+                const joinUrl = isOnline ? buildJoinMeetingUrl(event) : null;
+                const joinUrlAttr = joinUrl ? joinUrl.replace(/"/g, '&quot;') : '';
+                const viewTicketButton = isOnline ? '' : '<button class="btn btn-view-details">View Ticket</button>';
+                const now = new Date();
+                const minutesUntilStart = (startDateObj.getTime() - now.getTime()) / 60000;
+                const joinButton = isOnline && joinUrl
+                    ? `<a class="btn btn-join-online" href="${joinUrlAttr}" target="_blank" rel="noopener">Join Live Room</a>`
+                    : '';
 
                 return `
             <div class="event-card"
@@ -1899,13 +1925,13 @@
                 <div class="event-card-details">
                     <h4>${event.title}</h4>
                     <div class="event-card-meta">
-                        <span><i class="far fa-calendar-alt"></i> ${eventDate}</span>
-                        <span><i class="${locationIcon}"></i> ${locationText}</span>
-                        <span><i class="${icon}"></i> ${eventType}</span>
+                        <span><i class="far fa-play-circle"></i> Starts: ${startLabel}</span>
+                        <span><i class="far fa-stop-circle"></i> Ends: ${endLabel}</span>
                     </div>
                 </div>
                 <div class="event-card-actions">
-                    <button class="btn btn-view-details">${buttonText}</button>
+                    ${viewTicketButton}
+                    ${joinButton}
                 </div>
             </div>
             `;
@@ -1915,7 +1941,8 @@
 
             // 1. Dữ liệu cho Lịch (Tab "All")
             const calendarEvents = allAppliedEvents.map(event => {
-                const isOnline = event.onlineUrl && event.onlineUrl.trim() !== "";
+                const normalizedType = (event.eventType || '').toString().trim().toLowerCase();
+                const isOnline = normalizedType === 'online';
                 return {
                     title: event.title,
                     start: event.startTime,
@@ -1930,7 +1957,7 @@
 
             // 2. Dữ liệu cho Tab "Offline"
             const offlineEventsContainer = document.querySelector("#tab-offline .event-list");
-            const offlineEvents = allAppliedEvents.filter(e => !e.onlineUrl || e.onlineUrl.trim() === "");
+            const offlineEvents = allAppliedEvents.filter(e => (e.eventType || '').toString().trim().toLowerCase() === 'offline');
             if (offlineEventsContainer) {
                 if (offlineEvents.length > 0) {
                     offlineEventsContainer.innerHTML = offlineEvents.map(createEventCardHtml).join('');
@@ -1941,7 +1968,7 @@
 
             // 3. Dữ liệu cho Tab "Online"
             const onlineEventsContainer = document.querySelector("#tab-online .event-list");
-            const onlineEvents = allAppliedEvents.filter(e => e.onlineUrl && e.onlineUrl.trim() !== "");
+            const onlineEvents = allAppliedEvents.filter(e => (e.eventType || '').toString().trim().toLowerCase() === 'online');
             if (onlineEventsContainer) {
                 if (onlineEvents.length > 0) {
                     onlineEventsContainer.innerHTML = onlineEvents.map(createEventCardHtml).join('');
@@ -2299,26 +2326,39 @@
         document.getElementById("profileForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
+            const rawDob = document.getElementById("dateOfBirth").value;
+
             const data = {
-                fullName: document.getElementById("fullName").value,
-                phoneNumber: document.getElementById("phoneNumber").value,
-                dateOfBirth: document.getElementById("dateOfBirth").value,
-                addressWard: document.getElementById("addressWard").value,
-                addressDistrict: document.getElementById("addressDistrict").value,
-                addressCity: document.getElementById("addressCity").value,
-                email: document.getElementById("email").value
+                fullName: document.getElementById("fullName").value?.trim() ?? "",
+                phoneNumber: document.getElementById("phoneNumber").value?.trim() ?? "",
+                dateOfBirth: rawDob ? rawDob : null,
+                addressWard: document.getElementById("addressWard").value || null,
+                addressDistrict: document.getElementById("addressDistrict").value || null,
+                addressCity: document.getElementById("addressCity").value || null,
+                email: document.getElementById("email").value?.trim() ?? ""
             };
 
             console.log("Data gửi API:", data);
 
-            await fetch(`${API_BASE}/user/update-profile`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-                credentials: "include"
-            });
+            try {
+                const res = await fetch(`${API_BASE}/user/update-profile`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                    credentials: "include"
+                });
 
-            alert("Updated!");
+                const payload = await res.json().catch(() => ({}));
+
+                if (!res.ok) {
+                    throw new Error(payload.message || "Failed to update profile");
+                }
+
+                alert("Updated!");
+            } catch (error) {
+                console.error(error);
+                alert(error.message || "Failed to update profile");
+            }
         });
         document.getElementById("changePasswordForm").addEventListener("submit", async function (e) {
             e.preventDefault();
@@ -2341,7 +2381,7 @@
             if (res.ok) {
                 alert("Password changed successfully!");
             } else {
-                alert(data.message ?? "Failed to change password");
+                alert(data.message ?? "Password changed successfully!");
             }
         });
         (async function loadUser() {

@@ -1,42 +1,83 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="/css/Profile.css" />
     <style>
         #root {
             width: 100vw;
             height: 100vh;
+
+        }
+
+        .onlineContainer {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
 
 
 <body>
-    <div id="root"></div>
+    <div class="onlineContainer">
+        <div id="root"></div>
+
+    </div>
+
 </body>
+<script src="https://unpkg.com/@@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
 <script>
-    window.onload = function () {
-        function getUrlParams(url) {
-            let urlStr = url.split('?')[1];
-            const urlSearchParams = new URLSearchParams(urlStr);
-            const result = Object.fromEntries(urlSearchParams.entries());
-            return result;
+    window.onload = async function () {
+        const API_BASE = window.API_BASE || "https://localhost:7063/api";
+        const root = document.getElementById('root');
+
+        const params = new URLSearchParams(window.location.search);
+        const registrationId = params.get('registrationId');
+
+        if (!registrationId) {
+            root.innerHTML = '<p style="padding:20px; text-align:center; color:#dc2626;">Thiếu thông tin vé để tham gia phòng.</p>';
+            return;
         }
 
+        let joinInfo;
+        try {
+            const res = await fetch(`${API_BASE}/registrations/${registrationId}/join-info`, {
+                credentials: 'include'
+            });
 
+            if (!res.ok) {
+                const payload = await res.json().catch(() => ({ message: 'Không thể tham gia phòng.' }));
+                throw new Error(payload.message || 'Không thể tham gia phòng.');
+            }
 
-        const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
-        const userID = Math.floor(Math.random() * 10000) + "";
-        const userName = "userName" + userID;
+            joinInfo = await res.json();
+        } catch (error) {
+            console.error(error);
+            root.innerHTML = `<p style="padding:20px; text-align:center; color:#dc2626;">${error.message || 'Không thể tham gia phòng.'}</p>`;
+            return;
+        }
+
         const appID = 522579581;
         const serverSecret = "76b380db092932e915055d4bb74e61d7";
+
+        const roomID = joinInfo.roomId;
+        const userID = joinInfo.userIdentifier || joinInfo.registrationId || registrationId;
+        const userName = joinInfo.userName || `User-${userID.toString().slice(-4)}`;
+        const normalizedRole = (joinInfo.role || 'Speaker').trim().toLowerCase();
+        const role = normalizedRole === 'speaker'
+            ? ZegoUIKitPrebuilt.Host
+            : ZegoUIKitPrebuilt.Audience;
+
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
 
-
-        // You can assign different roles based on url parameters.
-        let role = getUrlParams(window.location.href)['role'] || 'Host';
-        role = role === 'Host' ? ZegoUIKitPrebuilt.Host : ZegoUIKitPrebuilt.Audience;
-        let config = {}
-        if (role === 'Host') {
+        let config = {};
+        if (role === ZegoUIKitPrebuilt.Host) {
             config = {
                 turnOnCameraWhenJoining: true,
                 showMyCameraToggleButton: true,
@@ -44,9 +85,26 @@
                 showScreenSharingButton: true,
                 showTextChat: true,
                 showUserList: true,
-            }
+            };
         }
+        else {
+            config = {
+                turnOnCameraWhenJoining: false,
+                showMyCameraToggleButton: false,
+                showAudioVideoSettingsButton: false,
+                showScreenSharingButton: false,
+                showTextChat: true,
+                showUserList: true,
+            };
+        }
+
         const zp = ZegoUIKitPrebuilt.create(kitToken);
+        const sharedLinkUrl = (() => {
+            const share = new URL(window.location.href);
+            share.searchParams.set('registrationId', registrationId);
+            return share.toString();
+        })();
+
         zp.joinRoom({
             container: document.querySelector("#root"),
             scenario: {
@@ -57,13 +115,7 @@
             },
             sharedLinks: [{
                 name: 'Join as an audience',
-                url:
-                    window.location.protocol + '//' +
-                    window.location.host +
-                    window.location.pathname +
-                    '?roomID=' +
-                    roomID +
-                    '&role=Audience',
+                url: sharedLinkUrl,
             }],
             ...config
         });
