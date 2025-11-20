@@ -10,13 +10,8 @@
 @{
     // Đọc giá trị từ cấu hình C# (đã được load từ file .env)
     // Cấu trúc: Configuration["Tên_Biến_Môi_Trường"]
-    var fastApiBaseUrl = Configuration["FASTAPI_URL"]; 
+    var fastApiBaseUrl = "http://127.0.0.1:8000";
     
-    // Fallback an toàn cho môi trường dev local nếu biến môi trường không được set
-    if (string.IsNullOrEmpty(fastApiBaseUrl))
-    {
-        fastApiBaseUrl = "https://emiliano-unserialized-rosann.ngrok-free.dev";
-    }
 }
 
 <!DOCTYPE html>
