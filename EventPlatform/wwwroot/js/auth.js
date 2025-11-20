@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = document.getElementById("password").value.trim();
 
         try {
-            const response = await fetch("https://localhost:7063/api/auth/login", {
+            const response = await fetch("https://eventplatform.runasp.net/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch("https://localhost:7063/api/auth/register", {
+            const res = await fetch("https://eventplatform.runasp.net/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ fullname, email, password })
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const resendUrl = `https://localhost:7063/api/auth/resend-confirmation?email=${encodeURIComponent(email)}`;
+        const resendUrl = `https://eventplatform.runasp.net/api/auth/resend-confirmation?email=${encodeURIComponent(email)}`;
 
         try {
             showMessage(modalMessageDiv, "Sending...", 'info'); // 'info' là class tạm, bạn có thể style nó
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     function handleGoogleLogin() {
         const currentUrl = window.location.origin + '/HomePage/HomePage';
-        const loginGoogleUrl = `https://localhost:7063/api/auth/login-google?returnUrl=${encodeURIComponent(currentUrl)}`;
+        const loginGoogleUrl = `https://eventplatform.runasp.net/api/auth/login-google?returnUrl=${encodeURIComponent(currentUrl)}`;
         window.location.href = loginGoogleUrl;
     }
 
