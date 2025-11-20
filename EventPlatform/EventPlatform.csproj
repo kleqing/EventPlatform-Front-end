@@ -11,10 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".env">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+      <Content Include=".env" Condition="Exists('.env')">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="4.0.0" />
