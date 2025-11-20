@@ -816,6 +816,63 @@
             background: #c2154a;
         }
 
+        .rating-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .rating-label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .star-rating-input {
+            font-size: 24px;
+            display: inline-flex;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .star-rating-input i {
+            color: #ddd; /* Màu xám mặc định */
+            transition: color 0.2s;
+        }
+
+        /* Màu vàng khi hover hoặc đã chọn */
+        .star-rating-input i.active,
+        .star-rating-input i.hover {
+            color: #ffc107;
+        }
+
+        .leave-comment-section button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .current-user-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .current-user-preview img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e91e63; /* Viền màu hồng chủ đạo */
+        }
+
+        .current-user-preview span {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        
     </style>
 </head>
 <body>
@@ -969,8 +1026,8 @@
         <div class="comments-header">
             <h3 id="feedback-count">Feedbacks (0)</h3>
             <div class="comments-pagination">
-                <a href="#"> <i class="fas fa-chevron-left"></i> Previous</a>
-                <a href="#">Next <i class="fas fa-chevron-right"></i></a>
+                <a href="javascript:void(0)" id="prev-comment-btn" style="display:none;"> <i class="fas fa-chevron-left"></i> Previous</a>
+                <a href="javascript:void(0)" id="next-comment-btn" style="display:none; margin-left: 10px;">Next <i class="fas fa-chevron-right"></i></a>
             </div>
         </div>
         <div class="comments-list" id="comments-list-container">
@@ -978,23 +1035,35 @@
     </div>
 
     <div class="container leave-comment-section">
-        <h3>Leave Your Comment</h3>
-        <form>
-            <div class="form-group">
-                <input type="text" placeholder="Your Full Name">
+        <h3>Leave Your Feedback</h3>
+        
+        <div class="current-user-preview" id="user-preview-box" style="display: none;">
+            <img id="current-user-img" src="https://via.placeholder.com/50" alt="User Avatar">
+            <div style="display: flex; flex-direction: column;">
+                <span id="current-user-name">Guest</span>
+                <small style="color: #777; font-size: 12px;">You are commenting as this user</small>
             </div>
-            <div class="comment-form-grid">
-                <div class="form-group">
-                    <input type="email" placeholder="Your Email">
+        </div>
+
+        <form id="feedback-form">
+            <div class="form-group rating-wrapper">
+                <label class="rating-label">Your Rating</label>
+                <div class="star-rating-input" id="star-rating-box">
+                    <i class="fas fa-star" data-value="1"></i>
+                    <i class="fas fa-star" data-value="2"></i>
+                    <i class="fas fa-star" data-value="3"></i>
+                    <i class="fas fa-star" data-value="4"></i>
+                    <i class="fas fa-star" data-value="5"></i>
                 </div>
-                <div class="form-group">
-                    <input type="text" placeholder="Subject">
-                </div>
+                <input type="hidden" id="rating-value" value="0">
+                <small id="rating-error" style="color: red; display: none;">Please select a rating.</small>
             </div>
+            
             <div class="form-group">
-                <textarea placeholder="Message"></textarea>
+                <textarea id="feedback-comment" placeholder="Write your experience about this event..." required></textarea>
             </div>
-            <button type="submit">Submit Now</button>
+
+            <button type="submit" id="btn-submit-feedback">Submit Feedback</button>
         </form>
     </div>
 
@@ -1031,40 +1100,343 @@
     document.addEventListener('DOMContentLoaded', async () => {
         const loadingSpinner = document.getElementById('loading-spinner');
         const contentContainer = document.getElementById('event-detail-container');
+        const API_BASE_URL = "https://eventplatform.runasp.net";
+
+        // --- Cấu hình Pagination ---
+        let allComments = [];   // Chứa toàn bộ comment lấy từ API
+        let currentPage = 1;
+        const commentsPerPage = 5; // Số comment mỗi trang
 
         try {
-            // 1. Lấy Event ID từ URL
             const params = new URLSearchParams(window.location.search);
             const eventId = params.get('id');
-            const API_BASE_URL = "https://localhost:7063"; // Đảm bảo cổng này đúng
 
-            if (!eventId) {
-                throw new Error("Event ID not found in URL.");
-            }
+            if (!eventId) throw new Error("Event ID not found in URL.");
 
-            // 2. Gọi API chi tiết sự kiện
-            const response = await fetch(`${API_BASE_URL}/api/Events/${eventId}`);
-            if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error("Event not found.");
-                }
-                throw new Error("Failed to load event data.");
-            }
+            loadCurrentUser();
 
-            const event = await response.json(); // Đây là EventDetailDto
+            // 1. Load thông tin Event (Header, Description...)
+            await loadEventDetails(API_BASE_URL, eventId);
 
-            // 3. Đổ dữ liệu vào trang
-            populatePage(event);
+            // 2. Load danh sách Comments riêng biệt (để xử lý phân trang dễ hơn)
+            await loadAndRenderComments(API_BASE_URL, eventId);
 
-            // 4. Ẩn spinner, hiện nội dung
+            // 3. Khởi tạo chức năng Rating (Fix lỗi không click được)
+            setupRatingUI();
+
+            // 4. Khởi tạo chức năng Submit Feedback (Dùng LocalStorage)
+            setupSubmitFeedback(API_BASE_URL, eventId);
+
+            // Hiển thị giao diện sau khi load xong
             loadingSpinner.style.display = 'none';
-            contentContainer.style.display = 'grid'; // Đổi thành 'grid' để khớp layout
+            contentContainer.style.display = 'grid';
 
         } catch (error) {
             console.error(error);
             loadingSpinner.innerHTML = `<p style="color: red;">${error.message}</p>`;
         }
-    });
+
+        function loadCurrentUser() {
+            const userJson = localStorage.getItem('user');
+            const previewBox = document.getElementById('user-preview-box');
+            const avatarImg = document.getElementById('current-user-img');
+            const nameSpan = document.getElementById('current-user-name');
+
+            if (userJson) {
+                try {
+                    const user = JSON.parse(userJson);
+
+                    // 1. Hiển thị box
+                    previewBox.style.display = 'flex';
+
+                    // 2. Set Avatar (Lấy key 'avatarUrl' từ JSON bạn cung cấp)
+                    if (user.avatarUrl) {
+                        avatarImg.src = user.avatarUrl;
+                    } else {
+                        // Nếu không có avatar thì dùng ảnh mặc định
+                        avatarImg.src = 'https://via.placeholder.com/50?text=User';
+                    }
+
+                    // 3. Set Tên (Lấy key 'fullName')
+                    if (user.fullName) {
+                        nameSpan.textContent = user.fullName;
+                    } else {
+                        nameSpan.textContent = user.email || 'User';
+                    }
+
+                } catch (e) {
+                    console.error("Lỗi parse user localstorage", e);
+                }
+            } else {
+                // Nếu chưa đăng nhập thì ẩn box preview đi
+                previewBox.style.display = 'none';
+            }
+        }
+
+        // ---------------------------------------------------------
+        // HÀM: Load chi tiết sự kiện
+        // ---------------------------------------------------------
+        async function loadEventDetails(baseUrl, id) {
+            const response = await fetch(`${baseUrl}/api/Events/${id}`);
+            if (!response.ok) throw new Error("Failed to load event data.");
+            const event = await response.json();
+            populatePage(event);
+        }
+
+        // ---------------------------------------------------------
+        // HÀM: Load và Phân trang Comments
+        // ---------------------------------------------------------
+        async function loadAndRenderComments(baseUrl, id) {
+            try {
+                const response = await fetch(`${baseUrl}/api/events/listcomments/${id}`);
+                if (response.ok) {
+                    const resData = await response.json();
+                    // API trả về format { data: [...] }, ta lấy phần data
+                    allComments = resData.data || [];
+
+                    // Cập nhật số lượng tổng
+                    document.getElementById('feedback-count').textContent = `Feedbacks (${allComments.length})`;
+
+                    // Render trang 1
+                    currentPage = 1;
+                    renderCommentsPage(currentPage);
+                    setupPaginationControls();
+                }
+            } catch (err) {
+                console.error("Error loading comments:", err);
+            }
+        }
+
+        function renderCommentsPage(page) {
+            const listContainer = document.getElementById('comments-list-container');
+            listContainer.innerHTML = '';
+
+            if (allComments.length === 0) {
+                listContainer.innerHTML = '<p>Be the first to leave a feedback!</p>';
+                return;
+            }
+
+            // Logic cắt mảng (Slice)
+            const startIndex = (page - 1) * commentsPerPage;
+            const endIndex = startIndex + commentsPerPage;
+            const commentsToDisplay = allComments.slice(startIndex, endIndex);
+            
+            commentsToDisplay.forEach(fb => {
+                // Format ngày tháng
+                const fbDate = new Date(fb.submittedAt).toLocaleString('en-US');
+
+                // Render sao của user
+                let starsHtml = '';
+                for(let i=0; i<5; i++) {
+                    starsHtml += `<i class="${i < fb.rating ? 'fas' : 'far'} fa-star" style="color: #ffc107; font-size: 12px;"></i>`;
+                }
+                const userAvatar = fb.avatarUrl || 'https://via.placeholder.com/60x60?text=User';
+
+
+                const html = `
+                    <div class="comment-item">
+                        <img class="comment-avatar" src="${userAvatar}" alt="${fb.userName}" />
+                        <div class="comment-content">
+                            <div class="author">${fb.userName || 'Anonymous'} ${starsHtml}</div>
+                            <div class="date">${fbDate}</div>
+                            <p>${fb.comment}</p>
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', html);
+            });
+
+            updatePaginationButtons();
+        }
+
+        function setupPaginationControls() {
+            const prevBtn = document.getElementById('prev-comment-btn');
+            const nextBtn = document.getElementById('next-comment-btn');
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderCommentsPage(currentPage);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(allComments.length / commentsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderCommentsPage(currentPage);
+                }
+            });
+        }
+
+        function updatePaginationButtons() {
+            const prevBtn = document.getElementById('prev-comment-btn');
+            const nextBtn = document.getElementById('next-comment-btn');
+            const totalPages = Math.ceil(allComments.length / commentsPerPage);
+
+            // Ẩn hiện nút Previous
+            prevBtn.style.display = (currentPage > 1) ? 'inline-block' : 'none';
+
+            // Ẩn hiện nút Next
+            nextBtn.style.display = (currentPage < totalPages) ? 'inline-block' : 'none';
+        }
+
+        // ---------------------------------------------------------
+        // HÀM: Xử lý UI Rating (Fix lỗi cũ)
+        // ---------------------------------------------------------
+        function setupRatingUI() {
+            const stars = document.querySelectorAll('#star-rating-box i');
+            const ratingInput = document.getElementById('rating-value');
+            let currentRating = 0;
+
+            stars.forEach(star => {
+                // Hover vào
+                star.addEventListener('mouseover', function() {
+                    const value = parseInt(this.getAttribute('data-value'));
+                    highlightStars(value, 'hover');
+                });
+
+                // Hover ra
+                star.addEventListener('mouseout', function() {
+                    resetStars(); // Xóa class hover
+                    if (currentRating > 0) highlightStars(currentRating, 'active'); // Trả lại màu đã chọn
+                });
+
+                // Click
+                star.addEventListener('click', function() {
+                    currentRating = parseInt(this.getAttribute('data-value'));
+                    ratingInput.value = currentRating;
+
+                    // Xóa hết active cũ và set active mới
+                    stars.forEach(s => s.classList.remove('active'));
+                    highlightStars(currentRating, 'active');
+                });
+            });
+
+            function highlightStars(count, className) {
+                stars.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= count) {
+                        s.classList.add(className);
+                    }
+                });
+            }
+
+            function resetStars() {
+                stars.forEach(s => s.classList.remove('hover'));
+            }
+        }
+
+        // ---------------------------------------------------------
+        // HÀM: Submit Feedback (Lấy user từ LocalStorage)
+        // ---------------------------------------------------------
+        function setupSubmitFeedback(baseUrl, eventId) {
+            const feedbackForm = document.getElementById('feedback-form');
+
+            feedbackForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // 1. Lấy thông tin User & Token từ LocalStorage
+                const userJson = localStorage.getItem('user');
+
+                // Kiểm tra nếu chưa đăng nhập
+                if (!userJson) {
+                    alert("Please login to leave a comment!");
+                    // window.location.href = '/Login'; // Uncomment nếu muốn chuyển trang
+                    return;
+                }
+
+                const userObj = JSON.parse(userJson);
+
+                // --- QUAN TRỌNG: Lấy Token ---
+                // Bạn kiểm tra xem Token bạn lưu ở đâu? 
+                // Trường hợp 1: Lưu riêng key 'token' -> localStorage.getItem('token')
+                // Trường hợp 2: Lưu trong object user -> userObj.token
+                // Dưới đây mình thử lấy cả 2 trường hợp:
+                const token = localStorage.getItem('token') || userObj.token || userObj.accessToken;
+
+                // Lấy Email
+                const userEmail = userObj.email || userObj.emailAddress || userObj.Email;
+
+                if(!userEmail) {
+                    alert("Cannot find user email info. Please login again.");
+                    return;
+                }
+
+                // 2. Validate Form
+                const submitBtn = document.getElementById('btn-submit-feedback');
+                const comment = document.getElementById('feedback-comment').value;
+                const rating = parseInt(document.getElementById('rating-value').value);
+                const errorMsg = document.getElementById('rating-error');
+
+                if (rating === 0) {
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                errorMsg.style.display = 'none';
+
+                // 3. Chuẩn bị Payload
+                const payload = {
+                    eventId: parseInt(eventId), // Đảm bảo là số integer
+                    userEmail: userEmail,
+                    rating: rating,
+                    comment: comment,
+                    submittedAt: new Date().toISOString()
+                };
+
+                // 4. Gửi API
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Sending...";
+
+                    const response = await fetch(`${baseUrl}/api/events/createcomment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include', // Gửi kèm cookie nếu có
+                        body: JSON.stringify(payload)
+                    });
+
+                    // --- FIX LỖI JSON SYNTAX ---
+                    // Kiểm tra status trước khi parse JSON
+                    if (response.status === 401) {
+                        throw new Error("Unauthorized: Your session may have expired. Please login again.");
+                    }
+
+                    if (!response.ok) {
+                        // Cố đọc lỗi từ server nếu có, nếu không thì báo lỗi chung
+                        const errorText = await response.text();
+                        throw new Error(`Server Error (${response.status}): ${errorText}`);
+                    }
+
+                    // Nếu response OK thì mới parse JSON
+                    const resData = await response.json();
+
+                    if (resData.success) {
+                        alert('Thank you! Your comment has been posted.');
+
+                        // Reset form
+                        feedbackForm.reset();
+                        document.getElementById('rating-value').value = 0;
+                        document.querySelectorAll('#star-rating-box i').forEach(s => s.classList.remove('active'));
+
+                        // Reload lại list comments
+                        // Gọi lại hàm load comment từ scope cha (cần đảm bảo hàm này truy cập được)
+                        // Cách đơn giản nhất là reload trang hoặc gọi lại logic load comment nếu biến scope cho phép
+                        location.reload();
+                    } else {
+                        alert('Failed: ' + (resData.message || 'Unknown error'));
+                    }
+
+                } catch (error) {
+                    console.error("Submit Error:", error);
+                    alert(error.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit Feedback";
+                }
+            });
+        }
 
     function populatePage(event) {
         // Định dạng ngày
@@ -1074,80 +1446,52 @@
         const bookBtn = document.querySelector('.book-event-form .btn-primary');
         if (bookBtn) {
             // Khi bấm sẽ nhảy qua /Payment/BookingTickets kèm theo id sự kiện
-            bookBtn.href = `/Payment/BookingTickets?eventId=${event.id}`;
+            bookBtn.href = `/Payment/BookingTickets?eventId=${event.eventId}`;
 
             // Xóa thuộc tính asp-action/controller cũ để tránh xung đột (vì ta xử lý bằng JS)
             bookBtn.removeAttribute('asp-controller');
             bookBtn.removeAttribute('asp-action');
         }
 
-        // Cột trái - Thông tin chung
-        document.querySelector('.event-main-image').src = event.coverImageUrl || 'https://via.placeholder.com/800x400';
-        document.getElementById('event-meta-date').innerHTML = `<i class="far fa-calendar-alt"></i> ${eventDate}`;
-        document.getElementById('event-meta-seats').innerHTML = `<span class="seat-badge"><i class="fas fa-chair"></i> ${event.totalSeats} Seat</span>`;
-        document.getElementById('event-meta-location').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${event.location || 'Online'}`;
+            document.querySelector('.event-main-image').src = event.coverImageUrl || 'https://via.placeholder.com/800x400';
+            document.getElementById('event-meta-date').innerHTML = `<i class="far fa-calendar-alt"></i> ${eventDate}`;
+            document.getElementById('event-meta-seats').innerHTML = `<span class="seat-badge"><i class="fas fa-chair"></i> ${event.totalSeats} Seat</span>`;
+            document.getElementById('event-meta-location').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${event.location || 'Online'}`;
+            document.getElementById('event-detail-category').textContent = event.categoryName || 'N/A';
+            document.getElementById('event-detail-speaker-count').textContent = `${event.speakers.length} Speaker(s)`;
 
-        // Cột trái - Grid chi tiết
-        document.getElementById('event-detail-category').textContent = event.categoryName || 'N/A';
-        document.getElementById('event-detail-speaker-count').textContent = `${event.speakers.length} Speaker(s)`;
+            // Rating tổng quan
+            const ratingStars = Math.round(event.ratingAverage);
+            let starsHtml = '';
+            for(let i = 0; i < 5; i++) {
+                starsHtml += `<i class="${i < ratingStars ? 'fas' : 'far'} fa-star"></i>`;
+            }
+            document.getElementById('event-detail-rating').innerHTML = `${starsHtml} (${event.ratingCount})`;
 
-        // Hiển thị sao rating
-        const ratingStars = Math.round(event.ratingAverage);
-        let starsHtml = '';
-        for(let i = 0; i < 5; i++) {
-            starsHtml += `<i class="${i < ratingStars ? 'fas' : 'far'} fa-star"></i>`;
-        }
-        document.getElementById('event-detail-rating').innerHTML = `${starsHtml} (${event.ratingCount})`;
+            document.getElementById('event-title').textContent = event.title;
+            document.getElementById('event-description-html').innerHTML = event.description;
 
-        // Cột trái - Mô tả
-        document.getElementById('event-title').textContent = event.title;
-        document.getElementById('event-description-html').innerHTML = event.description; // Giả sử description là HTML
-
-        // Cột trái - Render Speakers
-        const speakerGrid = document.getElementById('speaker-grid-container');
-        speakerGrid.innerHTML = ''; // Xóa placeholder
-        if(event.speakers.length > 0) {
-            event.speakers.forEach(speaker => {
-                speakerGrid.insertAdjacentHTML('beforeend', `
+            // Render Speakers
+            const speakerGrid = document.getElementById('speaker-grid-container');
+            speakerGrid.innerHTML = '';
+            if(event.speakers.length > 0) {
+                event.speakers.forEach(speaker => {
+                    speakerGrid.insertAdjacentHTML('beforeend', `
                     <div class="speaker-card-full">
                         <img src="${speaker.avatarUrl || 'https://via.placeholder.com/80x80'}" alt="${speaker.fullName}" />
                         <div>
                             <div class="name">${speaker.fullName}</div>
                             <div class="role">${speaker.jobTitle || 'Speaker'}</div>
-                            <div class="social-icons">
-                                </div>
                         </div>
                     </div>
                 `);
-            });
-        } else {
-            speakerGrid.innerHTML = '<p>No speaker information available.</p>';
-        }
+                });
+            } else {
+                speakerGrid.innerHTML = '<p>No speaker info.</p>';
+            }
 
-        // Sidebar phải - Ban tổ chức
-        document.getElementById('organizer-avatar').src = event.organizerLogoUrl || 'https://via.placeholder.com/100x100';
-        document.getElementById('organizer-name').textContent = event.organizerName || 'N/A';
-
-        // Phần Feedback
-        document.getElementById('feedback-count').textContent = `Feedbacks (${event.feedbacks.length})`;
-        const commentsList = document.getElementById('comments-list-container');
-        commentsList.innerHTML = ''; // Xóa placeholder
-        if (event.feedbacks.length > 0) {
-            event.feedbacks.forEach(fb => {
-                const fbDate = new Date(fb.submittedAt).toLocaleString('en-US');
-                commentsList.insertAdjacentHTML('beforeend', `
-                    <div class="comment-item">
-                        <img class="comment-avatar" src="${fb.authorAvatarUrl || 'https://via.placeholder.com/60x60'}" alt="${fb.authorName}" />
-                        <div class="comment-content">
-                            <div class="author">${fb.authorName}</div>
-                            <div class="date">${fbDate}</div>
-                            <p>${fb.comment}</p>
-                            </div>
-                    </div>
-                `);
-            });
-        } else {
-            commentsList.innerHTML = '<p>Be the first to leave a feedback!</p>';
+            document.getElementById('organizer-avatar').src = event.organizerLogoUrl || 'https://via.placeholder.com/100x100';
+            document.getElementById('organizer-name').textContent = event.organizerName || 'N/A';
         }
-    }
+    });
 </script>

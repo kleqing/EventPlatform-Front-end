@@ -2,6 +2,23 @@
     ViewData["Title"] = "My Profile";
 }
 
+
+@* 1. INJECT IConfiguration và LẤY GIÁ TRỊ TỪ CẤU HÌNH C# *@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    // Đọc giá trị từ cấu hình C# (đã được load từ file .env)
+    // Cấu trúc: Configuration["Tên_Biến_Môi_Trường"]
+    var fastApiBaseUrl = Configuration["FASTAPI_URL"]; 
+    
+    // Fallback an toàn cho môi trường dev local nếu biến môi trường không được set
+    if (string.IsNullOrEmpty(fastApiBaseUrl))
+    {
+        fastApiBaseUrl = "https://emiliano-unserialized-rosann.ngrok-free.dev";
+    }
+}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -854,6 +871,105 @@
             text-overflow: ellipsis;
         }
 
+
+        /* Layout card sự kiện đề xuất */
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .recommended-event-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+            .recommended-event-card .image-container {
+                position: relative;
+                width: 100%;
+                height: 160px;
+                overflow: hidden;
+            }
+
+                .recommended-event-card .image-container img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+        .score-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ec4899;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .recommended-event-content {
+            padding: 14px 16px;
+        }
+
+            .recommended-event-content h4 {
+                margin: 0 0 6px;
+                font-size: 1.05rem;
+                font-weight: 600;
+            }
+
+        .event-card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 8px 0;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .recommended-event-content p {
+            font-size: 0.9rem;
+            color: #4b5563;
+            height: 48px;
+            overflow: hidden;
+        }
+
+        .recommended-event-card .btn {
+            margin-top: auto;
+        }
+
+        .dropdown-limit {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ccc;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
         @@media (max-width: 960px) {
             .messenger-container {
                 flex-direction: column;
@@ -1081,36 +1197,19 @@
 
                 <section id="recommended-events" class="content-section">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                             <h3>Recommended For You</h3>
+
+                            <select id="event-limit" class="dropdown-limit">
+                                <option value="5">5 events</option>
+                                <option value="10" selected>10 events</option>
+                                <option value="20">20 events</option>
+                                <option value="50">50 events</option>
+                            </select>
                         </div>
-                        <div class="form-grid">
-                            <div class="recommended-event-card">
-                                <img src="https://via.placeholder.com/300x180/ccc/333?text=Design+Meetup"
-                                    class="recommended-event-thumb" alt="Event">
-                                <div class="recommended-event-content">
-                                    <h4>UI/UX Design Meetup 2025</h4>
-                                    <div class="event-card-meta">
-                                        <span><i class="far fa-calendar-alt"></i> Nov 15, 2025</span>
-                                        <span><i class="fas fa-map-marker-alt"></i> Da Nang</span>
-                                    </div>
-                                    <p>A great opportunity for designers to network and share ideas.</p>
-                                    <button class="btn" style="width:100%">View Details</button>
-                                </div>
-                            </div>
-                            <div class="recommended-event-card">
-                                <img src="https://via.placeholder.com/300x180/2c3e50/fff?text=AI+Summit"
-                                    class="recommended-event-thumb" alt="Event">
-                                <div class="recommended-event-content">
-                                    <h4>Vietnam AI Summit</h4>
-                                    <div class="event-card-meta">
-                                        <span><i class="far fa-calendar-alt"></i> Dec 05, 2025</span>
-                                        <span><i class="fas fa-map-marker-alt"></i> Ho Chi Minh City</span>
-                                    </div>
-                                    <p>Explore the future of Artificial Intelligence with industry leaders.</p>
-                                    <button class="btn" style="width:100%">View Details</button>
-                                </div>
-                            </div>
+                        <div class="spinner" id="rec-spinner"></div>
+                        <div class="recommended-grid">
+                            
                         </div>
                     </div>
                 </section>
@@ -1213,8 +1312,8 @@
         </form>
     </div>
     <script>
-        window.API_BASE = window.API_BASE || "https://localhost:7063/api";
-        window.HUB_URL = window.HUB_URL || "https://localhost:7063/hubs/chat";
+        window.API_BASE = window.API_BASE || "https://eventplatform.runasp.net/api";
+        window.HUB_URL = window.HUB_URL || "https://eventplatform.runasp.net/hubs/chat";
     </script>
     <script>
         const API_BASE = window.API_BASE;
@@ -2323,6 +2422,7 @@
 
     @* CALL API FROM JS*@
     <script>
+        const FASTAPI_BASE_URL = '@Html.Raw(fastApiBaseUrl)';
         document.getElementById("profileForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -2466,32 +2566,39 @@
                 alert(err.message || "Update failed");
             }
         });
-        (async function loadRecommendedEvents() {
+        async function loadRecommendedEvents(limit = 5) {
             try {
-                const res = await fetch(`${API_BASE}/user/recommended-events`, {
-                    credentials: "include"
-                });
+                const spinner = document.getElementById("rec-spinner");
+
+                spinner.style.display = "block";
+                const user = JSON.parse(localStorage.getItem("user"));
+                const userId = user?.userId;
+                const res = await fetch(`${FASTAPI_BASE_URL}/recommendations/${userId}?limit=${limit}`);
+
                 if (!res.ok) throw new Error("Failed to fetch recommended events");
-
+                spinner.style.display = "none";
                 const result = await res.json();
-                const events = result.data;
+                const events = result.recommendations;
 
-                const container = document.querySelector("#recommended-events .form-grid");
-                if (!container) return;
+           
+                const container = document.querySelector("#recommended-events .recommended-grid");
                 container.innerHTML = ""; // xóa các mẫu tạm
-
                 events.forEach(event => {
+                    const matchPercentage = Math.round(event.SimilarityScore * 100);
                     const card = document.createElement("div");
                     card.className = "recommended-event-card";
                     card.innerHTML = `
-                <img src="${event.cardImageUrl || 'https://via.placeholder.com/300x180/ccc/333?text=Event'}" class="recommended-event-thumb" alt="Event">
+                <div class="image-container">
+                    <img src="${event.CardImageURL || 'https://via.placeholder.com/300x180/ccc/333?text=Event'}" class="recommended-event-thumb" alt="Event">
+                    <div class="score-badge">${matchPercentage}% Match</div>
+                </div>
                 <div class="recommended-event-content">
-                    <h4>${escapeHtml(event.title || '')}</h4>
+                    <h4>${escapeHtml(event.Title || '')}</h4>
                     <div class="event-card-meta">
-                        <span><i class="far fa-calendar-alt"></i> ${new Date(event.startTime).toLocaleDateString()}</span>
-                        <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location || "TBD")}</span>
+                        <span><i class="far fa-calendar-alt"></i> ${new Date(event.StartTime).toLocaleDateString()}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.Location || "TBD")}</span>
                     </div>
-                    <p>${escapeHtml(event.description || "")}</p>
+                    <p>${escapeHtml(event.Description || "")}</p>
                     <button class="btn" style="width:100%">View Details</button>
                 </div>
             `;
@@ -2500,8 +2607,12 @@
             } catch (err) {
                 console.error(err);
             }
-        })();
-
+        };
+        loadRecommendedEvents();
+        document.getElementById("event-limit").addEventListener("change", function () {
+            const limit = parseInt(this.value);
+            loadRecommendedEvents(limit);
+        });
         // === Load Recommended Partners ===
         (async function loadRecommendedPartners() {
             try {

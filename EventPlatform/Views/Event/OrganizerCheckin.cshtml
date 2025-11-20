@@ -1,0 +1,133 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soát Vé Sự Kiện</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #result-area {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Soát Vé Event</h1>
+
+    <div id="reader"></div>
+
+    <div id="result-area">
+        <h2 id="status-title"></h2>
+        <p id="status-msg"></p>
+        <div id="customer-info" style="text-align: left; margin-top:10px;"></div>
+        <button onclick="location.reload()" style="padding:10px 20px; margin-top:15px; font-size:16px;">Quét tiếp</button>
+    </div>
+
+    <script>
+        const API_BASE_URL = "https://eventplatform.runasp.net"; // Đổi thành domain thật của bạn
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Dừng camera sau khi quét được
+            html5QrcodeScanner.clear();
+
+            // Gọi API Verify
+            verifyTicket(decodedText);
+        }
+
+        async function verifyTicket(token) {
+            const resultArea = document.getElementById('result-area');
+            const statusTitle = document.getElementById('status-title');
+            const statusMsg = document.getElementById('status-msg');
+            const infoDiv = document.getElementById('customer-info');
+
+            resultArea.style.display = 'block';
+            resultArea.className = ''; // Reset class
+            infoDiv.innerHTML = 'Đang kiểm tra...';
+
+            try {
+                // Tách token nếu URL chứa đầy đủ (VD: https://...?data=TOKEN)
+                // Ở bước gửi mail, ta nên gửi text của mã QR là chính cái TOKEN
+                const cleanToken = token.trim();
+
+                const response = await fetch(`${API_BASE_URL}/api/Checkin/verify-offline`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: cleanToken })
+                });
+
+                const data = await response.json();
+
+                if (data.isValid) {
+                    // Hợp lệ
+                    resultArea.classList.add('success');
+                    statusTitle.innerText = "HỢP LỆ";
+                    statusMsg.innerText = data.message;
+                    infoDiv.innerHTML = `
+                        <p><strong>Khách hàng:</strong> ${data.customerName}</p>
+                        <p><strong>Loại vé:</strong> ${data.ticketType}</p>
+                        <p><strong>Sự kiện:</strong> ${data.eventName}</p>
+                    `;
+                } else {
+                    // Không hợp lệ
+                    resultArea.classList.add('error');
+                    statusTitle.innerText = "KHÔNG HỢP LỆ";
+                    statusMsg.innerText = data.message;
+                    if (data.user) {
+                        infoDiv.innerHTML = `<p>Vé của: ${data.user}</p>`;
+                    } else {
+                        infoDiv.innerHTML = "";
+                    }
+                }
+
+            } catch (err) {
+                resultArea.classList.add('error');
+                statusTitle.innerText = "Lỗi Hệ Thống";
+                statusMsg.innerText = err.message;
+            }
+        }
+
+        // Cấu hình Scanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            /* verbose= */ false
+        );
+
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+</body>
+</html>
