@@ -5,31 +5,206 @@
 <!-- === TAB: QUẢN LÝ SỰ KIỆN === -->
 <section id="manage-events" class="content-section">
     <div class="card">
-        <div class="card-header"><h3>Manage All Events</h3></div>
+        <div class="card-header">
+            <h3>Manage All Events</h3>
+            <div class="card-header-actions">
+                <select id="eventStatusFilter" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Pending" selected>Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <input id="eventSearchInput" type="text" class="form-control" placeholder="Search title or description">
+                <button id="eventRefreshBtn" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+        </div>
         <div class="admin-table-wrapper">
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Event Title</th>
+                        <th>Event</th>
                         <th>Submitted By</th>
                         <th>Event Date</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>New AI in Business Conference</td>
-                        <td>User.Demo@example.com</td>
-                        <td>2025-12-01</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                        <td class="table-actions">
-                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
-                            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
-                        </td>
-                    </tr>
+                <tbody id="eventsTableBody">
+                    <tr><td colspan="5">Loading events...</td></tr>
                 </tbody>
             </table>
         </div>
+        <div class="table-footer">
+            <button id="eventPrevPage" class="btn btn-outline-secondary btn-sm" disabled>Previous</button>
+            <span id="eventPageInfo">Page 1</span>
+            <button id="eventNextPage" class="btn btn-outline-secondary btn-sm" disabled>Next</button>
+        </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const API_BASE = window.API_BASE || "https://localhost:7063/api";
+            const ADMIN_API = `${API_BASE}/admin`;
+
+            const state = {
+                pageNumber: 1,
+                pageSize: 10,
+                status: 'Pending',
+                keyword: ''
+            };
+
+            const tableBody = document.getElementById('eventsTableBody');
+            const statusFilter = document.getElementById('eventStatusFilter');
+            const searchInput = document.getElementById('eventSearchInput');
+            const refreshBtn = document.getElementById('eventRefreshBtn');
+            const prevBtn = document.getElementById('eventPrevPage');
+            const nextBtn = document.getElementById('eventNextPage');
+            const pageInfo = document.getElementById('eventPageInfo');
+
+            const formatDate = (value) => {
+                if (!value) return '—';
+                return new Date(value).toLocaleString();
+            };
+
+            const setLoading = (message = 'Loading events...') => {
+                tableBody.innerHTML = `<tr><td colspan="5">${message}</td></tr>`;
+            };
+
+            const renderEvents = (items) => {
+                if (!items.length) {
+                    tableBody.innerHTML = '<tr><td colspan="5">No events found.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = items.map(event => {
+                    const statusClass = event.eventStatus === 'Approved'
+                        ? 'status-approved'
+                        : event.eventStatus === 'Rejected'
+                            ? 'status-rejected'
+                            : 'status-pending';
+
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${event.title}</strong>
+                                <div class="text-muted text-sm">${event.eventType}</div>
+                            </td>
+                            <td>
+                                <div>${event.submittedByName}</div>
+                                <small class="text-muted">${event.submittedByEmail}</small>
+                            </td>
+                            <td>
+                                <div>${formatDate(event.startTime)}</div>
+                                <small class="text-muted">End ${formatDate(event.endTime)}</small>
+                            </td>
+                            <td><span class="status-badge ${statusClass}">${event.eventStatus}</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-success btn-sm" data-event-id="${event.eventId}" data-action="approve" ${event.eventStatus === 'Approved' ? 'disabled' : ''}>
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-danger btn-sm" data-event-id="${event.eventId}" data-action="reject" ${event.eventStatus === 'Rejected' ? 'disabled' : ''}>
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </td>
+                        </tr>`;
+                }).join('');
+            };
+
+            const updatePager = (result) => {
+                const totalPages = result.totalPages || 1;
+                pageInfo.textContent = `Page ${result.pageNumber} of ${totalPages}`;
+                prevBtn.disabled = result.pageNumber <= 1;
+                nextBtn.disabled = result.pageNumber >= totalPages;
+            };
+
+            const loadEvents = async () => {
+                setLoading();
+                try {
+                    const params = new URLSearchParams({
+                        pageNumber: state.pageNumber,
+                        pageSize: state.pageSize
+                    });
+                    if (state.status) params.append('status', state.status);
+                    if (state.keyword) params.append('keyword', state.keyword);
+
+                    const res = await fetch(`${ADMIN_API}/events?${params.toString()}`, {
+                        credentials: 'include'
+                    });
+                    if (!res.ok) throw new Error('Unable to load events');
+                    const data = await res.json();
+                    renderEvents(data.items || []);
+                    updatePager(data);
+                } catch (error) {
+                    console.error(error);
+                    setLoading('Failed to load events. Please try again.');
+                }
+            };
+
+            const updateEventStatus = async (eventId, action) => {
+                const endpoint = action === 'approve' ? 'approve' : 'reject';
+                const res = await fetch(`${ADMIN_API}/events/${eventId}/${endpoint}`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: action === 'reject' ? JSON.stringify({ reason: 'Rejected via dashboard' }) : null
+                });
+                if (!res.ok) {
+                    throw new Error('Update failed');
+                }
+            };
+
+            tableBody.addEventListener('click', async (event) => {
+                const button = event.target.closest('button[data-event-id]');
+                if (!button) return;
+                const eventId = button.dataset.eventId;
+                const action = button.dataset.action;
+                button.disabled = true;
+                try {
+                    await updateEventStatus(eventId, action);
+                    await loadEvents();
+                } catch (error) {
+                    console.error(error);
+                    alert('Failed to update event status.');
+                } finally {
+                    button.disabled = false;
+                }
+            });
+
+            statusFilter.addEventListener('change', () => {
+                state.status = statusFilter.value;
+                state.pageNumber = 1;
+                loadEvents();
+            });
+
+            let searchDebounce;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(() => {
+                    state.keyword = searchInput.value.trim();
+                    state.pageNumber = 1;
+                    loadEvents();
+                }, 400);
+            });
+
+            refreshBtn.addEventListener('click', () => {
+                loadEvents();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (state.pageNumber > 1) {
+                    state.pageNumber -= 1;
+                    loadEvents();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                state.pageNumber += 1;
+                loadEvents();
+            });
+
+            loadEvents();
+        })();
+    </script>
+}

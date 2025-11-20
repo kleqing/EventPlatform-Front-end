@@ -14,30 +14,120 @@
                     <tr>
                         <th>Transaction ID</th>
                         <th>Date</th>
-                        <th>User Email</th>
+                        <th>User</th>
                         <th>Event</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Gateway</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <span title="ch_3QCy8X...">ch_3QCy...</span>
-                        </td>
-                        <td>2025-11-10 14:30 PM</td>
-                        <td>santiago.axel@example.com</td>
-                        <td>Global Tech Conference 2025</td>
-                        <td>$120.00</td>
-                        <td><span class="status-badge status-approved">Succeeded</span></td>
-                        <td class="table-actions">
-                            <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> View Details</button>
-                        </td>
-                    </tr>
-                    <!-- ... (các hàng khác) ... -->
+                <tbody id="transactionsTableBody">
+                    <tr><td colspan="7">Loading transactions...</td></tr>
                 </tbody>
             </table>
         </div>
+        <div class="table-footer">
+            <button id="transactionPrevPage" class="btn btn-outline-secondary btn-sm" disabled>Previous</button>
+            <span id="transactionPageInfo">Page 1</span>
+            <button id="transactionNextPage" class="btn btn-outline-secondary btn-sm" disabled>Next</button>
+        </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const API_BASE = window.API_BASE || "https://localhost:7063/api";
+            const ADMIN_API = `${API_BASE}/admin`;
+
+            const tableBody = document.getElementById('transactionsTableBody');
+            const prevBtn = document.getElementById('transactionPrevPage');
+            const nextBtn = document.getElementById('transactionNextPage');
+            const pageInfo = document.getElementById('transactionPageInfo');
+
+            const state = {
+                pageNumber: 1,
+                pageSize: 10,
+                status: ''
+            };
+
+            const formatDate = (value) => value ? new Date(value).toLocaleString() : '—';
+            const formatAmount = (value) => new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value || 0);
+
+            const setLoading = (message = 'Loading transactions...') => {
+                tableBody.innerHTML = `<tr><td colspan="7">${message}</td></tr>`;
+            };
+
+            const renderTransactions = (items) => {
+                if (!items.length) {
+                    tableBody.innerHTML = '<tr><td colspan="7">No transactions found.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = items.map(tx => {
+                    const statusClass = tx.paymentStatus === 'Success' || tx.paymentStatus === 'Completed'
+                        ? 'status-approved'
+                        : tx.paymentStatus === 'Pending'
+                            ? 'status-pending'
+                            : 'status-rejected';
+                    return `
+                        <tr>
+                            <td>${tx.transactionId}</td>
+                            <td>${formatDate(tx.transactionDate)}</td>
+                            <td>
+                                <div>${tx.buyerName}</div>
+                                <small class="text-muted">${tx.buyerEmail}</small>
+                            </td>
+                            <td>${tx.eventTitle}</td>
+                            <td>${formatAmount(tx.amount)}</td>
+                            <td><span class="status-badge ${statusClass}">${tx.paymentStatus}</span></td>
+                            <td>${tx.paymentGateway || '—'}</td>
+                        </tr>`;
+                }).join('');
+            };
+
+            const updatePager = (result) => {
+                const totalPages = result.totalPages || 1;
+                pageInfo.textContent = `Page ${result.pageNumber} of ${totalPages}`;
+                prevBtn.disabled = result.pageNumber <= 1;
+                nextBtn.disabled = result.pageNumber >= totalPages;
+            };
+
+            const loadTransactions = async () => {
+                setLoading();
+                try {
+                    const params = new URLSearchParams({
+                        pageNumber: state.pageNumber,
+                        pageSize: state.pageSize
+                    });
+                    if (state.status) params.append('status', state.status);
+
+                    const res = await fetch(`${ADMIN_API}/transactions?${params.toString()}`, {
+                        credentials: 'include'
+                    });
+                    if (!res.ok) throw new Error('Failed to load transactions');
+                    const data = await res.json();
+                    renderTransactions(data.items || []);
+                    updatePager(data);
+                } catch (error) {
+                    console.error(error);
+                    setLoading('Failed to load transactions');
+                }
+            };
+
+            prevBtn.addEventListener('click', () => {
+                if (state.pageNumber > 1) {
+                    state.pageNumber -= 1;
+                    loadTransactions();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                state.pageNumber += 1;
+                loadTransactions();
+            });
+
+            loadTransactions();
+        })();
+    </script>
+}
