@@ -334,11 +334,33 @@ ViewData["Title"] = "Forum";
         const categorySelect = document.querySelector(".category-select");
         const postButton = createPostModal.querySelector(".post-button");
         const createPostInput = document.getElementById("createPostInput");
+        const postTitleInput = createPostModal.querySelector(".post-title-input");
+        const postContentInput = createPostModal.querySelector(".post-content-textarea");
 
         document.addEventListener("click", async e => {
             if (e.target.classList.contains("modal-close-btn")) await closeModal(e.target.closest(".modal-overlay"));
             if (e.target.classList.contains("modal-overlay") && !e.target.closest(".modal-content")) await closeModal(e.target);
         });
+
+        function validateCreatePostForm() {
+            const category = categorySelect.value;
+            const title = postTitleInput.value.trim();
+            const content = postContentInput.value.trim();
+
+            if (category && title && content) {
+                postButton.disabled = false;
+                postButton.style.opacity = "1"; 
+                postButton.style.cursor = "pointer";
+            } else {
+                postButton.disabled = true;
+                postButton.style.opacity = "0.5";
+                postButton.style.cursor = "not-allowed";
+            }
+        }
+
+        categorySelect.addEventListener("change", validateCreatePostForm);
+        postTitleInput.addEventListener("input", validateCreatePostForm);
+        postContentInput.addEventListener("input", validateCreatePostForm);
 
         async function loadCategories() {
             const res = await fetchJson(`${API_BASE}/categories`);
