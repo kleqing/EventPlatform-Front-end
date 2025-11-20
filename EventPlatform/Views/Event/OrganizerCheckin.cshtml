@@ -43,6 +43,28 @@
         h2 {
             margin-top: 0;
         }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
     </style>
 </head>
 <body>
@@ -54,18 +76,44 @@
         <h2 id="status-title"></h2>
         <p id="status-msg"></p>
         <div id="customer-info" style="text-align: left; margin-top:10px;"></div>
-        <button onclick="location.reload()" style="padding:10px 20px; margin-top:15px; font-size:16px;">Quét tiếp</button>
+        <button onclick="resetScanner()" style="padding:10px 20px; margin-top:15px; font-size:16px;">Quét tiếp</button>
     </div>
 
     <script>
-        const API_BASE_URL = "https://eventplatform.runasp.net"; // Đổi thành domain thật của bạn
+        const API_BASE_URL = "https://localhost:7063";
 
         function onScanSuccess(decodedText, decodedResult) {
-            // Dừng camera sau khi quét được
+            // Dừng camera ngay khi quét được để tránh double-scan
             html5QrcodeScanner.clear();
+            document.getElementById('reader').style.display = 'none'; 
 
-            // Gọi API Verify
-            verifyTicket(decodedText);
+            // Xử lý dữ liệu quét được (Bóc tách JSON)
+            handleScannedData(decodedText);
+        }
+
+        // Hàm mới: Xử lý thông minh chuỗi quét được
+        function handleScannedData(scannedText) {
+            let tokenToSend = scannedText;
+
+            console.log("Raw scanned data:", scannedText);
+
+            // Kiểm tra xem có phải JSON không
+            try {
+                const dataObj = JSON.parse(scannedText);
+
+                // Chấp nhận cả "Token" (hoa) và "token" (thường)
+                if (dataObj.Token) {
+                    tokenToSend = dataObj.Token;
+                } else if (dataObj.token) {
+                    tokenToSend = dataObj.token;
+                }
+                console.log("Extracted Token from JSON:", tokenToSend);
+
+            } catch (e) {
+                console.log("Non-JSON QR, using raw text.");
+            }
+
+            verifyTicket(tokenToSend.toString().trim());
         }
 
         async function verifyTicket(token) {
@@ -74,59 +122,68 @@
             const statusMsg = document.getElementById('status-msg');
             const infoDiv = document.getElementById('customer-info');
 
+            // Hiển thị khu vực kết quả với trạng thái Loading
             resultArea.style.display = 'block';
-            resultArea.className = ''; // Reset class
-            infoDiv.innerHTML = 'Đang kiểm tra...';
+            resultArea.className = '';
+            statusTitle.innerText = "Đang kiểm tra...";
+            statusMsg.innerText = "";
+            infoDiv.innerHTML = '<div class="loader"></div>';
 
             try {
-                // Tách token nếu URL chứa đầy đủ (VD: https://...?data=TOKEN)
-                // Ở bước gửi mail, ta nên gửi text của mã QR là chính cái TOKEN
-                const cleanToken = token.trim();
-
                 const response = await fetch(`${API_BASE_URL}/api/Checkin/verify-offline`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: cleanToken })
+                    body: JSON.stringify({ token: token }) // Gửi token sạch lên
                 });
 
                 const data = await response.json();
 
                 if (data.isValid) {
-                    // Hợp lệ
-                    resultArea.classList.add('success');
-                    statusTitle.innerText = "HỢP LỆ";
+                    // --- TRƯỜNG HỢP HỢP LỆ ---
+                    resultArea.className = 'success';
+                    statusTitle.innerText = "✅ HỢP LỆ";
                     statusMsg.innerText = data.message;
                     infoDiv.innerHTML = `
-                        <p><strong>Khách hàng:</strong> ${data.customerName}</p>
-                        <p><strong>Loại vé:</strong> ${data.ticketType}</p>
-                        <p><strong>Sự kiện:</strong> ${data.eventName}</p>
+                        <div style="border-top: 1px solid #ccc; padding-top: 10px; font-size: 1.1em;">
+                            <p>👤 <strong>Khách:</strong> ${data.customerName}</p>
+                            <p>🎫 <strong>Loại vé:</strong> ${data.ticketType}</p>
+                            <p>📅 <strong>Sự kiện:</strong> ${data.eventName}</p>
+                        </div>
                     `;
                 } else {
-                    // Không hợp lệ
-                    resultArea.classList.add('error');
-                    statusTitle.innerText = "KHÔNG HỢP LỆ";
+                    // --- TRƯỜNG HỢP KHÔNG HỢP LỆ ---
+                    resultArea.className = 'error';
+                    statusTitle.innerText = "❌ KHÔNG HỢP LỆ";
                     statusMsg.innerText = data.message;
+
                     if (data.user) {
-                        infoDiv.innerHTML = `<p>Vé của: ${data.user}</p>`;
+                        infoDiv.innerHTML = `<p>⚠️ Vé này thuộc về: <strong>${data.user}</strong></p>`;
                     } else {
                         infoDiv.innerHTML = "";
                     }
                 }
 
             } catch (err) {
-                resultArea.classList.add('error');
-                statusTitle.innerText = "Lỗi Hệ Thống";
-                statusMsg.innerText = err.message;
+                // --- LỖI KẾT NỐI/SERVER ---
+                resultArea.className = 'error';
+                statusTitle.innerText = "⚠️ Lỗi Hệ Thống";
+                statusMsg.innerText = "Không thể kết nối đến server: " + err.message;
+                infoDiv.innerHTML = "";
             }
         }
 
-        // Cấu hình Scanner
+        function resetScanner() {
+            document.getElementById('result-area').style.display = 'none';
+            document.getElementById('reader').style.display = 'block';
+
+            html5QrcodeScanner.render(onScanSuccess);
+        }
+
         let html5QrcodeScanner = new Html5QrcodeScanner(
             "reader",
             { fps: 10, qrbox: { width: 250, height: 250 } },
-            /* verbose= */ false
+            false
         );
-
         html5QrcodeScanner.render(onScanSuccess);
     </script>
 </body>
