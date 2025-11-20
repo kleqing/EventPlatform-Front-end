@@ -8,5 +8,9 @@ namespace EventPlatform.Controllers
         {
             return View();
         }
+        public IActionResult Meet()
+        {
+            return View();
+        }
     }
 }

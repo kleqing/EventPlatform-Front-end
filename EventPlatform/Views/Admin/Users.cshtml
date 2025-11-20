@@ -14,27 +14,141 @@
                         <th>Email</th>
                         <th>Role</th>
                         <th>Status</th>
+                        <th>Registrations</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="user-cell">
-                                <img src="https://via.placeholder.com/40x40/e91e63/fff?text=SA" alt="Avatar">
-                                <strong>Santiago Axel</strong>
-                            </div>
-                        </td>
-                        <td>santiago.axel@example.com</td>
-                        <td>Speaker</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td class="table-actions">
-                            <button class="btn btn-secondary btn-sm"><i class="fas fa-user-shield"></i> Make Admin</button>
-                            <button class="btn btn-danger btn-sm"><i class="fas fa-ban"></i> Ban</button>
-                        </td>
-                    </tr>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="6">Loading users...</td></tr>
                 </tbody>
             </table>
         </div>
+        <div class="table-footer">
+            <button id="usersPrevPage" class="btn btn-outline-secondary btn-sm" disabled>Previous</button>
+            <span id="usersPageInfo">Page 1</span>
+            <button id="usersNextPage" class="btn btn-outline-secondary btn-sm" disabled>Next</button>
+        </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const API_BASE = window.API_BASE || "https://eventplatform.runasp.net/api";
+            const ADMIN_API = `${API_BASE}/admin`;
+
+            const tableBody = document.getElementById('usersTableBody');
+            const prevBtn = document.getElementById('usersPrevPage');
+            const nextBtn = document.getElementById('usersNextPage');
+            const pageInfo = document.getElementById('usersPageInfo');
+
+            const state = {
+                pageNumber: 1,
+                pageSize: 10
+            };
+
+            const setLoading = (message = 'Loading users...') => {
+                tableBody.innerHTML = `<tr><td colspan="6">${message}</td></tr>`;
+            };
+
+            const renderUsers = (items) => {
+                if (!items.length) {
+                    tableBody.innerHTML = '<tr><td colspan="6">No users found.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = items.map(user => {
+                    const statusClass = user.accountStatus === 'Active'
+                        ? 'status-active'
+                        : user.accountStatus === 'Banned'
+                            ? 'status-rejected'
+                            : 'status-pending';
+
+                    return `
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar-placeholder">${user.fullName ? user.fullName[0].toUpperCase() : '?'}</div>
+                                    <strong>${user.fullName}</strong>
+                                </div>
+                            </td>
+                            <td>${user.email}</td>
+                            <td>${user.role}</td>
+                            <td><span class="status-badge ${statusClass}">${user.accountStatus}</span></td>
+                            <td>${user.totalRegistrations}</td>
+                            <td class="table-actions">
+                                <button class="btn btn-danger btn-sm" data-user-id="${user.userId}" data-action="ban" ${user.accountStatus === 'Banned' ? 'disabled' : ''}>
+                                    <i class="fas fa-ban"></i> Ban
+                                </button>
+                                <button class="btn btn-secondary btn-sm" data-user-id="${user.userId}" data-action="unban" ${user.accountStatus === 'Active' ? 'disabled' : ''}>
+                                    <i class="fas fa-undo"></i> Unban
+                                </button>
+                            </td>
+                        </tr>`;
+                }).join('');
+            };
+
+            const updatePager = (result) => {
+                const totalPages = result.totalPages || 1;
+                pageInfo.textContent = `Page ${result.pageNumber} of ${totalPages}`;
+                prevBtn.disabled = result.pageNumber <= 1;
+                nextBtn.disabled = result.pageNumber >= totalPages;
+            };
+
+            const loadUsers = async () => {
+                setLoading();
+                try {
+                    const params = new URLSearchParams({
+                        pageNumber: state.pageNumber,
+                        pageSize: state.pageSize
+                    });
+
+                    const res = await fetch(`${ADMIN_API}/users?${params.toString()}`, {
+                        credentials: 'include'
+                    });
+                    if (!res.ok) throw new Error('Failed to load users');
+                    const data = await res.json();
+                    renderUsers(data.items || []);
+                    updatePager(data);
+                } catch (error) {
+                    console.error(error);
+                    setLoading('Failed to load users');
+                }
+            };
+
+            tableBody.addEventListener('click', async (event) => {
+                const button = event.target.closest('button[data-user-id]');
+                if (!button) return;
+                const userId = button.dataset.userId;
+                const action = button.dataset.action;
+                button.disabled = true;
+                try {
+                    await fetch(`${ADMIN_API}/users/${userId}/${action}`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                    await loadUsers();
+                } catch (error) {
+                    console.error(error);
+                    alert('Failed to update user status.');
+                } finally {
+                    button.disabled = false;
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (state.pageNumber > 1) {
+                    state.pageNumber -= 1;
+                    loadUsers();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                state.pageNumber += 1;
+                loadUsers();
+            });
+
+            loadUsers();
+        })();
+    </script>
+}

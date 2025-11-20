@@ -5,30 +5,30 @@
 <section id="dashboard" class="content-section">
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon stat-icon-1"><i class="fas fa-eye"></i></div>
+            <div class="stat-icon stat-icon-1"><i class="fas fa-dollar-sign"></i></div>
             <div class="stat-info">
-                <h4>12,560</h4>
-                <p>Total Visits (30 Days)</p>
+                <h4 id="statRevenue">—</h4>
+                <p>Total Revenue</p>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon stat-icon-2"><i class="fas fa-users"></i></div>
             <div class="stat-info">
-                <h4>1,200</h4>
+                <h4 id="statUsers">—</h4>
                 <p>Total Users</p>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon stat-icon-3"><i class="fas fa-calendar-check"></i></div>
             <div class="stat-info">
-                <h4>450</h4>
+                <h4 id="statEvents">—</h4>
                 <p>Total Events</p>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon stat-icon-4"><i class="fas fa-hourglass-half"></i></div>
             <div class="stat-info">
-                <h4>12</h4>
+                <h4 id="statPending">—</h4>
                 <p>Pending Approvals</p>
             </div>
         </div>
@@ -53,23 +53,8 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>New AI in Business Conference</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                        <td class="table-actions">
-                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
-                            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Local Music Fest 2025</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                        <td class="table-actions">
-                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
-                            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
-                        </td>
-                    </tr>
+                <tbody id="pendingEventsBody">
+                    <tr><td colspan="3">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -78,28 +63,158 @@
 
 @section Scripts {
     <script>
-        (function() {
-            const ctx = document.getElementById('visitsChart');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
-                        datasets: [{
-                            label: 'Visits',
-                            data: [120, 190, 300, 500, 320, 400, 450],
-                            borderColor: 'var(--primary-color)',
-                            backgroundColor: 'rgba(233, 30, 99, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
+        (function () {
+            const API_BASE = window.API_BASE || "https://eventplatform.runasp.net/api";
+            const ADMIN_API = `${API_BASE}/admin`;
+
+            const statRevenue = document.getElementById('statRevenue');
+            const statUsers = document.getElementById('statUsers');
+            const statEvents = document.getElementById('statEvents');
+            const statPending = document.getElementById('statPending');
+            const pendingBody = document.getElementById('pendingEventsBody');
+            const chartCanvas = document.getElementById('visitsChart');
+
+            let visitsChart;
+
+            const currencyFormat = (value) =>
+                new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value || 0);
+
+            const numberFormat = (value) => new Intl.NumberFormat().format(value || 0);
+
+            const handleErrorRow = (message) => {
+                pendingBody.innerHTML = `<tr><td colspan="3">${message}</td></tr>`;
+            };
+
+            const loadSummary = async () => {
+                try {
+                    const res = await fetch(`${ADMIN_API}/dashboard/summary`, { credentials: 'include' });
+                    if (!res.ok) throw new Error('Failed to load summary');
+                    const summary = await res.json();
+                    statRevenue.textContent = currencyFormat(summary.totalRevenue);
+                    statUsers.textContent = numberFormat(summary.totalUsers);
+                    statEvents.textContent = numberFormat(summary.totalEvents);
+                    statPending.textContent = numberFormat(summary.pendingEvents);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+
+            const loadPendingEvents = async () => {
+                try {
+                    const params = new URLSearchParams({ status: 'Pending', pageSize: 5, pageNumber: 1 });
+                    const res = await fetch(`${ADMIN_API}/events?${params.toString()}`, { credentials: 'include' });
+                    if (!res.ok) throw new Error('Failed to load pending events');
+                    const data = await res.json();
+                    const items = data.items || [];
+                    if (!items.length) {
+                        handleErrorRow('No pending events right now.');
+                        return;
                     }
-                });
-            }
+
+                    pendingBody.innerHTML = items.map(event => `
+                        <tr>
+                            <td>
+                                <div><strong>${event.title}</strong></div>
+                                <small class="text-muted">${new Date(event.startTime).toLocaleString()}</small>
+                            </td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td class="table-actions">
+                                <button class="btn btn-success btn-sm" data-event-id="${event.eventId}" data-action="approve"><i class="fas fa-check"></i> Approve</button>
+                                <button class="btn btn-danger btn-sm" data-event-id="${event.eventId}" data-action="reject"><i class="fas fa-times"></i> Reject</button>
+                            </td>
+                        </tr>`).join('');
+                } catch (error) {
+                    console.error(error);
+                    handleErrorRow('Failed to load pending events.');
+                }
+            };
+
+            pendingBody.addEventListener('click', async (event) => {
+                const button = event.target.closest('button[data-event-id]');
+                if (!button) return;
+                const eventId = button.dataset.eventId;
+                const action = button.dataset.action;
+                button.disabled = true;
+                try {
+                    const endpoint = action === 'approve' ? 'approve' : 'reject';
+                    await fetch(`${ADMIN_API}/events/${eventId}/${endpoint}`, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: action === 'reject' ? JSON.stringify({ reason: 'Rejected on dashboard' }) : null
+                    });
+                    await loadPendingEvents();
+                } catch (error) {
+                    console.error(error);
+                    alert('Failed to update event status.');
+                } finally {
+                    button.disabled = false;
+                }
+            });
+
+            const buildVisitsChart = async () => {
+                if (!chartCanvas) return;
+                try {
+                    const params = new URLSearchParams({ pageSize: 100, pageNumber: 1 });
+                    const res = await fetch(`${ADMIN_API}/transactions?${params.toString()}`, { credentials: 'include' });
+                    if (!res.ok) throw new Error('Failed to load transactions');
+                    const data = await res.json();
+                    const items = data.items || [];
+                    const now = new Date();
+                    const days = Array.from({ length: 7 }).map((_, idx) => {
+                        const date = new Date(now);
+                        date.setDate(now.getDate() - (6 - idx));
+                        const key = date.toISOString().split('T')[0];
+                        return { label: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), key, total: 0 };
+                    });
+
+                    items.forEach(tx => {
+                        if (!tx.transactionDate) return;
+                        const key = tx.transactionDate.split('T')[0];
+                        const bucket = days.find(d => d.key === key);
+                        if (bucket) bucket.total += tx.amount;
+                    });
+
+                    const labels = days.map(d => d.label);
+                    const values = days.map(d => d.total);
+
+                    if (visitsChart) {
+                        visitsChart.data.labels = labels;
+                        visitsChart.data.datasets[0].data = values;
+                        visitsChart.update();
+                    } else {
+                        visitsChart = new Chart(chartCanvas, {
+                            type: 'line',
+                            data: {
+                                labels,
+                                datasets: [{
+                                    label: 'Revenue (last 7 days)',
+                                    data: values,
+                                    borderColor: 'var(--primary-color)',
+                                    backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                                    fill: true,
+                                    tension: 0.4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+
+            loadSummary();
+            loadPendingEvents();
+            buildVisitsChart();
         })();
     </script>
 }
