@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +43,8 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 9999; /* Modal của bạn ở 9999 */
+            z-index: 9999;
+            /* Modal của bạn ở 9999 */
         }
 
         .payment-modal-content {
@@ -54,7 +56,7 @@
             display: flex;
             flex-direction: column;
             max-height: 90vh;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
@@ -111,11 +113,11 @@
             margin-bottom: -2px;
         }
 
-            .tab-btn.active {
-                color: #28a745;
-                border-bottom-color: #28a745;
-                background: #f0fff4;
-            }
+        .tab-btn.active {
+            color: #28a745;
+            border-bottom-color: #28a745;
+            background: #f0fff4;
+        }
 
         /* QR View */
         .qr-frame {
@@ -161,9 +163,9 @@
             text-align: right;
         }
 
-            .info-value.highlight {
-                color: #e91e63;
-            }
+        .info-value.highlight {
+            color: #e91e63;
+        }
 
         .btn-copy {
             background: #eee;
@@ -175,9 +177,9 @@
             margin-left: 10px;
         }
 
-            .btn-copy:hover {
-                background: #ddd;
-            }
+        .btn-copy:hover {
+            background: #ddd;
+        }
 
         /* Right Column Steps */
         .step-item {
@@ -212,13 +214,15 @@
                 flex-direction: column;
             }
 
-            .modal-left, .modal-right {
+            .modal-left,
+            .modal-right {
                 border: none;
                 width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
 
     <section class="checkout-banner">
@@ -268,7 +272,8 @@
                                     <label for="q_phone">Số điện thoại</label>
                                 </div>
                             </div>
-                            <button type="button" id="btnToPayment" class="btn btn-primary" style="width:100%; margin-top:20px;">
+                            <button type="button" id="btnToPayment" class="btn btn-primary"
+                                style="width:100%; margin-top:20px;">
                                 Tiếp tục thanh toán
                             </button>
                         </form>
@@ -279,23 +284,29 @@
                     <div class="card">
                         <div class="card-header">Thanh Toán</div>
                         <div class="info-box">
-                            <div class="info-box-header"><h5>Thông tin nhận vé</h5></div>
-                            <p>Vé điện tử sẽ được gửi tới: <span id="attendeeEmailDisplay" style="font-weight:bold; color:#e91e63;"></span></p>
+                            <div class="info-box-header">
+                                <h5>Thông tin nhận vé</h5>
+                            </div>
+                            <p>Vé điện tử sẽ được gửi tới: <span id="attendeeEmailDisplay"
+                                    style="font-weight:bold; color:#e91e63;"></span></p>
                         </div>
                         <div class="info-box">
                             <h5>Phương thức thanh toán</h5>
                             <ul class="payment-method-list">
                                 <li class="payment-method selected">
                                     <input type="radio" name="payment" id="pay_sepay" checked>
-                                    <img src="https://img.icons8.com/ios-filled/50/000000/qr-code.png" alt="QR" style="width:24px;">
+                                    <img src="https://img.icons8.com/ios-filled/50/000000/qr-code.png" alt="QR"
+                                        style="width:24px;">
                                     <label for="pay_sepay">Chuyển khoản ngân hàng (Quét mã QR)</label>
                                 </li>
                             </ul>
                         </div>
-                        <button type="button" id="btnFinalPay" class="btn btn-danger" style="width:100%; margin-top:20px; font-size:18px;">
+                        <button type="button" id="btnFinalPay" class="btn btn-danger"
+                            style="width:100%; margin-top:20px; font-size:18px;">
                             Thanh toán ngay
                         </button>
-                        <button type="button" id="btnBackToInfo" class="btn btn-link" style="width:100%; margin-top:10px;">
+                        <button type="button" id="btnBackToInfo" class="btn btn-link"
+                            style="width:100%; margin-top:10px;">
                             Quay lại
                         </button>
                     </div>
@@ -378,14 +389,16 @@
                                 <button class="btn-copy" onclick="copyText('display-content')">Copy</button>
                             </div>
                         </div>
-                        <div style="background:#fff3cd; color:#856404; padding:10px; font-size:12px; margin-top:15px; border-radius:5px;">
+                        <div
+                            style="background:#fff3cd; color:#856404; padding:10px; font-size:12px; margin-top:15px; border-radius:5px;">
                             Lưu ý: Nhập chính xác <strong>Nội dung chuyển khoản</strong>.
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-right">
-                    <h4 style="margin-top:0; margin-bottom:15px; font-size:16px;" id="modal-instruction-title">Hướng dẫn thanh toán</h4>
+                    <h4 style="margin-top:0; margin-bottom:15px; font-size:16px;" id="modal-instruction-title">Hướng dẫn
+                        thanh toán</h4>
                     <div class="step-item">
                         <div class="step-num">1</div>
                         <div class="step-text" id="step-instruction-1">Mở ứng dụng Ngân hàng trên điện thoại.</div>
@@ -396,11 +409,13 @@
                     </div>
                     <div class="step-item">
                         <div class="step-num">3</div>
-                        <div class="step-text" id="step-instruction-3">Quét mã ở bên trái và hoàn tất chuyển khoản.</div>
+                        <div class="step-text" id="step-instruction-3">Quét mã ở bên trái và hoàn tất chuyển khoản.
+                        </div>
                     </div>
                     <div class="step-item">
                         <div class="step-num">4</div>
-                        <div class="step-text" id="step-instruction-4">Thực hiện thanh toán và xem kết quả giao dịch tại trang này (không tắt popup).</div>
+                        <div class="step-text" id="step-instruction-4">Thực hiện thanh toán và xem kết quả giao dịch tại
+                            trang này (không tắt popup).</div>
                     </div>
 
                     <div style="margin-top:auto; text-align:center;">
@@ -408,7 +423,8 @@
                         <div style="font-weight:bold; font-size:24px; color:#e91e63; margin-bottom:15px;">
                             <span id="qr-countdown-min">10</span>:<span id="qr-countdown-sec">00</span>
                         </div>
-                        <button id="btn-confirm-paid" class="btn btn-success" style="width:100%; background:#28a745; border:none;">
+                        <button id="btn-confirm-paid" class="btn btn-success"
+                            style="width:100%; background:#28a745; border:none;">
                             Tôi đã thanh toán
                         </button>
                     </div>
@@ -467,8 +483,8 @@
             const formatCurrency = (amount) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
             const API_BASE_URL = "https://eventplatform.runasp.net";
 
-        let checkInterval;
-        let currentRegistrationId = null;
+            let checkInterval;
+            let currentRegistrationId = null;
 
             // --- HÀM KIỂM TRA THANH TOÁN (POLLING) ---
             function startPaymentCheck(registrationId) {
@@ -500,7 +516,7 @@
                     } catch (err) {
                         console.error("Lỗi polling:", err);
                     }
-                }, 3000);
+                }, 2000);
             }
 
             // 1. Đọc dữ liệu Session
@@ -789,5 +805,6 @@
         });
     </script>
 </body>
+
 </html>
 Đang hiển thị 379238825527738243.
